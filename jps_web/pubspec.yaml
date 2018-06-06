@@ -3,4 +3,5 @@ version: 0.0.1
 description: Bringing JPS to the people
 dependencies:
   browser: any
-dev_dependencies:
+  react: "^4.4.1"
+#dev_dependencies:
