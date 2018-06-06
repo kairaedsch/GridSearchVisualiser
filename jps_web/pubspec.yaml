@@ -1,0 +1,6 @@
+name: jps_web
+version: 0.0.1
+description: Bringing JPS to the people
+dependencies:
+  browser: any
+dev_dependencies:
