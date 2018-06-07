@@ -1,7 +1,17 @@
 name: jps_web
-version: 0.0.1
+version: 1.0.0
 description: Bringing JPS to the people
+
+environment:
+  sdk: ">=1.20.1 <2.0.0"
+
 dependencies:
-  browser: any
-  react: "^4.4.1"
-#dev_dependencies:
+  browser: "^0.10.0"
+  dart_to_js_script_rewriter: "^1.0.1"
+  over_react: "^1.24.1"
+  optional: "^1.2.3+1"
+  tuple: "^1.0.1"
+
+transformers:
+- over_react
+- dart_to_js_script_rewriter
