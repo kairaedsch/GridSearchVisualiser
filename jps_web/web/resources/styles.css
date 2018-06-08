@@ -1,0 +1,68 @@
+@import url('fonts/openSans.css');
+
+:root {
+  --node-size: 30px;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: #FFF;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#content {
+  background: deepskyblue;
+}
+
+#leftContent, #rightContent {
+  width: 50%;
+  float: left;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#leftContent {
+}
+
+#rightContent {
+}
+
+.grid {
+  background: white;
+}
+
+.grid .row {
+  width: 100%;
+}
+
+.node {
+  float: left;
+  width: var(--node-size);
+  height: var(--node-size);
+  box-shadow: inset 0 0 1px black;
+  transition: background ease-in 0.3s;
+  transform: scale(1);
+}
+
+.node:hover, .node:active {
+  transition: background ease-in 0.05s, transform cubic-bezier(0,100,0,1) 2s;
+}
+
+.node:hover {
+  background: #80E1F9;
+}
+
+.node:active {
+  background: #333;
+  transform: scale(1.01);
+}
