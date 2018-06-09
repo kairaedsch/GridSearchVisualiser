@@ -49,20 +49,30 @@ html, body {
   float: left;
   width: var(--node-size);
   height: var(--node-size);
-  box-shadow: inset 0 0 1px black;
-  transition: background ease-in 0.3s;
-  transform: scale(1);
+
+  border: 1px solid;
+  border-color: #DDD #BBB #BBB #DDD;
+  animation: nodeChange1 0.2s ease-out 1;
 }
 
-.node:hover, .node:active {
-  transition: background ease-in 0.05s, transform cubic-bezier(0,100,0,1) 2s;
+@keyframes nodeChange1 {
+0%   {transform: scale(1);}
+50%   {transform: scale(1.25);}
+100%   {transform: scale(1);}
+}
+
+@keyframes nodeChange2 {
+0%   {transform: scale(1);}
+50%   {transform: scale(1.25);}
+100%   {transform: scale(1);}
 }
 
 .node:hover {
   background: #80E1F9;
 }
 
-.node:active {
-  background: #333;
-  transform: scale(1.01);
+.node.blocked, .node:active {
+  background: #888;
+  border-color: #777 #666 #666 #777;
+  animation-name: nodeChange2;
 }
