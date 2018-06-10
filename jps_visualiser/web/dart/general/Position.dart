@@ -3,10 +3,9 @@ class Position
   final int x;
   final int y;
 
-  Position(this.x, this.y);
+  const Position(this.x, this.y);
 
-  @override
-  String toString() {
-    return 'pos_x_$x pos_y_$y';
-  }
+  get css => "pos_x_$x pos_y_$y";
+
+  String toString() => "($x, $y)";
 }

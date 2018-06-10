@@ -1,4 +1,5 @@
 import '../store/ExplanationNode.dart';
+import '../store/StoreGrid.dart';
 import '../store/StructureNode.dart';
 import 'package:over_react/over_react.dart';
 
@@ -10,6 +11,7 @@ class ReactNodeProps extends UiProps
 {
   StructureNode structureNode;
   ExplanationNode explanationNode;
+  ActionsGridChanged actions;
 }
 
 @Component()
@@ -23,14 +25,17 @@ class ReactNodeComponent extends UiComponent<ReactNodeProps>
 
     return (Dom.div()
       ..className = "node"
-          " ${structureNode.pos}"
+          " ${structureNode.pos.css}"
+          " ${structureNode.barrier.css}"
           " ${structureNode.type.name}"
-          " ${explanationNode.marking}"
+          " ${explanationNode.marking.name}"
       ..onClick = handleClick
     )();
   }
 
   void handleClick(SyntheticMouseEvent event) {
-
+    StructureNode structureNode = props.structureNode;
+    StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.invert());
+    props.actions.structureNodeChanged.call(newStructureNode);
   }
 }

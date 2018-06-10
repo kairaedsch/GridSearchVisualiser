@@ -40,6 +40,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
     return (Dom.div()
       ..className = "row"
+      ..key = y
     )(
         new List<ReactElement>.generate(structureNodes.width, (x) => renderNode(new Position(x, y)))
     );
@@ -51,8 +52,10 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
     return (
         ReactNode()
+          ..key = pos
           ..structureNode = structureNode
           ..explanationNode = explanationNode
+          ..actions = props.actions
     )();
   }
 }

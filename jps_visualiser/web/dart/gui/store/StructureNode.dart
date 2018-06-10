@@ -11,31 +11,82 @@ class StructureNode
 
   final StructureNodeBarrier barrier;
 
-  StructureNode(this.pos, this.type, this.barrier);
+  const StructureNode(this.pos, this.type, this.barrier);
 
   StructureNode.normal(this.pos)
       : type = StructureNodeType.NORMAL_NODE,
-        barrier = new StructureNodeBarrier();
+        barrier = StructureNodeBarrier.totalUnblocked;
+
+  StructureNode clone({StructureNodeType type, StructureNodeBarrier barrier})
+  {
+    if (type == null) type = this.type;
+    if (barrier == null) barrier= this.barrier;
+
+    return new StructureNode(pos, type, barrier);
+  }
 }
 
 class StructureNodeType
 {
-  static StructureNodeType SOURCE_NODE = new StructureNodeType("SOURCE_NODE");
-  static StructureNodeType TARGET_NODE = new StructureNodeType("TARGET_NODE");
-  static StructureNodeType NORMAL_NODE = new StructureNodeType("NORMAL_NODE");
+  static const StructureNodeType SOURCE_NODE = const StructureNodeType("SOURCE_NODE");
+  static const StructureNodeType TARGET_NODE = const StructureNodeType("TARGET_NODE");
+  static const StructureNodeType NORMAL_NODE = const StructureNodeType("NORMAL_NODE");
 
   final String name;
   String toString() => name;
 
-  StructureNodeType(this.name);
+  const StructureNodeType(this.name);
+
+  static const List<StructureNodeType> values = const <StructureNodeType>[
+    SOURCE_NODE, TARGET_NODE, NORMAL_NODE];
 }
 
 class StructureNodeBarrier
 {
+  static const StructureNodeBarrier totalUnblocked = const StructureNodeBarrier(
+      const {
+        Direction.NORTH: false,
+        Direction.NORTH_EAST: false,
+        Direction.EAST: false,
+        Direction.SOUTH_EAST: false,
+        Direction.SOUTH: false,
+        Direction.SOUTH_WEST: false,
+        Direction.WEST: false,
+        Direction.NORTH_WEST: false,
+      });
+  
+  static const StructureNodeBarrier totalBlocked = const StructureNodeBarrier(
+      const {
+        Direction.NORTH: true,
+        Direction.NORTH_EAST: true,
+        Direction.EAST: true,
+        Direction.SOUTH_EAST: true,
+        Direction.SOUTH: true,
+        Direction.SOUTH_WEST: true,
+        Direction.WEST: true,
+        Direction.NORTH_WEST: true,
+      });
+  
   final Map<Direction, bool> blocked;
 
-  StructureNodeBarrier()
-      : blocked = new Map<Direction, bool>.fromIterable(Direction.values,
-      key: (direction) => direction,
-      value: (direction) => true);
+  const StructureNodeBarrier(this.blocked);
+
+  StructureNodeBarrier invert()
+  {
+    if (anyBlocked())
+    {
+      return totalUnblocked;
+    }
+    else
+    {
+      return totalBlocked;
+    }
+  }
+
+  bool anyBlocked() => blocked.values.any((blocked) => blocked);
+
+  String get css
+  {
+    return anyBlocked() ? "totalBlocked" : "totalUnblocked";
+  }
 }

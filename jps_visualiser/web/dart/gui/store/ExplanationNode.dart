@@ -14,7 +14,17 @@ class ExplanationNode
         : marking = ExplanationMarking.Unmarked;
 }
 
-enum ExplanationMarking
+class ExplanationMarking
 {
-  Closed, Open, Unmarked
+  static const ExplanationMarking Closed = const ExplanationMarking("Closed");
+  static const ExplanationMarking Open = const ExplanationMarking("Open");
+  static const ExplanationMarking Unmarked = const ExplanationMarking("Unmarked");
+
+  final String name;
+  String toString() => name;
+
+  const ExplanationMarking(this.name);
+
+  static const List<ExplanationMarking> values = const <ExplanationMarking>[
+    Closed, Open, Unmarked];
 }

@@ -68,10 +68,10 @@ html, body {
 }
 
 .node:hover {
-  background: #80E1F9;
+  filter: brightness(0.5);
 }
 
-.node.blocked, .node:active {
+.node.totalBlocked {
   background: #888;
   border-color: #777 #666 #666 #777;
   animation-name: nodeChange2;
