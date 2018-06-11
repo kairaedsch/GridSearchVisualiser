@@ -1,10 +1,10 @@
 import 'package:over_react/over_react.dart';
 
-abstract class PureUiComponent<T> extends UiComponent<T>
+abstract class PureUiComponent<T extends UiProps> extends UiComponent<T>
 {
   @override
   bool shouldComponentUpdate(Map nextProps, Map nextState)
   {
-    nextProps.map
+    return nextProps.keys.any((key) => nextProps[key] != props.props[key]);
   }
 }

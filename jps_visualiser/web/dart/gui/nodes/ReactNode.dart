@@ -1,3 +1,4 @@
+import '../../general/PureUiComponent.dart';
 import '../store/ExplanationNode.dart';
 import '../store/StoreGrid.dart';
 import '../store/StructureNode.dart';
@@ -15,7 +16,7 @@ class ReactNodeProps extends UiProps
 }
 
 @Component()
-class ReactNodeComponent extends UiComponent<ReactNodeProps>
+class ReactNodeComponent extends PureUiComponent<ReactNodeProps>
 {
   @override
   render()
