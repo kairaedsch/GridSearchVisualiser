@@ -50,6 +50,7 @@ html, body {
   width: var(--node-size);
   height: var(--node-size);
 
+  background: white;
   border: 1px solid;
   border-color: #DDD #BBB #BBB #DDD;
   animation: nodeChange1 0.2s ease-out 1;
@@ -57,13 +58,13 @@ html, body {
 
 @keyframes nodeChange1 {
 0%   {transform: scale(1);}
-50%   {transform: scale(1.25);}
+10%   {transform: scale(1.20);}
 100%   {transform: scale(1);}
 }
 
 @keyframes nodeChange2 {
 0%   {transform: scale(1);}
-50%   {transform: scale(1.25);}
+10%   {transform: scale(1.20);}
 100%   {transform: scale(1);}
 }
 

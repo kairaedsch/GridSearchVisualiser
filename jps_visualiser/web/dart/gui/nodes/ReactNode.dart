@@ -30,11 +30,11 @@ class ReactNodeComponent extends PureUiComponent<ReactNodeProps>
           " ${structureNode.barrier.css}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
-      ..onClick = handleClick
+      ..onMouseDown = handleMouseDown
     )();
   }
 
-  void handleClick(SyntheticMouseEvent event) {
+  void handleMouseDown(SyntheticMouseEvent event) {
     StructureNode structureNode = props.structureNode;
     StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.invert());
     props.actions.structureNodeChanged.call(newStructureNode);
