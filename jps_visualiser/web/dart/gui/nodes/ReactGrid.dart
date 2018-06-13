@@ -1,8 +1,7 @@
 import '../../general/Array2D.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
-import '../store/ExplanationNode.dart';
-import '../store/StructureNode.dart';
+import '../store/StoreNode.dart';
 import '../store/StoreGrid.dart';
 import 'ReactNode.dart';
 import 'package:over_react/over_react.dart';
@@ -20,42 +19,40 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
   @override
   ReactElement render() {
-    Array2D<StructureNode> structureNodes = props.store.structureNodes;
+    Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
     return (
         Dom.div()
           ..className = "grid"
           ..style =
           {
-            "width": "${nodeSize * structureNodes.width}px",
-            "height": "${nodeSize * structureNodes.height}px"
+            "width": "${nodeSize * storeNodes.width}px",
+            "height": "${nodeSize * storeNodes.height}px"
           }
     )(
-        new List<ReactElement>.generate(structureNodes.height, renderRow)
+        new List<ReactElement>.generate(storeNodes.height, renderRow)
     );
   }
 
   ReactElement renderRow(int y) {
-    Array2D<StructureNode> structureNodes = props.store.structureNodes;
+    Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
     return (Dom.div()
       ..className = "row"
       ..key = y
     )(
-        new List<ReactElement>.generate(structureNodes.width, (x) => renderNode(new Position(x, y)))
+        new List<ReactElement>.generate(storeNodes.width, (x) => renderNode(new Position(x, y)))
     );
   }
 
   ReactElement renderNode(Position pos) {
-    StructureNode structureNode = props.store.structureNodes.get(pos);
-    ExplanationNode explanationNode = props.store.explanationNodes.get(pos);
+    StoreNode storeNode = props.store.storeNodes.get(pos);
 
     return (
         ReactNode()
           ..key = pos
-          ..structureNode = structureNode
-          ..explanationNode = explanationNode
-          ..actions = props.actions
+          ..store = storeNode
+          ..actions = storeNode.actions
     )();
   }
 }

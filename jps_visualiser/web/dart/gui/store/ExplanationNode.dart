@@ -11,14 +11,14 @@ class ExplanationNode
   ExplanationNode(this.pos, this.marking);
 
   ExplanationNode.normal(this.pos)
-        : marking = ExplanationMarking.Unmarked;
+        : marking = ExplanationMarking.UNMARKED;
 }
 
 class ExplanationMarking
 {
-  static const ExplanationMarking Closed = const ExplanationMarking("Closed");
-  static const ExplanationMarking Open = const ExplanationMarking("Open");
-  static const ExplanationMarking Unmarked = const ExplanationMarking("Unmarked");
+  static const ExplanationMarking CLOSED = const ExplanationMarking("CLOSED");
+  static const ExplanationMarking OPEN = const ExplanationMarking("OPEN");
+  static const ExplanationMarking UNMARKED = const ExplanationMarking("UNMARKED");
 
   final String name;
   String toString() => name;
@@ -26,5 +26,5 @@ class ExplanationMarking
   const ExplanationMarking(this.name);
 
   static const List<ExplanationMarking> values = const <ExplanationMarking>[
-    Closed, Open, Unmarked];
+    CLOSED, OPEN, UNMARKED];
 }

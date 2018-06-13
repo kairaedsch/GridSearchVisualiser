@@ -1,28 +1,26 @@
-import '../../general/PureUiComponent.dart';
+import '../../general/MouseTracker.dart';
 import '../store/ExplanationNode.dart';
-import '../store/StoreGrid.dart';
+import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'package:over_react/over_react.dart';
+import 'dart:html';
 
 @Factory()
 UiFactory<ReactNodeProps> ReactNode;
 
 @Props()
-class ReactNodeProps extends UiProps
+class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
 {
-  StructureNode structureNode;
-  ExplanationNode explanationNode;
-  ActionsGridChanged actions;
 }
 
 @Component()
-class ReactNodeComponent extends PureUiComponent<ReactNodeProps>
+class ReactNodeComponent extends FluxUiComponent<ReactNodeProps>
 {
   @override
   render()
   {
-    StructureNode structureNode = props.structureNode;
-    ExplanationNode explanationNode = props.explanationNode;
+    StructureNode structureNode = props.store.structureNode;
+    ExplanationNode explanationNode = props.store.explanationNode;
 
     return (Dom.div()
       ..className = "node"
@@ -30,12 +28,22 @@ class ReactNodeComponent extends PureUiComponent<ReactNodeProps>
           " ${structureNode.barrier.css}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
-      ..onMouseDown = handleMouseDown
+      ..onMouseEnter = ((_) => handleMouseEnter())
+      ..onMouseDown = ((_) => changeBarrier())
     )();
   }
 
-  void handleMouseDown(SyntheticMouseEvent event) {
-    StructureNode structureNode = props.structureNode;
+  void handleMouseEnter()
+  {
+    if (MouseTracker.tracker.mouseIsDown)
+    {
+      changeBarrier();
+    }
+  }
+
+  void changeBarrier()
+  {
+    StructureNode structureNode = props.store.structureNode;
     StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.invert());
     props.actions.structureNodeChanged.call(newStructureNode);
   }

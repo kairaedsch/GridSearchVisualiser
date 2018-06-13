@@ -9,11 +9,11 @@ void main() {
   // Initialize React
   over_react.setClientConfiguration();
 
-  var actions = new ActionsGridChanged();
+  StoreGrid storeGrid = new StoreGrid(32, 32);
   react_dom.render(
       (ReactGrid()
-          ..store = new StoreGrid(actions, 32, 32)
-          ..actions = actions
+          ..store = storeGrid
+          ..actions = storeGrid.actions
       )(),
       querySelector('#gridContainer')
   );
