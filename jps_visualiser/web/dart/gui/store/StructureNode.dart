@@ -6,7 +6,9 @@ class StructureNode
   final StructureNodeType type;
 
   final Position pos;
+
   int get x => pos.x;
+
   int get y => pos.y;
 
   final StructureNodeBarrier barrier;
@@ -20,7 +22,7 @@ class StructureNode
   StructureNode clone({StructureNodeType type, StructureNodeBarrier barrier})
   {
     if (type == null) type = this.type;
-    if (barrier == null) barrier= this.barrier;
+    if (barrier == null) barrier = this.barrier;
 
     return new StructureNode(pos, type, barrier);
   }
@@ -33,6 +35,7 @@ class StructureNodeType
   static const StructureNodeType NORMAL_NODE = const StructureNodeType("NORMAL_NODE");
 
   final String name;
+
   String toString() => name;
 
   const StructureNodeType(this.name);
@@ -54,7 +57,7 @@ class StructureNodeBarrier
         Direction.WEST: false,
         Direction.NORTH_WEST: false,
       });
-  
+
   static const StructureNodeBarrier totalBlocked = const StructureNodeBarrier(
       const {
         Direction.NORTH: true,
@@ -66,27 +69,32 @@ class StructureNodeBarrier
         Direction.WEST: true,
         Direction.NORTH_WEST: true,
       });
-  
+
   final Map<Direction, bool> blocked;
 
   const StructureNodeBarrier(this.blocked);
 
-  StructureNodeBarrier invert()
+  bool anyBlocked() => blocked.values.any((blocked) => blocked);
+
+  StructureNodeBarrier toTotal(bool blocked)
   {
     if (anyBlocked())
     {
-      return totalUnblocked;
+      return blocked ? this : totalUnblocked;
     }
     else
     {
-      return totalBlocked;
+      return blocked ? totalBlocked : this;
     }
   }
-
-  bool anyBlocked() => blocked.values.any((blocked) => blocked);
 
   String get css
   {
     return anyBlocked() ? "totalBlocked" : "totalUnblocked";
+  }
+
+  bool isBlocked(Direction direction)
+  {
+    return blocked[direction];
   }
 }

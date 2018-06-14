@@ -17,6 +17,12 @@ class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 @Component()
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
+  bool _easyFillModus = false;
+
+  bool get easyFillModus => _easyFillModus;
+
+  void set easyFillModus(bool value) => _easyFillModus = value;
+
   @override
   ReactElement render() {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
@@ -53,6 +59,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
           ..key = pos
           ..store = storeNode
           ..actions = storeNode.actions
+          ..grid = this
     )();
   }
 }

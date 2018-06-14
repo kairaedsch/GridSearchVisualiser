@@ -44,6 +44,7 @@ html, body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  cursor: pointer;
 }
 
 .grid .row {
@@ -58,27 +59,47 @@ html, body {
   background: white;
   border: 1px solid;
   border-color: #DDD #BBB #BBB #DDD;
-  animation: nodeChange1 0.2s ease-out 1;
+  animation: nodeChange 0.2s ease-out 1;
 }
 
-@keyframes nodeChange1 {
+@keyframes nodeChange {
 0%   {transform: scale(1);}
-10%   {transform: scale(1.20);}
-100%   {transform: scale(1);}
+10%  {transform: scale(1.20);}
+100% {transform: scale(1);}
 }
 
-@keyframes nodeChange2 {
+@keyframes nodeChangeBlocked {
 0%   {transform: scale(1);}
-10%   {transform: scale(1.20);}
-100%   {transform: scale(1);}
+10%  {transform: scale(1.20);}
+100% {transform: scale(1);}
 }
 
-.node:hover {
-  filter: brightness(0.5);
+@keyframes nodeChangeHover {
+0%   {transform: scale(1);}
+10%  {transform: scale(1.20);}
+100% {transform: scale(1);}
 }
 
 .node.totalBlocked {
   background: #888;
   border-color: #777 #666 #666 #777;
-  animation-name: nodeChange2;
+  animation-name: nodeChangeBlocked;
+}
+
+.node:hover, .node.hover {
+  border-color: #666;
+}
+
+.node.totalBlocked:hover, .node.totalBlocked.hover {
+  border-color: #444;
+}
+
+.node .part {
+  width: 33%;
+  height: 33%;
+  float: left;
+}
+
+.node .part.blocked {
+  background: red;
 }

@@ -1,2 +1,2 @@
 
-const int nodeSize = 30;
+  int nodeSize = 30;
