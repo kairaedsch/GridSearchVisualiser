@@ -1,6 +1,6 @@
 import '../../general/Array2D.dart';
 import '../../general/Position.dart';
-import '../../general/Settings.dart';
+import '../../general/Config.dart';
 import '../store/StoreNode.dart';
 import '../store/StoreGrid.dart';
 import 'ReactNode.dart';
@@ -32,8 +32,8 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
           ..className = "grid"
           ..style =
           {
-            "width": "${nodeSize * storeNodes.width}px",
-            "height": "${nodeSize * storeNodes.height}px"
+            "width": "${Config.nodeSize * storeNodes.width}px",
+            "height": "${Config.nodeSize * storeNodes.height}px"
           }
     )(
         new List<ReactElement>.generate(storeNodes.height, renderRow)

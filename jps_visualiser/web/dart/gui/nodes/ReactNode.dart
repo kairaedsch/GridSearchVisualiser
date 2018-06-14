@@ -39,8 +39,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
     return (Dom.div()
       ..className = "node"
-          " ${structureNode.pos.css}"
-          " ${structureNode.barrier.css}"
+          " ${"pos_x_${structureNode.pos.x} pos_y_${structureNode.pos.y}"}"
+          " ${structureNode.barrier.isAllBlocked() ? "totalBlocked" : "totalUnblocked"}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
           " ${state.mouseIsOver ? "hover" : ""}"

@@ -1,3 +1,4 @@
+import '../../general/Config.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 
@@ -74,11 +75,13 @@ class StructureNodeBarrier
 
   const StructureNodeBarrier(this.blocked);
 
-  bool anyBlocked() => blocked.values.any((blocked) => blocked);
+  bool isAllBlocked() => (Config.gridMode == GridMode.BASIC && isAnyBlocked()) || blocked.values.every((blocked) => blocked);
 
-  StructureNodeBarrier toTotal(bool blocked)
+  bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
+
+  StructureNodeBarrier transform(Direction direction, bool blocked)
   {
-    if (anyBlocked())
+    if (isAnyBlocked())
     {
       return blocked ? this : totalUnblocked;
     }
@@ -86,11 +89,6 @@ class StructureNodeBarrier
     {
       return blocked ? totalBlocked : this;
     }
-  }
-
-  String get css
-  {
-    return anyBlocked() ? "totalBlocked" : "totalUnblocked";
   }
 
   bool isBlocked(Direction direction)
