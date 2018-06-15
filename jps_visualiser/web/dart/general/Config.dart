@@ -1,7 +1,7 @@
 
 class Config
 {
-  static final int nodeSize = 30;
+  static final int nodeSize = 50;
   static GridMode gridMode = GridMode.BASIC;
 }
 

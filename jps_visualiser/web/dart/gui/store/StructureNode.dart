@@ -75,19 +75,27 @@ class StructureNodeBarrier
 
   const StructureNodeBarrier(this.blocked);
 
-  bool isAllBlocked() => (Config.gridMode == GridMode.BASIC && isAnyBlocked()) || blocked.values.every((blocked) => blocked);
+  StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, Direction directionToTransform)
+      : blocked = new Map<Direction, bool>.fromIterable(barrier.blocked.keys,
+      key: (direction) => direction,
+      value: (direction) => direction == directionToTransform ? !barrier.blocked[direction] : barrier.blocked[direction]);
 
   bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
 
-  StructureNodeBarrier transform(Direction direction, bool blocked)
+  StructureNodeBarrier transform(Direction direction)
+  {
+    return new StructureNodeBarrier.cloneAndTransform(this, direction);
+  }
+
+  StructureNodeBarrier transformToTotal(bool shouldBecomeBlocked)
   {
     if (isAnyBlocked())
     {
-      return blocked ? this : totalUnblocked;
+      return shouldBecomeBlocked ? this : totalUnblocked;
     }
     else
     {
-      return blocked ? totalBlocked : this;
+      return shouldBecomeBlocked ? totalBlocked : this;
     }
   }
 

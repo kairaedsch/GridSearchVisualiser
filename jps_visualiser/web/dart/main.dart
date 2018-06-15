@@ -9,7 +9,7 @@ void main() {
   // Initialize React
   over_react.setClientConfiguration();
 
-  StoreGrid storeGrid = new StoreGrid(32, 32);
+  StoreGrid storeGrid = new StoreGrid(16, 16);
   react_dom.render(
       (ReactGrid()
           ..store = storeGrid

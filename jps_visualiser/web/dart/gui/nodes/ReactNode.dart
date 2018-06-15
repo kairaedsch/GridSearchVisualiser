@@ -1,9 +1,11 @@
+import '../../general/Config.dart';
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../store/ExplanationNode.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'ReactGrid.dart';
+import 'ReactNodePart.dart';
 import 'package:over_react/over_react.dart';
 import 'dart:html';
 
@@ -40,7 +42,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return (Dom.div()
       ..className = "node"
           " ${"pos_x_${structureNode.pos.x} pos_y_${structureNode.pos.y}"}"
-          " ${structureNode.barrier.isAllBlocked() ? "totalBlocked" : "totalUnblocked"}"
+          " ${Config.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
           " ${state.mouseIsOver ? "hover" : ""}"
@@ -58,19 +60,6 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         renderInner(Direction.SOUTH),
         renderInner(Direction.SOUTH_EAST),
     );
-  }
-
-  ReactElement renderInner(Direction direction)
-  {
-    StructureNode structureNode = props.store.structureNode;
-    ExplanationNode explanationNode = props.store.explanationNode;
-
-    return (Dom.div()
-      ..key = direction
-      ..className = "part outer"
-          " ${direction.name}"
-          " ${structureNode.barrier.isBlocked(direction) ? "blocked" : "unblocked"}"
-    )();
   }
 
   void handleMouseEnter()
@@ -93,14 +82,31 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   void handleMouseDown()
   {
     StructureNode structureNode = props.store.structureNode;
-    props.grid.easyFillModus = !structureNode.barrier.anyBlocked();
+    props.grid.easyFillModus = !structureNode.barrier.isAnyBlocked();
     changeBarrier();
   }
 
   void changeBarrier()
   {
+    if (Config.gridMode == GridMode.BASIC)
+    {
+      StructureNode structureNode = props.store.structureNode;
+      StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformToTotal(props.grid.easyFillModus));
+      props.actions.structureNodeChanged.call(newStructureNode);
+    }
+  }
+
+  ReactElement renderInner(Direction direction)
+  {
     StructureNode structureNode = props.store.structureNode;
-    StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.toTotal(props.grid.easyFillModus));
-    props.actions.structureNodeChanged.call(newStructureNode);
+    ExplanationNode explanationNode = props.store.explanationNode;
+
+    return (ReactNodePart()
+      ..key = direction
+      ..structureNode = structureNode
+      ..explanationNode = explanationNode
+      ..direction = direction
+      ..actions = props.actions
+    )();
   }
 }

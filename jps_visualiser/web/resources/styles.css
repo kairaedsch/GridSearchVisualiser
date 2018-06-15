@@ -1,7 +1,9 @@
 @import url('fonts/openSans.css');
 
 :root {
-  --node-size: 30px;
+  --node-size: 50px;
+  --node-part-height: 10px;
+  --node-part-shadow: 14px;
 }
 
 *, *:before, *:after {
@@ -53,31 +55,17 @@ html, body {
 
 .node {
   float: left;
-  width: var(--node-size);
-  height: var(--node-size);
+  width: calc(var(--node-size) + 2px);
+  height: calc(var(--node-size) + 2px);
 
-  background: white;
   border: 1px solid;
   border-color: #DDD #BBB #BBB #DDD;
   animation: nodeChange 0.2s ease-out 1;
+  margin: -1px;
 }
 
-@keyframes nodeChange {
-0%   {transform: scale(1);}
-10%  {transform: scale(1.20);}
-100% {transform: scale(1);}
-}
-
-@keyframes nodeChangeBlocked {
-0%   {transform: scale(1);}
-10%  {transform: scale(1.20);}
-100% {transform: scale(1);}
-}
-
-@keyframes nodeChangeHover {
-0%   {transform: scale(1);}
-10%  {transform: scale(1.20);}
-100% {transform: scale(1);}
+.node.totalUnblocked {
+  background: white;
 }
 
 .node.totalBlocked {
@@ -87,19 +75,40 @@ html, body {
 }
 
 .node:hover, .node.hover {
-  border-color: #666;
+  border-color: #0095FF;
 }
 
-.node.totalBlocked:hover, .node.totalBlocked.hover {
-  border-color: #444;
+@keyframes nodeChange {
+  0%   {transform: scale(1);}
+  10%  {transform: scale(1.20);}
+  100% {transform: scale(1);}
+}
+
+@keyframes nodeChangeBlocked {
+  0%   {transform: scale(1);}
+  10%  {transform: scale(1.20);}
+  100% {transform: scale(1);}
 }
 
 .node .part {
   width: 33%;
   height: 33%;
   float: left;
+
+  transition: all 0.2s ease-out;
+  transition-property: box-shadow, transform, background;
+}
+
+.node .part:hover {
+  background: rgba(0, 149, 255, 0.75);
+
+  transition-property: box-shadow, transform;
 }
 
 .node .part.blocked {
-  background: red;
+  box-shadow: 0 var(--node-part-height) 0 #0060A5, calc(var(--node-part-shadow) * 0.9) var(--node-part-shadow) var(--node-part-shadow) calc(var(--node-part-shadow) * 0.5) rgba(175, 175, 175, 0.50);
+  transform: translateY(calc(-1 * var(--node-part-height)));
+  background: #0095FF;
+  border: 1px solid #8ED0FF;
+  transition-property: box-shadow, transform;
 }
