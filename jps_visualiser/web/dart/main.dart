@@ -1,20 +1,20 @@
 import 'dart:html';
 
-import 'gui/store/StoreGrid.dart';
+import 'gui/store/StoreConfig.dart';
 import 'package:over_react/react_dom.dart' as react_dom;
 import 'package:over_react/over_react.dart' as over_react;
-import 'gui/nodes/ReactGrid.dart';
+import 'gui/ReactMain.dart';
 
 void main() {
   // Initialize React
   over_react.setClientConfiguration();
 
-  StoreGrid storeGrid = new StoreGrid(16, 16);
+  StoreConfig storeConfig = new StoreConfig();
   react_dom.render(
-      (ReactGrid()
-          ..store = storeGrid
-          ..actions = storeGrid.actions
+      (ReactMain()
+          ..store = storeConfig
+          ..actions = storeConfig.actions
       )(),
-      querySelector('#gridContainer')
+      querySelector('#contentContainer')
   );
 }

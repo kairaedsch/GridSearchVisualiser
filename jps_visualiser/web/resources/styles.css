@@ -55,26 +55,22 @@ html, body {
 
 .node {
   float: left;
-  width: calc(var(--node-size) + 2px);
-  height: calc(var(--node-size) + 2px);
+  width: var(--node-size);
+  height: var(--node-size);
 
+  background: white;
   border: 1px solid;
   border-color: #DDD #BBB #BBB #DDD;
   animation: nodeChange 0.2s ease-out 1;
-  margin: -1px;
 }
 
-.node.totalUnblocked {
-  background: white;
-}
-
-.node.totalBlocked {
+.grid.BASIC .node.totalBlocked {
   background: #888;
   border-color: #777 #666 #666 #777;
   animation-name: nodeChangeBlocked;
 }
 
-.node:hover, .node.hover {
+.grid.BASIC .node:hover, .node.hover {
   border-color: #0095FF;
 }
 
@@ -90,25 +86,17 @@ html, body {
   100% {transform: scale(1);}
 }
 
-.node .part {
+.grid.ADVANCED .node .part {
   width: 33%;
   height: 33%;
   float: left;
-
-  transition: all 0.2s ease-out;
-  transition-property: box-shadow, transform, background;
 }
 
-.node .part:hover {
+.grid.ADVANCED .node .part:hover {
   background: rgba(0, 149, 255, 0.75);
-
-  transition-property: box-shadow, transform;
 }
 
-.node .part.blocked {
-  box-shadow: 0 var(--node-part-height) 0 #0060A5, calc(var(--node-part-shadow) * 0.9) var(--node-part-shadow) var(--node-part-shadow) calc(var(--node-part-shadow) * 0.5) rgba(175, 175, 175, 0.50);
-  transform: translateY(calc(-1 * var(--node-part-height)));
+.grid.ADVANCED .node .part.blocked {
   background: #0095FF;
   border: 1px solid #8ED0FF;
-  transition-property: box-shadow, transform;
 }

@@ -1,6 +1,7 @@
 import '../../general/Array2D.dart';
 import '../../general/Position.dart';
-import '../../general/Config.dart';
+import '../../general/Settings.dart';
+import '../store/StoreConfig.dart';
 import '../store/StoreNode.dart';
 import '../store/StoreGrid.dart';
 import 'ReactNode.dart';
@@ -12,6 +13,7 @@ UiFactory<ReactGridProps> ReactGrid;
 @Props()
 class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 {
+  StoreConfig storeConfig;
 }
 
 @Component()
@@ -30,10 +32,11 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     return (
         Dom.div()
           ..className = "grid"
+            " ${props.storeConfig.gridMode.name}"
           ..style =
           {
-            "width": "${Config.nodeSize * storeNodes.width}px",
-            "height": "${Config.nodeSize * storeNodes.height}px"
+            "width": "${Settings.nodeSize * storeNodes.width}px",
+            "height": "${Settings.nodeSize * storeNodes.height}px"
           }
     )(
         new List<ReactElement>.generate(storeNodes.height, renderRow)
@@ -57,6 +60,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     return (
         ReactNode()
           ..key = pos
+          ..storeConfig = props.storeConfig
           ..store = storeNode
           ..actions = storeNode.actions
           ..grid = this

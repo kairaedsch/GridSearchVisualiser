@@ -1,4 +1,4 @@
-import '../../general/Config.dart';
+import '../../general/Settings.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 
