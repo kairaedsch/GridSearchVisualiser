@@ -96,7 +96,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       renderInnerPart(Direction.NORTH),
       renderInnerPart(Direction.NORTH_EAST),
       renderInnerPart(Direction.WEST),
-      (Dom.div()..className = "part inner")(),
+      (Dom.div()..className = "fakepart")(),
       renderInnerPart(Direction.EAST),
       renderInnerPart(Direction.SOUTH_WEST),
       renderInnerPart(Direction.SOUTH),
@@ -116,6 +116,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..explanationNode = explanationNode
       ..direction = direction
       ..actions = props.actions
+      ..grid = props.grid
     )();
   }
 }

@@ -1,4 +1,3 @@
-import '../../general/Settings.dart';
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../store/ExplanationNode.dart';
@@ -7,7 +6,6 @@ import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
-import 'dart:html';
 
 @Factory()
 UiFactory<ReactNodePartProps> ReactNodePart;
@@ -20,6 +18,7 @@ class ReactNodePartProps extends UiProps
   ExplanationNode explanationNode;
   Direction direction;
   ActionsNodeChanged actions;
+  ReactGridComponent grid;
 }
 
 @State()
@@ -56,25 +55,34 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
   {
     if (MouseTracker.tracker.mouseIsDown)
     {
-      handleMouseDownOnPart();
+      changePart();
     }
     setState(newState()
       ..mouseIsOver = true
     );
   }
 
-  handleMouseLeave() {
+  void handleMouseLeave() {
     setState(newState()
       ..mouseIsOver = false
     );
   }
 
-  handleMouseDownOnPart()
+  void handleMouseDownOnPart()
+  {
+    StructureNode structureNode = props.structureNode;
+    Direction direction = props.direction;
+    props.grid.easyFillModus = !structureNode.barrier.isBlocked(direction);
+
+    changePart();
+  }
+
+  void changePart()
   {
     Direction direction = props.direction;
     StructureNode structureNode = props.structureNode;
 
-    StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transform(direction));
+    StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformTo(direction, props.grid.easyFillModus));
     props.actions.structureNodeChanged.call(newStructureNode);
   }
 }

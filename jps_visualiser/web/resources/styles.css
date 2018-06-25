@@ -86,7 +86,7 @@ html, body {
   100% {transform: scale(1);}
 }
 
-.grid.ADVANCED .node .part {
+.grid.ADVANCED .node .part, .grid.ADVANCED .node .fakepart {
   width: 33%;
   height: 33%;
   float: left;

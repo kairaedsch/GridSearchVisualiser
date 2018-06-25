@@ -2,7 +2,6 @@ import '../../general/Array2D.dart';
 import '../../general/Position.dart';
 import 'StoreNode.dart';
 import 'package:w_flux/w_flux.dart';
-import 'package:tuple/tuple.dart';
 
 class StoreGrid extends Store
 {

@@ -1,4 +1,3 @@
-import '../../general/Array2D.dart';
 import '../../general/Position.dart';
 import 'ExplanationNode.dart';
 import 'StructureNode.dart';

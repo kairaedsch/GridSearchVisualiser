@@ -1,4 +1,3 @@
-import '../../general/Settings.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 
@@ -75,16 +74,16 @@ class StructureNodeBarrier
 
   const StructureNodeBarrier(this.blocked);
 
-  StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, Direction directionToTransform)
+  StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, Direction directionToTransform, bool shouldBecomeBlocked)
       : blocked = new Map<Direction, bool>.fromIterable(barrier.blocked.keys,
       key: (direction) => direction,
-      value: (direction) => direction == directionToTransform ? !barrier.blocked[direction] : barrier.blocked[direction]);
+      value: (direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
 
   bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
 
-  StructureNodeBarrier transform(Direction direction)
+  StructureNodeBarrier transformTo(Direction directionToTransform, bool shouldBecomeBlocked)
   {
-    return new StructureNodeBarrier.cloneAndTransform(this, direction);
+    return new StructureNodeBarrier.cloneAndTransform(this, directionToTransform, shouldBecomeBlocked);
   }
 
   StructureNodeBarrier transformToTotal(bool shouldBecomeBlocked)
