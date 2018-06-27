@@ -4,6 +4,7 @@ import '../store/ExplanationNode.dart';
 import '../store/StoreConfig.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
+import 'MouseMode.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 
@@ -42,20 +43,24 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
     StructureNode structureNode = props.structureNode;
 
     return (Dom.div()
-      ..className = "part outer"
+      ..className = "part"
           " ${direction.name}"
           " ${structureNode.barrier.isBlocked(direction) ? "blocked" : "unblocked"}"
+      ..onMouseDown = ((_) => handleMouseDown())
       ..onMouseEnter = ((_) => handleMouseEnter())
       ..onMouseLeave = ((_) => handleMouseLeave())
-      ..onMouseDown = ((_) => handleMouseDownOnPart())
     )();
+  }
+
+  void handleMouseDown() {
+    triggerMouseMode();
   }
 
   void handleMouseEnter()
   {
     if (MouseTracker.tracker.mouseIsDown)
     {
-      changePart();
+      triggerMouseMode();
     }
     setState(newState()
       ..mouseIsOver = true
@@ -68,21 +73,8 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
     );
   }
 
-  void handleMouseDownOnPart()
-  {
-    StructureNode structureNode = props.structureNode;
-    Direction direction = props.direction;
-    props.grid.easyFillModus = !structureNode.barrier.isBlocked(direction);
-
-    changePart();
-  }
-
-  void changePart()
-  {
-    Direction direction = props.direction;
-    StructureNode structureNode = props.structureNode;
-
-    StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformTo(direction, props.grid.easyFillModus));
-    props.actions.structureNodeChanged.call(newStructureNode);
+  void triggerMouseMode() {
+    MouseMode mouseMode = props.grid.updateMouseMode(props.structureNode);
+    mouseMode.evaluateNodePart(props.structureNode.pos, props.direction);
   }
 }

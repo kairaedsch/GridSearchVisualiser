@@ -4,6 +4,7 @@ import '../store/ExplanationNode.dart';
 import '../store/StoreConfig.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
+import 'MouseMode.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'package:over_react/over_react.dart';
@@ -22,6 +23,7 @@ class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
 class ReactNodeState extends UiState
 {
   bool mouseIsOver;
+  bool mouseIsDown;
 }
 
 @Component()
@@ -31,6 +33,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   Map getInitialState() =>
       (newState()
         ..mouseIsOver = false
+        ..mouseIsDown = false
       );
 
   @override
@@ -46,11 +49,27 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
           " ${state.mouseIsOver ? "hover" : ""}"
+          " ${state.mouseIsDown ? "mouseDown" : ""}"
+      ..onMouseDown = ((_) => handleMouseDown())
+      ..onMouseUp = ((_) => handleMouseUp())
       ..onMouseEnter = ((_) => handleMouseEnter())
       ..onMouseLeave = ((_) => handleMouseLeave())
-      ..onMouseDown = ((_) => handleMouseDown())
     )(
         renderInner()
+    );
+  }
+
+  void handleMouseDown()
+  {
+    setState(newState()
+      ..mouseIsDown = true
+    );
+    triggerMouseMode();
+  }
+
+  void handleMouseUp() {
+    setState(newState()
+      ..mouseIsDown = false
     );
   }
 
@@ -58,34 +77,24 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   {
     if (MouseTracker.tracker.mouseIsDown)
     {
-      changeBarrier();
+      triggerMouseMode();
     }
     setState(newState()
       ..mouseIsOver = true
+      ..mouseIsDown = MouseTracker.tracker.mouseIsDown
     );
   }
 
-  handleMouseLeave() {
+  void handleMouseLeave() {
     setState(newState()
       ..mouseIsOver = false
+      ..mouseIsDown = false
     );
   }
 
-  void handleMouseDown()
-  {
-    StructureNode structureNode = props.store.structureNode;
-    props.grid.easyFillModus = !structureNode.barrier.isAnyBlocked();
-    changeBarrier();
-  }
-
-  void changeBarrier()
-  {
-    if (props.storeConfig.gridMode == GridMode.BASIC)
-    {
-      StructureNode structureNode = props.store.structureNode;
-      StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformToTotal(props.grid.easyFillModus));
-      props.actions.structureNodeChanged.call(newStructureNode);
-    }
+  void triggerMouseMode() {
+    MouseMode mouseMode = props.grid.updateMouseMode(props.store.structureNode);
+    mouseMode.evaluateNode(props.store.structureNode.pos);
   }
 
   List<ReactElement> renderInner()
@@ -96,7 +105,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       renderInnerPart(Direction.NORTH),
       renderInnerPart(Direction.NORTH_EAST),
       renderInnerPart(Direction.WEST),
-      (Dom.div()..className = "fakepart")(),
+      (Dom.div()..className = "innerpart")(),
       renderInnerPart(Direction.EAST),
       renderInnerPart(Direction.SOUTH_WEST),
       renderInnerPart(Direction.SOUTH),

@@ -1,9 +1,12 @@
 @import url('fonts/openSans.css');
 
 :root {
-  --node-size: 50px;
+  --node-size: 62px;
   --node-part-height: 10px;
   --node-part-shadow: 14px;
+  --color-main: #0095FF;
+  --color-main-dark: #005a9b;
+  --color-main-light: #5bbaff;
 }
 
 *, *:before, *:after {
@@ -23,7 +26,7 @@ html, body {
 }
 
 #content {
-  background: deepskyblue;
+
 }
 
 #leftContent, #rightContent {
@@ -34,9 +37,11 @@ html, body {
 }
 
 #leftContent {
+
 }
 
 #rightContent {
+
 }
 
 .grid {
@@ -46,7 +51,6 @@ html, body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  cursor: pointer;
 }
 
 .grid .row {
@@ -58,9 +62,10 @@ html, body {
   width: var(--node-size);
   height: var(--node-size);
 
+  cursor: pointer;
   background: white;
   border: 1px solid;
-  border-color: #DDD #BBB #BBB #DDD;
+  border-color: #EEE #DDD #DDD #EEE;
   animation: nodeChange 0.2s ease-out 1;
 }
 
@@ -71,7 +76,35 @@ html, body {
 }
 
 .grid.BASIC .node:hover, .node.hover {
-  border-color: #0095FF;
+  border-color: var(--color-main-light) var(--color-main) var(--color-main) var(--color-main-light);
+}
+
+.grid .node.SOURCE_NODE, .grid .node.TARGET_NODE {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.grid .node.SOURCE_NODE.mouseDown, .grid .node.TARGET_NODE.mouseDown {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.grid.ADVANCED .node.SOURCE_NODE.hover {
+  border-color: #2cdf3b #2AB936 #2AB936 #2cdf3b;
+}
+
+.grid.ADVANCED .node.TARGET_NODE.hover {
+  border-color: #e43321 #b9291b #b9291b #e43321;
+}
+
+.grid.BASIC .node.SOURCE_NODE {
+  background: #2AB936;
+  border-color: #2cdf3b #2AB936 #2AB936 #2cdf3b;
+}
+
+.grid.BASIC .node.TARGET_NODE {
+  background: #b9291b;
+  border-color: #e43321 #b9291b #b9291b #e43321;
 }
 
 @keyframes nodeChange {
@@ -86,17 +119,82 @@ html, body {
   100% {transform: scale(1);}
 }
 
-.grid.ADVANCED .node .part, .grid.ADVANCED .node .fakepart {
-  width: 33%;
-  height: 33%;
+.grid.ADVANCED .node .part, .grid.ADVANCED .node .innerpart {
+  width: calc(100%/3 - 2px);
+  height: calc(100%/3 - 2px);
   float: left;
+  margin: 1px;
+}
+
+.grid.ADVANCED .node .part {
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0;
+}
+
+.grid.ADVANCED .node .part.NORTH {
+  background-image: url("images/nodePartNorth.svg");
+}
+
+.grid.ADVANCED .node .part.NORTH_EAST {
+  background-image: url("images/nodePartNorthEast.svg");
+}
+
+.grid.ADVANCED .node .part.EAST {
+  background-image: url("images/nodePartNorth.svg");
+  transform: rotate(90deg);
+}
+
+.grid.ADVANCED .node .part.SOUTH_EAST {
+  background-image: url("images/nodePartNorthEast.svg");
+  transform: rotate(90deg);
+}
+
+.grid.ADVANCED .node .part.SOUTH {
+  background-image: url("images/nodePartNorth.svg");
+  transform: rotate(180deg);
+}
+
+.grid.ADVANCED .node .part.SOUTH_WEST {
+  background-image: url("images/nodePartNorthEast.svg");
+  transform: rotate(180deg);
+}
+
+.grid.ADVANCED .node .part.WEST {
+  background-image: url("images/nodePartNorth.svg");
+  transform: rotate(270deg);
+}
+
+.grid.ADVANCED .node .part.NORTH_WEST {
+  background-image: url("images/nodePartNorthEast.svg");
+  transform: rotate(270deg);
 }
 
 .grid.ADVANCED .node .part:hover {
-  background: rgba(0, 149, 255, 0.75);
+  opacity: 0.5;
+  animation: nodeHover 1s linear infinite;
+}
+
+@keyframes nodeHover {
+  0%   {opacity: 0.8;}
+  25%  {opacity: 0.8;}
+  50%  {opacity: 0.2;}
+  75%  {opacity: 0.8;}
+  100% {opacity: 0.8;}
 }
 
 .grid.ADVANCED .node .part.blocked {
-  background: #0095FF;
-  border: 1px solid #8ED0FF;
+  opacity: 1;
+}
+
+.grid .node.SOURCE_NODE .innerpart, .grid .node.TARGET_NODE .innerpart {
+  border-radius: 100%;
+}
+
+.grid .node.SOURCE_NODE .innerpart {
+  background: #2AB936;
+}
+
+.grid .node.TARGET_NODE .innerpart {
+  background: #b9291b;
 }

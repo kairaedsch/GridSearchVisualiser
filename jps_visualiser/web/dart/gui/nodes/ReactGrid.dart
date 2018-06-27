@@ -4,8 +4,15 @@ import '../../general/Settings.dart';
 import '../store/StoreConfig.dart';
 import '../store/StoreNode.dart';
 import '../store/StoreGrid.dart';
+import '../store/StructureNode.dart';
+import 'EditBarrierMouseMode.dart';
+import 'EditNodeTypeMouseMode.dart';
+import 'MouseMode.dart';
 import 'ReactNode.dart';
+import 'dart:async';
+import 'dart:html';
 import 'package:over_react/over_react.dart';
+import 'package:quiver/core.dart';
 
 @Factory()
 UiFactory<ReactGridProps> ReactGrid;
@@ -19,20 +26,24 @@ class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 @Component()
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
-  bool _easyFillModus = false;
+  Optional<MouseMode> _mouseMode;
+  StreamSubscription onDocumentMouseUpListener;
 
-  bool get easyFillModus => _easyFillModus;
-
-  void set easyFillModus(bool value) => _easyFillModus = value;
+  ReactGridComponent()
+  {
+    _mouseMode = const Optional.absent();
+    onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
+  }
 
   @override
-  ReactElement render() {
+  ReactElement render()
+  {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
     return (
         Dom.div()
           ..className = "grid"
-            " ${props.storeConfig.gridMode.name}"
+              " ${props.storeConfig.gridMode.name}"
           ..style =
           {
             "width": "${Settings.nodeSize * storeNodes.width}px",
@@ -43,7 +54,8 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     );
   }
 
-  ReactElement renderRow(int y) {
+  ReactElement renderRow(int y)
+  {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
     return (Dom.div()
@@ -54,7 +66,8 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     );
   }
 
-  ReactElement renderNode(Position pos) {
+  ReactElement renderNode(Position pos)
+  {
     StoreNode storeNode = props.store.storeNodes.get(pos);
 
     return (
@@ -65,5 +78,28 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
           ..actions = storeNode.actions
           ..grid = this
     )();
+  }
+
+  MouseMode updateMouseMode(StructureNode structureNode)
+  {
+    _mouseMode.ifAbsent(()
+    {
+      if (structureNode.type != StructureNodeType.NORMAL_NODE)
+      {
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.pos));
+      }
+      else
+      {
+        _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
+      }
+    });
+
+    return _mouseMode.value;
+  }
+
+  void componentWillUnmount()
+  {
+    componentWillUnmount();
+    onDocumentMouseUpListener.cancel();
   }
 }
