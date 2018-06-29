@@ -1,4 +1,5 @@
 import '../../general/Array2D.dart';
+import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
 import '../store/StoreConfig.dart';
@@ -50,11 +51,11 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
             "height": "${Settings.nodeSize * storeNodes.height}px"
           }
     )(
-        new List<ReactElement>.generate(storeNodes.height, renderRow)
+        new List<ReactElement>.generate(storeNodes.height, _renderRow)
     );
   }
 
-  ReactElement renderRow(int y)
+  ReactElement _renderRow(int y)
   {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
@@ -62,11 +63,11 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
       ..className = "row"
       ..key = y
     )(
-        new List<ReactElement>.generate(storeNodes.width, (x) => renderNode(new Position(x, y)))
+        new List<ReactElement>.generate(storeNodes.width, (x) => _renderNode(new Position(x, y)))
     );
   }
 
-  ReactElement renderNode(Position pos)
+  ReactElement _renderNode(Position pos)
   {
     StoreNode storeNode = props.store.storeNodes.get(pos);
 
@@ -80,9 +81,9 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     )();
   }
 
-  MouseMode updateMouseMode(StructureNode structureNode)
+  void updateMouseModeFromNode(StructureNode structureNode)
   {
-    _mouseMode.ifAbsent(()
+    if (props.storeConfig.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
       if (structureNode.type != StructureNodeType.NORMAL_NODE)
       {
@@ -92,9 +93,24 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
-    });
+    }
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(structureNode.pos));
+  }
 
-    return _mouseMode.value;
+void updateMouseModeFromNodePart(StructureNode structureNode, {Direction direction})
+  {
+    if (props.storeConfig.gridMode == GridMode.ADVANCED && _mouseMode.isEmpty)
+    {
+      if (structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
+      {
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.pos));
+      }
+      else if(direction != null)
+      {
+        _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
+      }
+    }
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(structureNode.pos, direction: direction));
   }
 
   void componentWillUnmount()

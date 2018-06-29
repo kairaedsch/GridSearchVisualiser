@@ -2,6 +2,7 @@ import 'package:over_react/over_react.dart';
 import 'store/StoreConfig.dart';
 import 'store/StoreGrid.dart';
 import 'nodes/ReactGrid.dart';
+import 'menu/ReactMenu.dart';
 
 @Factory()
 UiFactory<ReactMainProps> ReactMain;
@@ -9,6 +10,7 @@ UiFactory<ReactMainProps> ReactMain;
 @Props()
 class ReactMainProps extends FluxUiProps<ActionsConfigChanged, StoreConfig>
 {
+  StoreGrid storeGrid;
 }
 
 @Component()
@@ -16,7 +18,7 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
 {
   @override
   render() {
-    StoreGrid storeGrid = new StoreGrid(props.store.size.item1, props.store.size.item2);
+    StoreGrid storeGrid = props.storeGrid;
 
     return (
     Dom.div()..id = "content")(
@@ -28,7 +30,11 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
         )()
       ),
       (Dom.div()..id = "rightContent")(
-        (Dom.div()..className = "menuContainer")(),
+        (Dom.div()..className = "menuContainer")(
+            (ReactMenu()
+              ..storeConfig = props.store
+            )()
+        ),
         (Dom.div()..className = "stepsContainer")()
       )
     );

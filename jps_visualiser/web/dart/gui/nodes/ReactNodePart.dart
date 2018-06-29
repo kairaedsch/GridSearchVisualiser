@@ -7,6 +7,7 @@ import '../store/StructureNode.dart';
 import 'MouseMode.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
+import 'package:quiver/core.dart';
 
 @Factory()
 UiFactory<ReactNodePartProps> ReactNodePart;
@@ -17,7 +18,7 @@ class ReactNodePartProps extends UiProps
   StoreConfig storeConfig;
   StructureNode structureNode;
   ExplanationNode explanationNode;
-  Direction direction;
+  Optional<Direction> direction;
   ActionsNodeChanged actions;
   ReactGridComponent grid;
 }
@@ -39,42 +40,49 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
 
   ReactElement render()
   {
-    Direction direction = props.direction;
+    Optional<Direction> direction = props.direction;
     StructureNode structureNode = props.structureNode;
 
     return (Dom.div()
-      ..className = "part"
-          " ${direction.name}"
-          " ${structureNode.barrier.isBlocked(direction) ? "blocked" : "unblocked"}"
-      ..onMouseDown = ((_) => handleMouseDown())
-      ..onMouseEnter = ((_) => handleMouseEnter())
-      ..onMouseLeave = ((_) => handleMouseLeave())
+      ..className =
+          direction.isEmpty ?
+          (
+              "innerpart"
+          )
+              :
+          (
+            "part"
+            " ${direction.value.name}"
+            " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
+          )
+      ..onMouseDown = ((_) => _handleMouseDown())
+      ..onMouseEnter = ((_) => _handleMouseEnter())
+      ..onMouseLeave = ((_) => _handleMouseLeave())
     )();
   }
 
-  void handleMouseDown() {
-    triggerMouseMode();
+  void _handleMouseDown() {
+    _triggerMouseMode();
   }
 
-  void handleMouseEnter()
+  void _handleMouseEnter()
   {
     if (MouseTracker.tracker.mouseIsDown)
     {
-      triggerMouseMode();
+      _triggerMouseMode();
     }
     setState(newState()
       ..mouseIsOver = true
     );
   }
 
-  void handleMouseLeave() {
+  void _handleMouseLeave() {
     setState(newState()
       ..mouseIsOver = false
     );
   }
 
-  void triggerMouseMode() {
-    MouseMode mouseMode = props.grid.updateMouseMode(props.structureNode);
-    mouseMode.evaluateNodePart(props.structureNode.pos, props.direction);
+  void _triggerMouseMode() {
+    props.grid.updateMouseModeFromNodePart(props.structureNode, direction: props.direction.orNull);
   }
 }

@@ -5,7 +5,7 @@
   --node-part-height: 10px;
   --node-part-shadow: 14px;
   --color-main: #0095FF;
-  --color-main-dark: #005a9b;
+  --color-main-dark: #007ce6;
   --color-main-light: #5bbaff;
 }
 
@@ -41,7 +41,8 @@ html, body {
 }
 
 #rightContent {
-
+  background: var(--color-main);
+  padding: 10px;
 }
 
 .grid {
@@ -62,49 +63,36 @@ html, body {
   width: var(--node-size);
   height: var(--node-size);
 
-  cursor: pointer;
   background: white;
   border: 1px solid;
-  border-color: #EEE #DDD #DDD #EEE;
+  border-color: #EEE;
   animation: nodeChange 0.2s ease-out 1;
 }
 
 .grid.BASIC .node.totalBlocked {
-  background: #888;
-  border-color: #777 #666 #666 #777;
+  background: var(--color-main);
+  border-color: var(--color-main-dark);
   animation-name: nodeChangeBlocked;
 }
 
 .grid.BASIC .node:hover, .node.hover {
-  border-color: var(--color-main-light) var(--color-main) var(--color-main) var(--color-main-light);
+  border-color: var(--color-main-light);
 }
 
-.grid .node.SOURCE_NODE, .grid .node.TARGET_NODE {
-  cursor: -webkit-grab;
-  cursor: grab;
+.grid.BASIC .node {
+  cursor: pointer;
 }
 
-.grid .node.SOURCE_NODE.mouseDown, .grid .node.TARGET_NODE.mouseDown {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
+.grid.BASIC .node.SOURCE_NODE, .grid.BASIC .node.TARGET_NODE {
+  cursor: move;
 }
 
-.grid.ADVANCED .node.SOURCE_NODE.hover {
-  border-color: #2cdf3b #2AB936 #2AB936 #2cdf3b;
+.grid .node.SOURCE_NODE.hover {
+  border-color: #2AB936;
 }
 
-.grid.ADVANCED .node.TARGET_NODE.hover {
-  border-color: #e43321 #b9291b #b9291b #e43321;
-}
-
-.grid.BASIC .node.SOURCE_NODE {
-  background: #2AB936;
-  border-color: #2cdf3b #2AB936 #2AB936 #2cdf3b;
-}
-
-.grid.BASIC .node.TARGET_NODE {
-  background: #b9291b;
-  border-color: #e43321 #b9291b #b9291b #e43321;
+.grid .node.TARGET_NODE.hover {
+  border-color: #b9291b;
 }
 
 @keyframes nodeChange {
@@ -119,7 +107,7 @@ html, body {
   100% {transform: scale(1);}
 }
 
-.grid.ADVANCED .node .part, .grid.ADVANCED .node .innerpart {
+.grid .node .part, .grid .node .innerpart {
   width: calc(100%/3 - 2px);
   height: calc(100%/3 - 2px);
   float: left;
@@ -127,9 +115,10 @@ html, body {
 }
 
 .grid.ADVANCED .node .part {
+  opacity: 0;
+  cursor: pointer;
   background-size: contain;
   background-repeat: no-repeat;
-  opacity: 0;
 }
 
 .grid.ADVANCED .node .part.NORTH {
@@ -189,6 +178,7 @@ html, body {
 
 .grid .node.SOURCE_NODE .innerpart, .grid .node.TARGET_NODE .innerpart {
   border-radius: 100%;
+  cursor: move;
 }
 
 .grid .node.SOURCE_NODE .innerpart {
@@ -197,4 +187,65 @@ html, body {
 
 .grid .node.TARGET_NODE .innerpart {
   background: #b9291b;
+}
+
+.config .title {
+  font-weight: 600;
+}
+
+.dropDown {
+  margin-bottom: 10px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dropDown .value {
+  padding: 8px;
+  font-size: 16px;
+
+  cursor: pointer;
+  background: #FFF;
+  color: #333;
+}
+
+.dropDown .value:hover {
+  background: #EEE;
+}
+
+.dropDown .value.current {
+  border-radius: 3px;
+}
+
+.dropDown .drop {
+  position: absolute;
+  padding-top: 5px;
+  min-width: 200px;
+  display: none;
+}
+
+.dropDown.active .drop {
+  display: block;
+}
+
+.dropDown .arrowLine {
+  height: 10px;
+
+  background: url("images/dropDownArrow.svg");
+  background-position: center left 10px;
+  background-repeat: no-repeat;
+}
+
+.dropDown .values {
+  overflow: hidden;
+
+  border-radius: 3px;
+  background: #FFF;
+}
+
+.dropDown .values .value {
+
 }

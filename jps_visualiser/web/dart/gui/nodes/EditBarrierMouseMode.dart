@@ -5,7 +5,6 @@ import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'MouseMode.dart';
 import 'ReactGrid.dart';
-import 'dart:html';
 import 'package:quiver/core.dart';
 
 class EditBarrierMouseMode extends MouseMode
@@ -16,20 +15,20 @@ class EditBarrierMouseMode extends MouseMode
 
   void evaluateNode(Position position)
   {
-    if (reactGrid.props.storeConfig.gridMode == GridMode.BASIC)
-    {
-      StoreNode storeNode = reactGrid.props.store.storeNodes.get(position);
-      StructureNode structureNode = storeNode.structureNode;
+    StoreNode storeNode = reactGrid.props.store.storeNodes.get(position);
+    StructureNode structureNode = storeNode.structureNode;
 
+    if (reactGrid.props.storeConfig.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
+    {
       bool easyFillModus = getAndUpdateEasyFillModus(!structureNode.barrier.isAnyBlocked());
       StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformToTotal(easyFillModus));
       storeNode.actions.structureNodeChanged.call(newStructureNode);
     }
   }
 
-  void evaluateNodePart(Position position, Direction direction)
+  void evaluateNodePart(Position position, {Direction direction})
   {
-    if (reactGrid.props.storeConfig.gridMode == GridMode.ADVANCED)
+    if (reactGrid.props.storeConfig.gridMode == GridMode.ADVANCED && direction != null)
     {
       StoreNode storeNode = reactGrid.props.store.storeNodes.get(position);
       StructureNode structureNode = storeNode.structureNode;

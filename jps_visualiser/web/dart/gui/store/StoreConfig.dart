@@ -1,3 +1,4 @@
+import '../../general/gui/DropDownElement.dart';
 import 'package:w_flux/w_flux.dart';
 import 'package:tuple/tuple.dart';
 
@@ -17,8 +18,8 @@ class StoreConfig extends Store
     _actions = new ActionsConfigChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);
     _actions.sizeChanged.listen(_sizeChanged);
-    _gridMode = GridMode.ADVANCED;
-    _size = new Tuple2<int, int>(16, 16);
+    _gridMode = GridMode.BASIC;
+    _size = new Tuple2<int, int>(12, 12);
   }
 
   void _gridModeChanged(GridMode newGridMode)
@@ -40,16 +41,18 @@ class ActionsConfigChanged
   final Action<Tuple2<int, int>> sizeChanged = new Action<Tuple2<int, int>>();
 }
 
-class GridMode
+class GridMode implements DropDownElement
 {
-  static const GridMode BASIC = const GridMode("BASIC");
-  static const GridMode ADVANCED = const GridMode("ADVANCED");
+  static const GridMode BASIC = const GridMode("BASIC", "Basic");
+  static const GridMode ADVANCED = const GridMode("ADVANCED", "Advanced");
 
   final String name;
+  final String dropDownName;
 
+  @override
   String toString() => name;
 
-  const GridMode(this.name);
+  const GridMode(this.name, this.dropDownName);
 
   static const List<GridMode> values = const <GridMode>[
     BASIC, ADVANCED];

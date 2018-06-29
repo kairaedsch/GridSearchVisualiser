@@ -10,5 +10,5 @@ abstract class MouseMode
   MouseMode(this._reactGrid);
 
   void evaluateNode(Position position);
-  void evaluateNodePart(Position position, Direction direction);
+  void evaluateNodePart(Position position, {Direction direction});
 }
