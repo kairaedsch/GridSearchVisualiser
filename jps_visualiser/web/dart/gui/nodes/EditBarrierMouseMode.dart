@@ -1,6 +1,6 @@
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
-import '../store/StoreConfig.dart';
+import '../store/StoreGridSettings.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'MouseMode.dart';
@@ -18,7 +18,7 @@ class EditBarrierMouseMode extends MouseMode
     StoreNode storeNode = reactGrid.props.store.storeNodes.get(position);
     StructureNode structureNode = storeNode.structureNode;
 
-    if (reactGrid.props.storeConfig.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
+    if (reactGrid.props.storeGridSettings.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
     {
       bool easyFillModus = getAndUpdateEasyFillModus(!structureNode.barrier.isAnyBlocked());
       StructureNode newStructureNode = structureNode.clone(barrier: structureNode.barrier.transformToTotal(easyFillModus));
@@ -28,7 +28,7 @@ class EditBarrierMouseMode extends MouseMode
 
   void evaluateNodePart(Position position, {Direction direction})
   {
-    if (reactGrid.props.storeConfig.gridMode == GridMode.ADVANCED && direction != null)
+    if (reactGrid.props.storeGridSettings.gridMode == GridMode.ADVANCED && direction != null)
     {
       StoreNode storeNode = reactGrid.props.store.storeNodes.get(position);
       StructureNode structureNode = storeNode.structureNode;

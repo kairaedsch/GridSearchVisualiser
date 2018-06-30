@@ -1,7 +1,7 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../store/ExplanationNode.dart';
-import '../store/StoreConfig.dart';
+import '../store/StoreGridSettings.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'MouseMode.dart';
@@ -15,7 +15,7 @@ UiFactory<ReactNodePartProps> ReactNodePart;
 @Props()
 class ReactNodePartProps extends UiProps
 {
-  StoreConfig storeConfig;
+  StoreGridSettings storeGridSettings;
   StructureNode structureNode;
   ExplanationNode explanationNode;
   Optional<Direction> direction;

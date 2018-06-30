@@ -2,7 +2,7 @@ import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
-import '../store/StoreConfig.dart';
+import '../store/StoreGridSettings.dart';
 import '../store/StoreNode.dart';
 import '../store/StoreGrid.dart';
 import '../store/StructureNode.dart';
@@ -21,19 +21,19 @@ UiFactory<ReactGridProps> ReactGrid;
 @Props()
 class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 {
-  StoreConfig storeConfig;
+  StoreGridSettings storeGridSettings;
 }
 
 @Component()
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
   Optional<MouseMode> _mouseMode;
-  StreamSubscription onDocumentMouseUpListener;
+  StreamSubscription _onDocumentMouseUpListener;
 
   ReactGridComponent()
   {
     _mouseMode = const Optional.absent();
-    onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
+    _onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
   }
 
   @override
@@ -44,7 +44,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     return (
         Dom.div()
           ..className = "grid"
-              " ${props.storeConfig.gridMode.name}"
+              " ${props.storeGridSettings.gridMode.name}"
           ..style =
           {
             "width": "${Settings.nodeSize * storeNodes.width}px",
@@ -74,7 +74,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     return (
         ReactNode()
           ..key = pos
-          ..storeConfig = props.storeConfig
+          ..storeGridSettings = props.storeGridSettings
           ..store = storeNode
           ..actions = storeNode.actions
           ..grid = this
@@ -83,7 +83,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   void updateMouseModeFromNode(StructureNode structureNode)
   {
-    if (props.storeConfig.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
+    if (props.storeGridSettings.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
       if (structureNode.type != StructureNodeType.NORMAL_NODE)
       {
@@ -99,7 +99,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
 void updateMouseModeFromNodePart(StructureNode structureNode, {Direction direction})
   {
-    if (props.storeConfig.gridMode == GridMode.ADVANCED && _mouseMode.isEmpty)
+    if (props.storeGridSettings.gridMode == GridMode.ADVANCED && _mouseMode.isEmpty)
     {
       if (structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
       {
@@ -116,6 +116,6 @@ void updateMouseModeFromNodePart(StructureNode structureNode, {Direction directi
   void componentWillUnmount()
   {
     componentWillUnmount();
-    onDocumentMouseUpListener.cancel();
+    _onDocumentMouseUpListener.cancel();
   }
 }

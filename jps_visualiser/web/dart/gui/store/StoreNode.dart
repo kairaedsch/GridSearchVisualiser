@@ -1,5 +1,6 @@
 import '../../general/Position.dart';
 import 'ExplanationNode.dart';
+import 'StoreGridSettings.dart';
 import 'StructureNode.dart';
 import 'package:w_flux/w_flux.dart';
 
@@ -14,25 +15,33 @@ class StoreNode extends Store
   ActionsNodeChanged _actions;
   ActionsNodeChanged get actions => _actions;
 
-  StoreNode(Position pos)
+  StoreNode(StoreGridSettings storeGridSettings, Position pos)
   {
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
-    _actions.structureNodeChanged.listen(_changeStructureNode);
+    _actions.explanationNodeChanged.listen(_changeExplanationNode);
+    storeGridSettings.actions.gridModeChanged.listen(_changeGridMode);
     _structureNode = new StructureNode.normal(pos);
     _explanationNode = new ExplanationNode.normal(pos);
   }
 
-  _changeStructureNode(StructureNode structureNode)
+  void _changeStructureNode(StructureNode structureNode)
   {
     _structureNode = structureNode;
     trigger();
   }
 
-  _changeExplanationNode(ExplanationNode explanationNode)
+  void _changeExplanationNode(ExplanationNode explanationNode)
   {
     _explanationNode = explanationNode;
     trigger();
+  }
+
+  void _changeGridMode(GridMode newGridMode) {
+    if (structureNode.barrier.isAnyBlocked())
+    {
+      trigger();
+    }
   }
 }
 

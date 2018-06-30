@@ -1,7 +1,7 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../store/ExplanationNode.dart';
-import '../store/StoreConfig.dart';
+import '../store/StoreGridSettings.dart';
 import '../store/StoreNode.dart';
 import '../store/StructureNode.dart';
 import 'ReactGrid.dart';
@@ -15,7 +15,7 @@ UiFactory<ReactNodeProps> ReactNode;
 @Props()
 class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
 {
-  StoreConfig storeConfig;
+  StoreGridSettings storeGridSettings;
   ReactGridComponent grid;
 }
 
@@ -45,11 +45,11 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return (Dom.div()
       ..className = "node"
           " ${"pos_x_${structureNode.pos.x} pos_y_${structureNode.pos.y}"}"
-          " ${props.storeConfig.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
+          " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
           " ${state.mouseIsOver ? "hover" : ""}"
-          " ${state.mouseIsDown ? "mouseDown" : ""}"
+          " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
       ..onMouseDown = ((_) => _handleMouseDown())
       ..onMouseUp = ((_) => _handleMouseUp())
       ..onMouseEnter = ((_) => _handleMouseEnter())
@@ -119,7 +119,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
     return (ReactNodePart()
       ..key = direction
-      ..storeConfig = props.storeConfig
+      ..storeGridSettings = props.storeGridSettings
       ..structureNode = structureNode
       ..explanationNode = explanationNode
       ..direction = new Optional.fromNullable(direction)

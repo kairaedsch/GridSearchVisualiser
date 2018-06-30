@@ -1,5 +1,6 @@
 import '../../general/Array2D.dart';
 import '../../general/Position.dart';
+import 'StoreGridSettings.dart';
 import 'StoreNode.dart';
 import 'StructureNode.dart';
 import 'package:w_flux/w_flux.dart';
@@ -12,10 +13,13 @@ class StoreGrid extends Store
   ActionsGridChanged _actions;
   ActionsGridChanged get actions => _actions;
 
-  StoreGrid(int width, int height)
+  StoreGrid(StoreGridSettings storeGridSettings)
   {
+    int width = storeGridSettings.size.item1;
+    int height = storeGridSettings.size.item2;
+
     _actions = new ActionsGridChanged();
-    _storeNodes = new Array2D<StoreNode>(width, height, (Position pos) => new StoreNode(pos));
+    _storeNodes = new Array2D<StoreNode>(width, height, (Position pos) => new StoreNode(storeGridSettings, pos));
     StoreNode sourceStoreNode = _storeNodes.get(new Position(5, 5));
     sourceStoreNode.actions.structureNodeChanged.call(sourceStoreNode.structureNode.clone(type: StructureNodeType.SOURCE_NODE));
 

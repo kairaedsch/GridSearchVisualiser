@@ -1,25 +1,37 @@
+import '../../general/Bool.dart';
 import '../../general/gui/DropDownElement.dart';
 import 'package:w_flux/w_flux.dart';
 import 'package:tuple/tuple.dart';
 
-class StoreConfig extends Store
+class StoreGridSettings extends Store
 {
+  ActionsGridSettingsChanged _actions;
+  ActionsGridSettingsChanged get actions => _actions;
+
   GridMode _gridMode;
   GridMode get gridMode => _gridMode;
 
   Tuple2<int, int> _size;
   Tuple2<int, int> get size => _size;
 
-  ActionsConfigChanged _actions;
-  ActionsConfigChanged get actions => _actions;
+  Bool _allowDiagonal;
+  Bool get allowDiagonal => _allowDiagonal;
 
-  StoreConfig()
+  Bool _crossCorners;
+  Bool get crossCorners => _crossCorners;
+
+  StoreGridSettings()
   {
-    _actions = new ActionsConfigChanged();
-    _actions.gridModeChanged.listen(_gridModeChanged);
-    _actions.sizeChanged.listen(_sizeChanged);
     _gridMode = GridMode.BASIC;
     _size = new Tuple2<int, int>(12, 12);
+    _allowDiagonal = Bool.TRUE;
+    _crossCorners = Bool.TRUE;
+
+    _actions = new ActionsGridSettingsChanged();
+    _actions.gridModeChanged.listen(_gridModeChanged);
+    _actions.sizeChanged.listen(_sizeChanged);
+    _actions.allowDiagonalChanged.listen(_allowDiagonalChanged);
+    _actions.crossCornersChanged.listen(_crossCornersChanged);
   }
 
   void _gridModeChanged(GridMode newGridMode)
@@ -33,12 +45,26 @@ class StoreConfig extends Store
     _size = newSize;
     trigger();
   }
+
+  void _allowDiagonalChanged(Bool newAllowDiagonal)
+  {
+    _allowDiagonal = newAllowDiagonal;
+    trigger();
+  }
+
+  void _crossCornersChanged(Bool newCrossCorners)
+  {
+    _crossCorners = newCrossCorners;
+    trigger();
+  }
 }
 
-class ActionsConfigChanged
+class ActionsGridSettingsChanged
 {
   final Action<GridMode> gridModeChanged = new Action<GridMode>();
   final Action<Tuple2<int, int>> sizeChanged = new Action<Tuple2<int, int>>();
+  final Action<Bool> allowDiagonalChanged = new Action<Bool>();
+  final Action<Bool> crossCornersChanged = new Action<Bool>();
 }
 
 class GridMode implements DropDownElement

@@ -6,7 +6,9 @@
   --node-part-shadow: 14px;
   --color-main: #0095FF;
   --color-main-dark: #007ce6;
+  --color-main-darker: #004d8f;
   --color-main-light: #5bbaff;
+  --color-second: #CA0404;
 }
 
 *, *:before, *:after {
@@ -14,7 +16,7 @@
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 20px;
-  color: #FFF;
+  color: #333;
 }
 
 html, body {
@@ -41,8 +43,7 @@ html, body {
 }
 
 #rightContent {
-  background: var(--color-main);
-  padding: 10px;
+  border-left: 1px solid #DDD;
 }
 
 .grid {
@@ -79,6 +80,10 @@ html, body {
   border-color: var(--color-main-light);
 }
 
+.grid.BASIC .node.totalBlocked:hover, .node.totalBlocked.hover {
+  border-color: var(--color-main-darker);
+}
+
 .grid.BASIC .node {
   cursor: pointer;
 }
@@ -92,7 +97,7 @@ html, body {
 }
 
 .grid .node.TARGET_NODE.hover {
-  border-color: #b9291b;
+  border-color: var(--color-second);
 }
 
 @keyframes nodeChange {
@@ -159,7 +164,7 @@ html, body {
   transform: rotate(270deg);
 }
 
-.grid.ADVANCED .node .part:hover {
+.grid.ADVANCED .node.mouseUp .part:hover {
   opacity: 0.5;
   animation: nodeHover 1s linear infinite;
 }
@@ -186,16 +191,10 @@ html, body {
 }
 
 .grid .node.TARGET_NODE .innerpart {
-  background: #b9291b;
-}
-
-.config .title {
-  font-weight: 600;
+  background: var(--color-second);
 }
 
 .dropDown {
-  margin-bottom: 10px;
-
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -204,37 +203,49 @@ html, body {
 }
 
 .dropDown .value {
-  padding: 8px;
+  padding: 5px 33px 5px 8px;
   font-size: 16px;
 
   cursor: pointer;
-  background: #FFF;
-  color: #333;
+  background: var(--color-main-light);
+  color: #FFF;
+}
+
+.dropDown .value.selected, .dropDown .value.current {
+  background: var(--color-main);
 }
 
 .dropDown .value:hover {
-  background: #EEE;
+   background: var(--color-main-dark);
 }
 
 .dropDown .value.current {
   border-radius: 3px;
+  background-image: url("images/dropDownArrowClosed.svg");
+  background-repeat: no-repeat;
+  background-position: center right 10px;
+  background-size: 15px;
+}
+
+.dropDown.open .value.current {
+  background-image: url("images/dropDownArrowOpen.svg");
 }
 
 .dropDown .drop {
   position: absolute;
   padding-top: 5px;
-  min-width: 200px;
+  min-width: 100px;
   display: none;
 }
 
-.dropDown.active .drop {
+.dropDown.open .drop {
   display: block;
 }
 
 .dropDown .arrowLine {
   height: 10px;
 
-  background: url("images/dropDownArrow.svg");
+  background: url("images/dropDownDropArrow.svg");
   background-position: center left 10px;
   background-repeat: no-repeat;
 }
@@ -244,8 +255,73 @@ html, body {
 
   border-radius: 3px;
   background: #FFF;
+  border: 1px solid #FFF;
+  border-top: none;
 }
 
-.dropDown .values .value {
+.dropDown .values .value:nth-child(n+2) {
+  border-top-width: 0;
+}
 
+.menu {
+  padding: 10px;
+  border-bottom: 1px solid #DDD;
+}
+
+.menu>.title {
+  font-size: 26px;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.configs {
+  display: flex;
+}
+
+.config {
+  flex-basis: calc(100%/3);
+  padding-right: 10px;
+  min-width: 0;
+
+  display: flex;
+}
+
+.config:last-child {
+  padding-right: 0;
+}
+
+.config .title {
+  min-width: 0;
+  padding-right: 10px;
+
+  font-weight: 600;
+  line-height: 150%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.config .dropDown {
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+.button {
+  padding: 5px 8px 5px 30px;
+  font-size: 16px;
+
+  border-radius: 3px;
+  cursor: pointer;
+  color: #FFF;
+  background-color: var(--color-main);
+  background-image: url("images/run.svg");
+  background-position: center left 8px;
+  background-repeat: no-repeat;
+  background-size: 15px;
+  margin: auto;
+}
+
+.button:hover {
+  background-color: var(--color-main-dark);
 }

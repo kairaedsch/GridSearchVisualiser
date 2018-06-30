@@ -17,7 +17,7 @@ class ReactDropDownProps extends UiProps
 @State()
 class ReactDropDownState extends UiState
 {
-  bool isActive;
+  bool isOpen;
 }
 
 @Component()
@@ -25,7 +25,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
 {
   @override
   Map getInitialState() => (newState()
-    ..isActive = false
+    ..isOpen = false
   );
 
   @override
@@ -35,12 +35,12 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
         Dom.div()
           ..className = ""
               " dropDown"
-              " ${state.isActive ? "active" : ""}"
-          ..onMouseLeave = ((_) => _setInactive())
+              " ${state.isOpen ? "open" : ""}"
+          ..onMouseLeave = ((_) => _setClosed())
     )(
       (Dom.div()
         ..className = "value current"
-        ..onClick = ((_) => _toggleActive())
+        ..onClick = ((_) => _toggleOpen())
       )(props.value.dropDownName),
 
       (Dom.div()
@@ -52,6 +52,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
                 .map((value) =>
                 (Dom.div()
                   ..className = "value"
+                    " ${props.value == value ? "selected" : ""}"
                   ..key = value
                   ..onClick = ((_) => _handleValueClick(value))
                 )(
@@ -64,19 +65,22 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
   }
 
   void _handleValueClick(DropDownElement value) {
-    _setInactive();
-    props.selectListener(value);
+    _setClosed();
+    if (value != props.value)
+    {
+      props.selectListener(value);
+    }
   }
 
-  void _toggleActive() {
+  void _toggleOpen() {
     setState(newState()
-      ..isActive = !state.isActive
+      ..isOpen = !state.isOpen
     );
   }
 
-  void _setInactive() {
+  void _setClosed() {
     setState(newState()
-      ..isActive = false
+      ..isOpen = false
     );
   }
 }
