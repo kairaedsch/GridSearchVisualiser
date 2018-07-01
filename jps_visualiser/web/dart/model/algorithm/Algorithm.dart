@@ -1,5 +1,8 @@
+import '../Grid.dart';
+import '../SearchHistory.dart';
+import '../heuristics/Heuristic.dart';
 
-class Algorithm
+abstract class Algorithm
 {
-  abstract SearchHistory search(Grid grid, Heuristic heuristic);
+   SearchHistory search(Grid grid, Heuristic heuristic);
 }
