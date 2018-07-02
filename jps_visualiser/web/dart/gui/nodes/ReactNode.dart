@@ -44,12 +44,12 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
     return (Dom.div()
       ..className = "node"
-          " ${"pos_x_${structureNode.pos.x} pos_y_${structureNode.pos.y}"}"
           " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.name}"
           " ${state.mouseIsOver ? "hover" : ""}"
           " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
+          " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
       ..onMouseDown = ((_) => _handleMouseDown())
       ..onMouseUp = ((_) => _handleMouseUp())
       ..onMouseEnter = ((_) => _handleMouseEnter())
@@ -98,6 +98,23 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
   List<ReactElement> _renderInner()
   {
+    StructureNode structureNode = props.store.structureNode;
+
+    if (structureNode.type == StructureNodeType.NORMAL_NODE)
+    {
+      if (props.storeGridSettings.gridMode == GridMode.BASIC)
+      {
+        return [];
+      }
+      if (props.storeGridSettings.gridMode == GridMode.ADVANCED)
+      {
+        if (structureNode.barrier.isNoneBlocked() && !state.mouseIsOver)
+        {
+          return [];
+        }
+      }
+    }
+
     return
     [
       _renderPart(direction: Direction.NORTH_WEST),

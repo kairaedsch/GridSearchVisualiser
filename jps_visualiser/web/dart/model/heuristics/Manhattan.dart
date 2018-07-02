@@ -3,6 +3,8 @@ import 'Heuristic.dart';
 
 class Manhattan implements Heuristic
 {
+  const Manhattan();
+
   @override
   double calculateApproximateDistance(Position p1, Position p2)
   {

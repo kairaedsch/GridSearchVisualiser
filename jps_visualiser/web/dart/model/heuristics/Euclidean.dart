@@ -4,6 +4,8 @@ import 'dart:math';
 
 class Euclidean implements Heuristic
 {
+  const Euclidean();
+
   @override
   double calculateApproximateDistance(Position p1, Position p2)
   {

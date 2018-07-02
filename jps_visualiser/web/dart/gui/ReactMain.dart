@@ -1,3 +1,6 @@
+import '../model/SearchHistory.dart';
+import '../model/algorithm/Algorithm.dart';
+import '../model/heuristics/Heuristic.dart';
 import 'package:over_react/over_react.dart';
 import 'store/StoreAlgorithmSettings.dart';
 import 'store/StoreGridSettings.dart';
@@ -43,10 +46,22 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
             (ReactAlgorithmSettings()
               ..store = props.storeAlgorithmSettings
               ..actions = props.storeAlgorithmSettings.actions
+              ..main = this
             )()
         ),
         (Dom.div()..className = "stepsContainer")()
       )
     );
+  }
+
+  void runAlgorithm()
+  {
+    StoreGrid storeGrid = props.storeGrid;
+    StoreAlgorithmSettings storeAlgorithmSettings = props.storeAlgorithmSettings;
+
+    Algorithm algorithm = storeAlgorithmSettings.algorithmType.algorithm;
+    Heuristic heuristic = storeAlgorithmSettings.heuristicType.heuristic;
+
+    SearchHistory searchHistory = algorithm.searchP(storeGrid.toGrid(props.store.allowDiagonal.value, props.store.crossCorners.value), storeGrid.sourcePosition, storeGrid.targetPosition, heuristic);
   }
 }

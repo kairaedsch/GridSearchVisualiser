@@ -28,6 +28,8 @@ class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
   Optional<MouseMode> _mouseMode;
+  Optional<MouseMode> get mouseMode => _mouseMode;
+
   StreamSubscription _onDocumentMouseUpListener;
 
   ReactGridComponent()
@@ -69,7 +71,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   ReactElement _renderNode(Position pos)
   {
-    StoreNode storeNode = props.store.storeNodes.get(pos);
+    StoreNode storeNode = props.store.storeNodes[pos];
 
     return (
         ReactNode()
@@ -87,14 +89,14 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     {
       if (structureNode.type != StructureNodeType.NORMAL_NODE)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.pos));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.position));
       }
       else
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(structureNode.pos));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(structureNode.position));
   }
 
 void updateMouseModeFromNodePart(StructureNode structureNode, {Direction direction})
@@ -103,14 +105,14 @@ void updateMouseModeFromNodePart(StructureNode structureNode, {Direction directi
     {
       if (structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.pos));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.position));
       }
       else if(direction != null)
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(structureNode.pos, direction: direction));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(structureNode.position, direction: direction));
   }
 
   void componentWillUnmount()

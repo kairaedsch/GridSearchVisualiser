@@ -1,8 +1,22 @@
 import '../general/Array2D.dart';
 import '../general/Position.dart';
+import '../general/Size.dart';
 import 'NodeSearchState.dart';
 
-class SearchState
+class SearchState implements Size
 {
-  Array2D<NodeSearchState> grid;
+  final Array2D<NodeSearchState> grid;
+
+  SearchState(Size size) :
+        grid = new Array2D(size.width, size.height, (Position pos) => new NodeSearchState());
+
+  NodeSearchState operator [](Position pos) => grid[pos];
+
+  @override
+  int get width => grid.width;
+
+  @override
+  int get height => grid.height;
+
+  Iterable<NodeSearchState> get iterable => grid.iterable;
 }

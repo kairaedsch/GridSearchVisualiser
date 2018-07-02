@@ -1,4 +1,5 @@
 import '../../general/Bool.dart';
+import '../ReactMain.dart';
 import '../store/StoreAlgorithmSettings.dart';
 import '../store/StoreGridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
@@ -11,7 +12,7 @@ UiFactory<ReactAlgorithmSettingsProps> ReactAlgorithmSettings;
 @Props()
 class ReactAlgorithmSettingsProps extends FluxUiProps<ActionsAlgorithmSettingsChanged, StoreAlgorithmSettings>
 {
-
+  ReactMainComponent main;
 }
 
 @Component()
@@ -43,7 +44,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           (Dom.div()..className = "config")(
               (Dom.div()
                 ..className = "button"
-                ..onClick = ((_) => window.alert("starting...."))
+                ..onClick = ((_) => props.main.runAlgorithm())
               )("run algorithm"),
           ),
         )

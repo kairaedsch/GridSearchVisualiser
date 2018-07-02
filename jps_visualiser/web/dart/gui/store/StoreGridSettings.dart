@@ -23,7 +23,7 @@ class StoreGridSettings extends Store
   StoreGridSettings()
   {
     _gridMode = GridMode.BASIC;
-    _size = new Tuple2<int, int>(12, 12);
+    _size = new Tuple2<int, int>(16, 15);
     _allowDiagonal = Bool.TRUE;
     _crossCorners = Bool.TRUE;
 

@@ -4,6 +4,8 @@ import 'dart:math';
 
 class Chebyshev implements Heuristic
 {
+  const Chebyshev();
+
   @override
   double calculateApproximateDistance(Position p1, Position p2)
   {

@@ -47,11 +47,11 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
       ..className =
           direction.isEmpty ?
           (
-              "innerpart"
+              "part inner"
           )
               :
           (
-            "part"
+            "part outer"
             " ${direction.value.name}"
             " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
           )

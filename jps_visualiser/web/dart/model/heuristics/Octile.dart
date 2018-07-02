@@ -4,6 +4,8 @@ import 'dart:math';
 
 class Octile implements Heuristic
 {
+  const Octile();
+
   @override
   double calculateApproximateDistance(Position p1, Position p2)
   {

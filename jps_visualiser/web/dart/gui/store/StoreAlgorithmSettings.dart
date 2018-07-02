@@ -1,5 +1,12 @@
 import '../../general/Bool.dart';
 import '../../general/gui/DropDownElement.dart';
+import '../../model/algorithm/Algorithm.dart';
+import '../../model/algorithm/Dijkstra.dart';
+import '../../model/heuristics/Chebyshev.dart';
+import '../../model/heuristics/Euclidean.dart';
+import '../../model/heuristics/Heuristic.dart';
+import '../../model/heuristics/Manhattan.dart';
+import '../../model/heuristics/Octile.dart';
 import 'package:w_flux/w_flux.dart';
 import 'package:tuple/tuple.dart';
 
@@ -44,17 +51,18 @@ class ActionsAlgorithmSettingsChanged {
 
 class AlgorithmType implements DropDownElement
 {
-  static const AlgorithmType DIJKSTRA = const AlgorithmType("DIJKSTRA", "Dijkstra");
-  static const AlgorithmType A_STAR = const AlgorithmType("A_STAR", "A*");
-  static const AlgorithmType JPS = const AlgorithmType("JPS", "JPS");
+  static const AlgorithmType DIJKSTRA = const AlgorithmType(const Dijkstra(), "DIJKSTRA", "Dijkstra");
+  static const AlgorithmType A_STAR = const AlgorithmType(const Dijkstra(), "A_STAR", "A*");
+  static const AlgorithmType JPS = const AlgorithmType(const Dijkstra(), "JPS", "JPS");
 
   final String name;
   final String dropDownName;
+  final Algorithm algorithm;
 
   @override
   String toString() => name;
 
-  const AlgorithmType(this.name, this.dropDownName);
+  const AlgorithmType(this.algorithm, this.name, this.dropDownName);
 
   static const List<AlgorithmType> values = const <AlgorithmType>[
     DIJKSTRA, A_STAR, JPS];
@@ -62,18 +70,19 @@ class AlgorithmType implements DropDownElement
 
 class HeuristicType implements DropDownElement
 {
-  static const HeuristicType MANHATTEN = const HeuristicType("MANHATTEN", "Manhattan");
-  static const HeuristicType EUCLIDEAN = const HeuristicType("EUCLIDEAN", "Euclidean");
-  static const HeuristicType OCTILE = const HeuristicType("OCTILE", "Octile");
-  static const HeuristicType CHEBYSHEV = const HeuristicType("CHEBYSHEV", "Chebyshev");
+  static const HeuristicType MANHATTEN = const HeuristicType(const Manhattan(), "MANHATTEN", "Manhattan");
+  static const HeuristicType EUCLIDEAN = const HeuristicType(const Euclidean(), "EUCLIDEAN", "Euclidean");
+  static const HeuristicType OCTILE = const HeuristicType(const Octile(), "OCTILE", "Octile");
+  static const HeuristicType CHEBYSHEV = const HeuristicType(const Chebyshev(), "CHEBYSHEV", "Chebyshev");
 
   final String name;
   final String dropDownName;
+  final Heuristic heuristic;
 
   @override
   String toString() => name;
 
-  const HeuristicType(this.name, this.dropDownName);
+  const HeuristicType( this.heuristic, this.name, this.dropDownName);
 
   static const List<HeuristicType> values = const <HeuristicType>[
     MANHATTEN, EUCLIDEAN, OCTILE, CHEBYSHEV];

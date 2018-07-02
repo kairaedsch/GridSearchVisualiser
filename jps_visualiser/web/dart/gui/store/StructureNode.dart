@@ -5,17 +5,17 @@ class StructureNode
 {
   final StructureNodeType type;
 
-  final Position pos;
+  final Position position;
 
-  int get x => pos.x;
+  int get x => position.x;
 
-  int get y => pos.y;
+  int get y => position.y;
 
   final StructureNodeBarrier barrier;
 
-  const StructureNode(this.pos, this.type, this.barrier);
+  const StructureNode(this.position, this.type, this.barrier);
 
-  StructureNode.normal(this.pos)
+  StructureNode.normal(this.position)
       : type = StructureNodeType.NORMAL_NODE,
         barrier = StructureNodeBarrier.totalUnblocked;
 
@@ -24,7 +24,7 @@ class StructureNode
     if (type == null) type = this.type;
     if (barrier == null) barrier = this.barrier;
 
-    return new StructureNode(pos, type, barrier);
+    return new StructureNode(position, type, barrier);
   }
 }
 
@@ -80,6 +80,8 @@ class StructureNodeBarrier
       value: (direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
 
   bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
+
+  bool isNoneBlocked() => !isAnyBlocked();
 
   StructureNodeBarrier transformTo(Direction directionToTransform, bool shouldBecomeBlocked)
   {
