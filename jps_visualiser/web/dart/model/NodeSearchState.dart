@@ -15,9 +15,9 @@ class NodeSearchState
 
 class NodeMarking
 {
-  static const NodeMarking UNMARKED_NODE = const NodeMarking("SOURCE_NODE");
-  static const NodeMarking MARKED_OPEN_NODE = const NodeMarking("TARGET_NODE");
-  static const NodeMarking MARKED_CLOSED_NODE = const NodeMarking("NORMAL_NODE");
+  static const NodeMarking UNMARKED_NODE = const NodeMarking("UNMARKED_NODE");
+  static const NodeMarking MARKED_OPEN_NODE = const NodeMarking("MARKED_OPEN_NODE");
+  static const NodeMarking MARKED_CLOSED_NODE = const NodeMarking("MARKED_CLOSED_NODE");
 
   final String name;
 

@@ -1,4 +1,5 @@
 import '../../general/Bool.dart';
+import '../../general/Size.dart';
 import '../../general/gui/DropDownElement.dart';
 import 'package:w_flux/w_flux.dart';
 import 'package:tuple/tuple.dart';
@@ -11,8 +12,8 @@ class StoreGridSettings extends Store
   GridMode _gridMode;
   GridMode get gridMode => _gridMode;
 
-  Tuple2<int, int> _size;
-  Tuple2<int, int> get size => _size;
+  Size _size;
+  Size get size => _size;
 
   Bool _allowDiagonal;
   Bool get allowDiagonal => _allowDiagonal;
@@ -20,10 +21,10 @@ class StoreGridSettings extends Store
   Bool _crossCorners;
   Bool get crossCorners => _crossCorners;
 
-  StoreGridSettings()
+  StoreGridSettings(Size size)
   {
+    _size = size;
     _gridMode = GridMode.BASIC;
-    _size = new Tuple2<int, int>(16, 15);
     _allowDiagonal = Bool.TRUE;
     _crossCorners = Bool.TRUE;
 
@@ -40,7 +41,7 @@ class StoreGridSettings extends Store
     trigger();
   }
 
-  void _sizeChanged(Tuple2<int, int> newSize)
+  void _sizeChanged(Size newSize)
   {
     _size = newSize;
     trigger();
@@ -62,7 +63,7 @@ class StoreGridSettings extends Store
 class ActionsGridSettingsChanged
 {
   final Action<GridMode> gridModeChanged = new Action<GridMode>();
-  final Action<Tuple2<int, int>> sizeChanged = new Action<Tuple2<int, int>>();
+  final Action<Size> sizeChanged = new Action<Size>();
   final Action<Bool> allowDiagonalChanged = new Action<Bool>();
   final Action<Bool> crossCornersChanged = new Action<Bool>();
 }

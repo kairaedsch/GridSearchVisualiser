@@ -1,4 +1,5 @@
 import 'Direction.dart';
+import 'Size.dart';
 import 'dart:math';
 
 class Position
@@ -16,8 +17,8 @@ class Position
 
   Position go(Direction direction) => new Position(x + direction.dx, y + direction.dy);
 
-  legal(int width, int height)
+  legal(Size size)
   {
-    return x >= 0 && x < width && y >= 0 && y < height;
+    return x >= 0 && x < size.width && y >= 0 && y < size.height;
   }
 }

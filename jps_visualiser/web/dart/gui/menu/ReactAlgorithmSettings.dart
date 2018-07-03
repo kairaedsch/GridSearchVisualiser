@@ -12,7 +12,7 @@ UiFactory<ReactAlgorithmSettingsProps> ReactAlgorithmSettings;
 @Props()
 class ReactAlgorithmSettingsProps extends FluxUiProps<ActionsAlgorithmSettingsChanged, StoreAlgorithmSettings>
 {
-  ReactMainComponent main;
+  Function runAlgorithm;
 }
 
 @Component()
@@ -44,7 +44,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           (Dom.div()..className = "config")(
               (Dom.div()
                 ..className = "button"
-                ..onClick = ((_) => props.main.runAlgorithm())
+                ..onClick = ((_) => props.runAlgorithm())
               )("run algorithm"),
           ),
         )

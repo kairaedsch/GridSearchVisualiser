@@ -43,7 +43,17 @@ html, body {
 
 #rightContent {
   width: 40%;
+  display: flex;
+  flex-direction: column;
+
   border-left: 1px solid #DDD;
+}
+
+.historyContainer {
+  flex-grow: 1;
+  flex-basis: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .grid {
@@ -106,6 +116,18 @@ html, body {
 
 .grid .node.EditNodeTypeMouseMode.hover, .grid .node.EditNodeTypeMouseMode.hover * {
   cursor: move !important;
+}
+
+.grid .node.MARKED_OPEN_NODE {
+  background: #2AB936 !important;
+}
+
+.grid .node.MARKED_CLOSED_NODE {
+  background: #999 !important;
+}
+
+.grid .node.MARKED_CLOSED_NODE {
+  background: #999 !important;
 }
 
 @keyframes nodeChange {
@@ -332,4 +354,25 @@ html, body {
 
 .button:hover {
   background-color: var(--color-main-dark);
+}
+
+.history {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.history .part {
+  padding: 5px 8px;
+
+  cursor: pointer;
+}
+
+.history .part:hover {
+  background: var(--color-main-light);
+}
+
+.history .part.active {
+  background: var(--color-main);
+  color: #FFF;
+  cursor: default;
 }

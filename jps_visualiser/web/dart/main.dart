@@ -1,8 +1,7 @@
 import 'dart:html';
 
-import 'gui/store/StoreAlgorithmSettings.dart';
-import 'gui/store/StoreGridSettings.dart';
-import 'gui/store/StoreGrid.dart';
+import 'general/Size.dart';
+import 'gui/store/StoreMain.dart';
 import 'package:over_react/react_dom.dart' as react_dom;
 import 'package:over_react/over_react.dart' as over_react;
 import 'gui/ReactMain.dart';
@@ -11,15 +10,11 @@ void main() {
   // Initialize React
   over_react.setClientConfiguration();
 
-  StoreGridSettings storeGridSettings = new StoreGridSettings();
-  StoreAlgorithmSettings storeAlgorithmSettings = new StoreAlgorithmSettings();
-  StoreGrid storeGrid = new StoreGrid(storeGridSettings);
+  StoreMain storeMain = new StoreMain(new Size(16, 15));
   react_dom.render(
       (ReactMain()
-          ..store = storeGridSettings
-          ..actions = storeGridSettings.actions
-          ..storeGrid = storeGrid
-          ..storeAlgorithmSettings = storeAlgorithmSettings
+          ..store = storeMain
+          ..actions = storeMain.actions
       )(),
       querySelector('#contentContainer')
   );

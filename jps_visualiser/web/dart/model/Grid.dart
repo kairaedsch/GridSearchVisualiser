@@ -20,7 +20,7 @@ class Grid implements Size
     return Direction.values
         .where((Direction direction) => node.leaveAble(direction))
         .map((Direction direction) => node.position.go(direction))
-        .where((Position position) => position.legal(_grid.width, _grid.height))
+        .where((Position position) => position.legal(_grid))
         .map((Position position) => _grid[position]);
   }
 

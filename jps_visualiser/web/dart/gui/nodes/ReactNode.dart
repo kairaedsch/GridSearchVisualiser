@@ -1,9 +1,9 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
-import '../store/ExplanationNode.dart';
+import '../store/grid/ExplanationNode.dart';
 import '../store/StoreGridSettings.dart';
-import '../store/StoreNode.dart';
-import '../store/StructureNode.dart';
+import '../store/grid/StoreNode.dart';
+import '../store/grid/StructureNode.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'package:over_react/over_react.dart';
@@ -46,7 +46,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..className = "node"
           " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
-          " ${explanationNode.marking.name}"
+          " ${explanationNode.marking.or("") }"
           " ${state.mouseIsOver ? "hover" : ""}"
           " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
           " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
@@ -93,7 +93,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   }
 
   void _triggerMouseMode() {
-    props.grid.updateMouseModeFromNode(props.store.structureNode);
+    props.grid.updateMouseModeFromNode(props.store);
   }
 
   List<ReactElement> _renderInner()
@@ -137,8 +137,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return (ReactNodePart()
       ..key = direction
       ..storeGridSettings = props.storeGridSettings
-      ..structureNode = structureNode
-      ..explanationNode = explanationNode
+      ..storeNode = props.store
       ..direction = new Optional.fromNullable(direction)
       ..actions = props.actions
       ..grid = props.grid

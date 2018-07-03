@@ -3,9 +3,9 @@ import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
 import '../store/StoreGridSettings.dart';
-import '../store/StoreNode.dart';
-import '../store/StoreGrid.dart';
-import '../store/StructureNode.dart';
+import '../store/grid/StoreNode.dart';
+import '../store/grid/StoreGrid.dart';
+import '../store/grid/StructureNode.dart';
 import 'EditBarrierMouseMode.dart';
 import 'EditNodeTypeMouseMode.dart';
 import 'MouseMode.dart';
@@ -14,6 +14,7 @@ import 'dart:async';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
+import 'package:w_flux/w_flux.dart';
 
 @Factory()
 UiFactory<ReactGridProps> ReactGrid;
@@ -36,6 +37,11 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   {
     _mouseMode = const Optional.absent();
     _onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
+  }
+
+  @override
+  List<Store> redrawOn() {
+    return [props.store, props.storeGridSettings];
   }
 
   @override
@@ -83,36 +89,36 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
     )();
   }
 
-  void updateMouseModeFromNode(StructureNode structureNode)
+  void updateMouseModeFromNode(StoreNode storeNode)
   {
     if (props.storeGridSettings.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if (structureNode.type != StructureNodeType.NORMAL_NODE)
+      if (storeNode.structureNode.type != StructureNodeType.NORMAL_NODE)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.position));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, storeNode.position));
       }
       else
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(structureNode.position));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(storeNode.position));
   }
 
-void updateMouseModeFromNodePart(StructureNode structureNode, {Direction direction})
+  void updateMouseModeFromNodePart(StoreNode storeNode, {Direction direction})
   {
     if (props.storeGridSettings.gridMode == GridMode.ADVANCED && _mouseMode.isEmpty)
     {
-      if (structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
+      if (storeNode.structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, structureNode.position));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, storeNode.position));
       }
       else if(direction != null)
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(structureNode.position, direction: direction));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(storeNode.position, direction: direction));
   }
 
   void componentWillUnmount()

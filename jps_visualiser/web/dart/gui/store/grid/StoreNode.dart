@@ -1,11 +1,14 @@
-import '../../general/Position.dart';
+import '../../../general/Position.dart';
+import '../../../model/NodeSearchState.dart';
 import 'ExplanationNode.dart';
-import 'StoreGridSettings.dart';
+import '../StoreGridSettings.dart';
 import 'StructureNode.dart';
 import 'package:w_flux/w_flux.dart';
 
 class StoreNode extends Store
 {
+  final Position position;
+
   StructureNode _structureNode;
   StructureNode get structureNode => _structureNode;
 
@@ -15,14 +18,14 @@ class StoreNode extends Store
   ActionsNodeChanged _actions;
   ActionsNodeChanged get actions => _actions;
 
-  StoreNode(StoreGridSettings storeGridSettings, Position pos)
+  StoreNode(StoreGridSettings storeGridSettings, this.position)
   {
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
     _actions.explanationNodeChanged.listen(_changeExplanationNode);
     storeGridSettings.actions.gridModeChanged.listen(_changeGridMode);
-    _structureNode = new StructureNode.normal(pos);
-    _explanationNode = new ExplanationNode.normal(pos);
+    _structureNode = new StructureNode.normal();
+    _explanationNode = new ExplanationNode.normal();
   }
 
   void _changeStructureNode(StructureNode structureNode)
@@ -31,9 +34,9 @@ class StoreNode extends Store
     trigger();
   }
 
-  void _changeExplanationNode(ExplanationNode explanationNode)
+  void _changeExplanationNode(NodeSearchState nodeSearchState)
   {
-    _explanationNode = explanationNode;
+    _explanationNode = new ExplanationNode(nodeSearchState.nodeMarking.name);
     trigger();
   }
 
@@ -48,5 +51,5 @@ class StoreNode extends Store
 class ActionsNodeChanged
 {
   final Action<StructureNode> structureNodeChanged = new Action<StructureNode>();
-  final Action<ExplanationNode> explanationNodeChanged = new Action<ExplanationNode>();
+  final Action<NodeSearchState> explanationNodeChanged = new Action<NodeSearchState>();
 }

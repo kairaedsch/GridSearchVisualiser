@@ -1,10 +1,9 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
-import '../store/ExplanationNode.dart';
+import '../store/grid/ExplanationNode.dart';
 import '../store/StoreGridSettings.dart';
-import '../store/StoreNode.dart';
-import '../store/StructureNode.dart';
-import 'MouseMode.dart';
+import '../store/grid/StoreNode.dart';
+import '../store/grid/StructureNode.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
@@ -16,8 +15,7 @@ UiFactory<ReactNodePartProps> ReactNodePart;
 class ReactNodePartProps extends UiProps
 {
   StoreGridSettings storeGridSettings;
-  StructureNode structureNode;
-  ExplanationNode explanationNode;
+  StoreNode storeNode;
   Optional<Direction> direction;
   ActionsNodeChanged actions;
   ReactGridComponent grid;
@@ -41,7 +39,7 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
   ReactElement render()
   {
     Optional<Direction> direction = props.direction;
-    StructureNode structureNode = props.structureNode;
+    StructureNode structureNode = props.storeNode.structureNode;
 
     return (Dom.div()
       ..className =
@@ -83,6 +81,6 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
   }
 
   void _triggerMouseMode() {
-    props.grid.updateMouseModeFromNodePart(props.structureNode, direction: props.direction.orNull);
+    props.grid.updateMouseModeFromNodePart(props.storeNode, direction: props.direction.orNull);
   }
 }

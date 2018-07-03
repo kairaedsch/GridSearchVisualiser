@@ -1,21 +1,14 @@
-import '../../general/Direction.dart';
-import '../../general/Position.dart';
+import '../../../general/Direction.dart';
 
 class StructureNode
 {
   final StructureNodeType type;
 
-  final Position position;
-
-  int get x => position.x;
-
-  int get y => position.y;
-
   final StructureNodeBarrier barrier;
 
-  const StructureNode(this.position, this.type, this.barrier);
+  const StructureNode(this.type, this.barrier);
 
-  StructureNode.normal(this.position)
+  StructureNode.normal()
       : type = StructureNodeType.NORMAL_NODE,
         barrier = StructureNodeBarrier.totalUnblocked;
 
@@ -24,7 +17,7 @@ class StructureNode
     if (type == null) type = this.type;
     if (barrier == null) barrier = this.barrier;
 
-    return new StructureNode(position, type, barrier);
+    return new StructureNode(type, barrier);
   }
 }
 

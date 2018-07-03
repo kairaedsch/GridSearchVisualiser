@@ -1,8 +1,8 @@
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../store/StoreGridSettings.dart';
-import '../store/StoreNode.dart';
-import '../store/StructureNode.dart';
+import '../store/grid/StoreNode.dart';
+import '../store/grid/StructureNode.dart';
 import 'MouseMode.dart';
 import 'ReactGrid.dart';
 import 'package:quiver/core.dart';

@@ -23,9 +23,10 @@ class Dijkstra extends Algorithm
     List<Node> open = [start];
     List<Node> closed = [];
 
+    int turn = 0;
     while (open.isNotEmpty)
     {
-      SearchState searchState = new SearchState(grid);
+      SearchState searchState = new SearchState(turn, grid);
 
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n1) ? n1 : n2);
       searchState[nStar.position].selectedNodeInTurn = true;
@@ -42,7 +43,7 @@ class Dijkstra extends Algorithm
           }
           path = path.reversed.toList();
         }
-        searchHistory.path = path;
+        searchHistory.setPath(path);
         break;
       }
       else
@@ -50,13 +51,13 @@ class Dijkstra extends Algorithm
         open.remove(nStar);
         closed.add(nStar);
 
-        for (Node n in grid.neighbours(nStar).where((n) => !closed.contains(n)))
+        for (Node n in grid.neighbours(nStar).where((n) => !closed.contains(n) && !open.contains(n)))
         {
           open.add(n);
           if (!distance.containsKey(n) || getDistance(nStar) + nStar.distanceTo(n) <  getDistance(n))
           {
               parent[n] = nStar;
-              distance[n] =  getDistance(nStar) + nStar.distanceTo(n);
+              distance[n] = getDistance(nStar) + nStar.distanceTo(n);
           }
         }
       }
@@ -66,6 +67,7 @@ class Dijkstra extends Algorithm
       searchState.iterable.forEach((n) => n.parent = new Optional.fromNullable(parent[n]));
 
       searchHistory.add(searchState);
+      turn++;
     }
     return searchHistory;
   }
