@@ -28,7 +28,7 @@ class Dijkstra extends Algorithm
     {
       SearchState searchState = new SearchState(turn, grid);
 
-      Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n1) ? n1 : n2);
+      Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
       searchState[nStar.position].selectedNodeInTurn = true;
 
       if (nStar == target)
@@ -64,7 +64,7 @@ class Dijkstra extends Algorithm
 
       open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
       closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
-      searchState.iterable.forEach((n) => n.parent = new Optional.fromNullable(parent[n]));
+      parent.forEach((n, p) => searchState[n.position].parent =  new Optional.of(p.position));
 
       searchHistory.add(searchState);
       turn++;

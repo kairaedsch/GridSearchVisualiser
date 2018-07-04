@@ -9,7 +9,7 @@ class NodeSearchState
 
   NodeSearchState() :
         nodeMarking = NodeMarking.UNMARKED_NODE,
-        parent = null,
+        parent = const Optional.absent(),
         selectedNodeInTurn = false;
 }
 

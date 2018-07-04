@@ -36,7 +36,7 @@ class StoreNode extends Store
 
   void _changeExplanationNode(NodeSearchState nodeSearchState)
   {
-    _explanationNode = new ExplanationNode(nodeSearchState.nodeMarking.name);
+    _explanationNode = new ExplanationNode(nodeSearchState);
     trigger();
   }
 

@@ -68,7 +68,7 @@ class StoreGrid extends Store
         &&
         (allowDiagonal || direction.isCardinal)
         &&
-        (crossCorner || false);
+        (crossCorner || true);
   }
 
   historyActiveChanged(HistoryPart part)

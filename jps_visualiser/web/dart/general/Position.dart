@@ -11,9 +11,15 @@ class Position
 
   String toString() => "($x, $y)";
 
+  String toSVG() => "${x}px, ${y}px";
+
   double length() => sqrt(x * x + y * y);
 
   Position operator -(Position pos) => new Position(x - pos.x, y - pos.y);
+
+  Position operator +(Position pos) => new Position(x + pos.x, y + pos.y);
+
+  Position operator *(int scale) => new Position(x * scale, y * scale);
 
   Position go(Direction direction) => new Position(x + direction.dx, y + direction.dy);
 

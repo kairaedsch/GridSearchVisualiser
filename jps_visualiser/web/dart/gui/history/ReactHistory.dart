@@ -35,6 +35,6 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
       ..className = "part"
         " ${part == props.store.active ? "active" : ""}"
       ..onClick = ((_) => props.store.actions.activeChanged.call(part))
-    )("History Nr. " + part.id.toString());
+    )("Turn " + part.id.toString());
   }
 }

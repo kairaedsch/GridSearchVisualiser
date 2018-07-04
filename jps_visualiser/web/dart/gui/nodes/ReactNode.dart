@@ -6,6 +6,7 @@ import '../store/grid/StoreNode.dart';
 import '../store/grid/StructureNode.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
+import 'ReactArrow.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 
@@ -46,7 +47,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..className = "node"
           " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
-          " ${explanationNode.marking.or("") }"
+          " ${explanationNode.marking.or("")}"
+          " ${explanationNode.selectedNodeInTurn ? "selectedNodeInTurn" : "ghghg" }"
           " ${state.mouseIsOver ? "hover" : ""}"
           " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
           " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
@@ -55,7 +57,17 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..onMouseEnter = ((_) => _handleMouseEnter())
       ..onMouseLeave = ((_) => _handleMouseLeave())
     )(
-        _renderInner()
+        (Dom.div()..className = "parts")(
+            _renderInner()
+        ),
+        explanationNode.parent.isPresent ?
+          (ReactArrow()
+            ..size = props.grid.props.storeGridSettings.size
+            ..sourceNode = explanationNode.parent.value
+            ..targetNode = props.store.position
+          )()
+            :
+          ""
     );
   }
 
