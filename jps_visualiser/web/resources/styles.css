@@ -247,7 +247,14 @@ html, body {
 .grid .node .arrow .svg {
   width: 100%;
   height: 100%;
+}
+
+.grid .node .arrowParent .arrow .svg {
   opacity: 0.5;
+}
+
+.grid .node .arrowsToGo .arrow .svg {
+  opacity: 0.2;
 }
 
 .grid .node .arrow .svg .line {

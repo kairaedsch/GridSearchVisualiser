@@ -83,7 +83,6 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
         ReactNode()
           ..key = pos
           ..storeGridSettings = props.storeGridSettings
-          ..storeGrid = props.store
           ..store = storeNode
           ..actions = storeNode.actions
           ..grid = this
