@@ -11,7 +11,7 @@ class Position
 
   String toString() => "($x, $y)";
 
-  String toSVG() => "${x}px, ${y}px";
+  String toSVG() => "${x}, ${y}";
 
   double length() => sqrt(x * x + y * y);
 

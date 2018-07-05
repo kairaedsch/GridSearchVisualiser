@@ -1,7 +1,9 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
+import '../../general/Position.dart';
 import '../store/grid/ExplanationNode.dart';
 import '../store/StoreGridSettings.dart';
+import '../store/grid/StoreGrid.dart';
 import '../store/grid/StoreNode.dart';
 import '../store/grid/StructureNode.dart';
 import 'ReactGrid.dart';
@@ -17,6 +19,7 @@ UiFactory<ReactNodeProps> ReactNode;
 class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
 {
   StoreGridSettings storeGridSettings;
+  StoreGrid storeGrid;
   ReactGridComponent grid;
 }
 
@@ -60,15 +63,57 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         (Dom.div()..className = "parts")(
             _renderInner()
         ),
-        explanationNode.parent.isPresent ?
+        explanationNode.parent.isPresent
+            ?
           (ReactArrow()
-            ..size = props.grid.props.storeGridSettings.size
+            ..size = props.storeGridSettings.size
             ..sourceNode = explanationNode.parent.value
             ..targetNode = props.store.position
+            ..showEnd = true
           )()
             :
-          ""
+          "",
+        state.mouseIsOver
+            ?
+        (Dom.div()..className = "arrowsToGo")(
+            _renderArrowsToGo()
+        )
+            :
+        ""
     );
+  }
+
+  List<ReactElement> _renderArrowsToGo()
+  {
+    if (!state.mouseIsOver)
+    {
+      return [];
+    }
+
+    return Direction.values.map(_renderArrowToGo).toList();
+  }
+
+  ReactElement _renderArrowToGo(Direction direction)
+  {
+    Position neighbourPosition = props.store.position.go(direction);
+    if (!neighbourPosition.legal(props.storeGrid.storeNodes))
+    {
+      return Dom.div()();
+    }
+
+    StoreNode neighbourStoreNode = props.storeGrid.storeNodes[neighbourPosition];
+    bool blocked = neighbourStoreNode.structureNode.barrier.isBlocked(direction.turn(180));
+
+    return !blocked
+        ?
+        (ReactArrow()
+          ..size = props.storeGridSettings.size
+          ..sourceNode = neighbourStoreNode.position
+          ..targetNode = props.store.position
+          ..showEnd = true
+        )()
+        :
+        Dom.div()();
   }
 
   void _handleMouseDown()

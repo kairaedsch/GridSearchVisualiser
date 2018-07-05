@@ -1,3 +1,5 @@
+import 'Position.dart';
+
 class Direction
 {
   static const Direction NORTH      = const Direction("NORTH",       0, -1);

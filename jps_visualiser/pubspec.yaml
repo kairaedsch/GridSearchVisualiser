@@ -11,6 +11,7 @@ dependencies:
   over_react: "^1.24.1"
   optional: "^1.2.3+1"
   tuple: "^1.0.1"
+  vector_math: "^2.0.7"
 
 transformers:
 - over_react
