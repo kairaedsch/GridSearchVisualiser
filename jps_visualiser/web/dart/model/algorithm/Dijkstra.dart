@@ -53,11 +53,13 @@ class Dijkstra extends Algorithm
 
         for (Node n in grid.neighbours(nStar).where((n) => !closed.contains(n) && !open.contains(n)))
         {
+          searchState[n.position].markedOpenInTurn = true;
           open.add(n);
           if (!distance.containsKey(n) || getDistance(nStar) + nStar.distanceTo(n) <  getDistance(n))
           {
               parent[n] = nStar;
               distance[n] = getDistance(nStar) + nStar.distanceTo(n);
+              searchState[nStar.position].parentUpdated = true;
           }
         }
       }

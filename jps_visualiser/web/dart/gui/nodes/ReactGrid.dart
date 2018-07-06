@@ -10,6 +10,7 @@ import 'EditBarrierMouseMode.dart';
 import 'EditNodeTypeMouseMode.dart';
 import 'MouseMode.dart';
 import 'ReactNode.dart';
+import 'ReactPath.dart';
 import 'dart:async';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
@@ -29,6 +30,7 @@ class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
   Optional<MouseMode> _mouseMode;
+
   Optional<MouseMode> get mouseMode => _mouseMode;
 
   StreamSubscription _onDocumentMouseUpListener;
@@ -59,7 +61,14 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
             "height": "${Settings.nodeSize * storeNodes.height}px"
           }
     )(
-        new List<ReactElement>.generate(storeNodes.height, _renderRow)
+        (Dom.div()
+          ..className = "grid")(
+            new List<ReactElement>.generate(storeNodes.height, _renderRow)
+        ),
+       /* (ReactPath()
+          ..path = props.store.searchState.value.
+            ..showEnd = true
+        )()*/
     );
   }
 
@@ -83,6 +92,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
         ReactNode()
           ..key = pos
           ..storeGridSettings = props.storeGridSettings
+          ..storeGrid = props.store
           ..store = storeNode
           ..actions = storeNode.actions
           ..grid = this
@@ -113,7 +123,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
       {
         _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, storeNode.position));
       }
-      else if(direction != null)
+      else if (direction != null)
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }

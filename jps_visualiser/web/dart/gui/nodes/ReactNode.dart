@@ -19,6 +19,7 @@ UiFactory<ReactNodeProps> ReactNode;
 class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
 {
   StoreGridSettings storeGridSettings;
+  StoreGrid storeGrid;
   ReactGridComponent grid;
 }
 
@@ -47,10 +48,13 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
     return (Dom.div()
       ..className = "node"
-          " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "totalBlocked" : "totalUnblocked") : ""}"
+          " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
+          " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
           " ${structureNode.type.name}"
           " ${explanationNode.marking.or("")}"
-          " ${explanationNode.selectedNodeInTurn ? "selectedNodeInTurn" : "ghghg" }"
+          " ${explanationNode.selectedNodeInTurn ? "selectedNodeInTurn" : "" }"
+          " ${explanationNode.markedOpenInTurn ? "markedOpenInTurn" : "" }"
+          " ${explanationNode.parentUpdated ? "parentUpdated" : "" }"
           " ${state.mouseIsOver ? "hover" : ""}"
           " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
           " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
@@ -85,9 +89,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
   ReactElement _renderArrowsToGo()
   {
-    StructureNode structureNode = props.store.structureNode;
-
-    if (!state.mouseIsOver || structureNode.barrier.isNoneBlocked())
+    if (!state.mouseIsOver)
     {
       return Dom.div()();
     }
@@ -106,15 +108,18 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       return Dom.div()();
     }
 
-    bool blocked = props.store.structureNode.barrier.isBlocked(direction);
+    bool leaveAble = props.storeGrid.leaveAble(props.store.position, direction);
+    bool enterAble = props.storeGrid.leaveAble(neighbourPosition, direction.turn(180));
 
-    return !blocked
+    return (enterAble || leaveAble)
         ?
     (ReactArrow()
+      ..key = direction
       ..size = props.storeGridSettings.size
-      ..sourceNode = neighbourPosition
-      ..targetNode = props.store.position
-      ..showEnd = true
+      ..sourceNode = props.store.position
+      ..targetNode = neighbourPosition
+      ..showEnd = leaveAble && !(enterAble && leaveAble)
+      ..showStart = enterAble && !(enterAble && leaveAble)
     )()
         :
     Dom.div()();

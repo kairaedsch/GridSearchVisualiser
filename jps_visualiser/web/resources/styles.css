@@ -10,14 +10,18 @@
   --color-main-light: #5bbaff;
   --color-second: #CA0404;
   --color-third: #e9b330;
+  --color-fourth: #2AB936;
+  --color-fourth-light: #4ce258;
 }
 
 *, *:before, *:after {
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   color: #333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 html, body {
@@ -104,7 +108,7 @@ html, body {
 }
 
 .grid .node.SOURCE_NODE.hover {
-  border-color: #2AB936;
+  border-color: var(--color-fourth);
 }
 
 .grid .node.TARGET_NODE.hover {
@@ -120,11 +124,15 @@ html, body {
 }
 
 .grid .node.MARKED_OPEN_NODE {
-  background: #2AB936 !important;
+  background: var(--color-fourth) !important;
+}
+
+.grid .node.MARKED_OPEN_NODE.markedOpenInTurn {
+  background: var(--color-fourth-light) !important;
 }
 
 .grid .node.MARKED_CLOSED_NODE {
-  background: #AAA !important;
+  background: #CCC !important;
 }
 
 .grid .node.selectedNodeInTurn {
@@ -149,17 +157,17 @@ html, body {
 }
 
 .grid .node .part {
-  width: calc(100%/3 - 2px);
-  height: calc(100%/3 - 2px);
+  width: calc(100%/3);
+  height: calc(100%/3);
   float: left;
-  margin: 1px;
 }
 
 .grid.ADVANCED .node .part.outer {
   opacity: 0;
   cursor: pointer;
-  background-size: contain;
+  background-size: calc(100% - 2px);
   background-repeat: no-repeat;
+  background-position: 1px 1px;
 }
 
 .grid.ADVANCED .node .part.NORTH {
@@ -223,28 +231,28 @@ html, body {
 }
 
 .grid .node.SOURCE_NODE .part.inner {
-  background: #2AB936;
+  background: var(--color-fourth);
 }
 
 .grid .node.TARGET_NODE .part.inner {
   background: var(--color-second);
 }
 
-.grid .node .arrow {
+.grid .arrow {
   position: absolute;
   width: 100vh;
   height: 100vw;
   top: 0;
   left: 0;
   pointer-events: none;
-  ddisplay: none;
+  display: none;
 }
 
-.grid .node:hover .arrow {
+.grid .node:hover .arrow, .grid .node.hover .arrow, .grid .node.markedOpenInTurn .arrowParent .arrow {
   display: block;
 }
 
-.grid .node .arrow .svg {
+.grid .arrow .svg {
   width: 100%;
   height: 100%;
 }
@@ -253,17 +261,28 @@ html, body {
   opacity: 0.5;
 }
 
-.grid .node .arrowsToGo .arrow .svg {
-  opacity: 0.2;
+.grid .node.markedOpenInTurn .arrowParent .arrow .svg {
+  opacity: 0.75;
 }
 
-.grid .node .arrow .svg .line {
+.grid .node .arrowsToGo .arrow .svg {
+  opacity: 0.05;
+}
+
+.grid .node.anyBlocked .arrowsToGo .arrow .svg {
+   opacity: 0.15;
+}
+
+.grid .arrow .svg {
   stroke: #000;
+  fill: #000;
+}
+
+.grid .arrow .svg .line {
   stroke-width: 0.025;
 }
 
-.grid .node .arrow .svg .end {
-  fill: #000;
+.grid .arrow .svg .end {
   stroke-width: 0;
 }
 
@@ -277,11 +296,12 @@ html, body {
 
 .dropDown .value {
   padding: 5px 33px 5px 8px;
-  font-size: 16px;
+  font-size: 14px;
 
   cursor: pointer;
   background: var(--color-main-light);
   color: #FFF;
+  overflow: hidden;
 }
 
 .dropDown .value.selected, .dropDown .value.current {
@@ -342,7 +362,7 @@ html, body {
 }
 
 .menu>.title {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 600;
   text-align: center;
   padding-bottom: 10px;
@@ -367,22 +387,21 @@ html, body {
 .config .title {
   min-width: 0;
   padding-right: 10px;
+  padding-top: 3px;
 
   font-weight: 600;
-  line-height: 150%;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   overflow: hidden;
 }
 
 .config .dropDown {
-  flex-shrink: 0;
+  flex-grow: 1;
+  overflow: hidden;
   margin-right: auto;
 }
 
 .button {
   padding: 5px 8px 5px 30px;
-  font-size: 16px;
+  font-size: 14px;
 
   border-radius: 3px;
   cursor: pointer;

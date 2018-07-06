@@ -18,12 +18,11 @@ class StoreNode extends Store
   ActionsNodeChanged _actions;
   ActionsNodeChanged get actions => _actions;
 
-  StoreNode(StoreGridSettings storeGridSettings, this.position)
+  StoreNode(this.position)
   {
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
     _actions.explanationNodeChanged.listen(_changeExplanationNode);
-    storeGridSettings.actions.gridModeChanged.listen(_changeGridMode);
     _structureNode = new StructureNode.normal();
     _explanationNode = new ExplanationNode.normal();
   }
@@ -38,13 +37,6 @@ class StoreNode extends Store
   {
     _explanationNode = new ExplanationNode(nodeSearchState);
     trigger();
-  }
-
-  void _changeGridMode(GridMode newGridMode) {
-    if (structureNode.barrier.isAnyBlocked())
-    {
-      trigger();
-    }
   }
 }
 

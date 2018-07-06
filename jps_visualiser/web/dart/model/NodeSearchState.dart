@@ -6,11 +6,15 @@ class NodeSearchState
   NodeMarking nodeMarking;
   Optional<Position> parent;
   bool selectedNodeInTurn;
+  bool markedOpenInTurn;
+  bool parentUpdated;
 
   NodeSearchState() :
         nodeMarking = NodeMarking.UNMARKED_NODE,
         parent = const Optional.absent(),
-        selectedNodeInTurn = false;
+        selectedNodeInTurn = false,
+        markedOpenInTurn = false,
+        parentUpdated = false;
 }
 
 class NodeMarking

@@ -15,24 +15,24 @@ class StoreGridSettings extends Store
   Size _size;
   Size get size => _size;
 
-  Bool _allowDiagonal;
-  Bool get allowDiagonal => _allowDiagonal;
+  DirectionMode _directionMode;
+  DirectionMode get directionMode => _directionMode;
 
-  Bool _crossCorners;
-  Bool get crossCorners => _crossCorners;
+  CrossCornerMode _crossCornerMode;
+  CrossCornerMode get crossCornerMode => _crossCornerMode;
 
   StoreGridSettings(Size size)
   {
     _size = size;
     _gridMode = GridMode.BASIC;
-    _allowDiagonal = Bool.TRUE;
-    _crossCorners = Bool.TRUE;
+    _directionMode = DirectionMode.ALL;
+    _crossCornerMode = CrossCornerMode.ALLOW;
 
     _actions = new ActionsGridSettingsChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);
     _actions.sizeChanged.listen(_sizeChanged);
-    _actions.allowDiagonalChanged.listen(_allowDiagonalChanged);
-    _actions.crossCornersChanged.listen(_crossCornersChanged);
+    _actions.directionModeChanged.listen(_directionModeChanged);
+    _actions.crossCornerModeChanged.listen(_crossCornerModeChanged);
   }
 
   void _gridModeChanged(GridMode newGridMode)
@@ -47,15 +47,15 @@ class StoreGridSettings extends Store
     trigger();
   }
 
-  void _allowDiagonalChanged(Bool newAllowDiagonal)
+  void _directionModeChanged(DirectionMode newDirectionMode)
   {
-    _allowDiagonal = newAllowDiagonal;
+    _directionMode = newDirectionMode;
     trigger();
   }
 
-  void _crossCornersChanged(Bool newCrossCorners)
+  void _crossCornerModeChanged(CrossCornerMode newCrossCornerMode)
   {
-    _crossCorners = newCrossCorners;
+    _crossCornerMode = newCrossCornerMode;
     trigger();
   }
 }
@@ -64,8 +64,8 @@ class ActionsGridSettingsChanged
 {
   final Action<GridMode> gridModeChanged = new Action<GridMode>();
   final Action<Size> sizeChanged = new Action<Size>();
-  final Action<Bool> allowDiagonalChanged = new Action<Bool>();
-  final Action<Bool> crossCornersChanged = new Action<Bool>();
+  final Action<DirectionMode> directionModeChanged = new Action<DirectionMode>();
+  final Action<CrossCornerMode> crossCornerModeChanged = new Action<CrossCornerMode>();
 }
 
 class GridMode implements DropDownElement
@@ -83,4 +83,37 @@ class GridMode implements DropDownElement
 
   static const List<GridMode> values = const <GridMode>[
     BASIC, ADVANCED];
+}
+
+class DirectionMode implements DropDownElement
+{
+  static const DirectionMode ALL = const DirectionMode("ALL", "All");
+  static const DirectionMode ONLY_CARDINAL = const DirectionMode("ONLY_CARDINAL", "Only cardinal");
+  static const DirectionMode ONLY_DIAGONAL = const DirectionMode("ONLY_DIAGONAL", "Only diagonal");
+
+  final String name;
+  final String dropDownName;
+
+  @override
+  String toString() => name;
+
+  const DirectionMode(this.name, this.dropDownName);
+
+  static const List<DirectionMode> values = const <DirectionMode>[ALL, ONLY_CARDINAL, ONLY_DIAGONAL];
+}
+
+class CrossCornerMode implements DropDownElement
+{
+  static const CrossCornerMode ALLOW = const CrossCornerMode("ALLOW", "Allow");
+  static const CrossCornerMode DENY = const CrossCornerMode("DENY", "Deny");
+
+  final String name;
+  final String dropDownName;
+
+  @override
+  String toString() => name;
+
+  const CrossCornerMode(this.name, this.dropDownName);
+
+  static const List<CrossCornerMode> values = const <CrossCornerMode>[ALLOW, DENY];
 }

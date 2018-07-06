@@ -16,6 +16,7 @@ class ReactArrowProps extends UiProps
   Position sourceNode;
   Position targetNode;
   bool showEnd;
+  bool showStart;
 }
 
 @Component()
@@ -27,6 +28,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
   @override
   getDefaultProps() => (newProps()
     ..showEnd = false
+    ..showStart = false
   );
 
   @override
@@ -36,15 +38,21 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     Vector2 endOrg = new Vector2(props.targetNode.x + 0.0, props.targetNode.y + 0.0);
 
     Vector2 v = (endOrg - startOrg).normalized();
+    Vector2 vP90 = rotate(v, 35.0);
+    Vector2 vM90 = rotate(v, -35.0);
+
     Vector2 vB = v * -1.0;
-    Vector2 vP90 = rotate(vB, 35.0);
-    Vector2 vM90 = rotate(vB, -35.0);
+    Vector2 vBP90 = rotate(vB, 35.0);
+    Vector2 vBM90 = rotate(vB, -35.0);
 
     Vector2 start = startOrg + (v * arrowInset);
     Vector2 end = endOrg + (vB * arrowInset);
 
-    vP90 = (vP90 + vB.normalized()) * arrowSize;
-    vM90 = (vM90 + vB.normalized()) * arrowSize;
+    vBP90 = (vBP90 + vB.normalized()) * arrowSize;
+    vBM90 = (vBM90 + vB.normalized()) * arrowSize;
+
+    vP90 = (vP90 + v.normalized()) * arrowSize;
+    vM90 = (vM90 + v.normalized()) * arrowSize;
 
     return (Dom.div()
       ..className = "arrow"
@@ -69,12 +77,23 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
             (Dom.polygon()
               ..points = ""
                   " ${end.x},${end.y}"
-                  " ${end.x + vP90.x},${end.y + vP90.y}"
-                  " ${end.x + vM90.x},${end.y + vM90.y}"
+                  " ${end.x + vBP90.x},${end.y + vBP90.y}"
+                  " ${end.x + vBM90.x},${end.y + vBM90.y}"
               ..className = "end"
             )()
               :
-              ""
+              "",
+          props.showStart
+              ?
+          (Dom.polygon()
+            ..points = ""
+                " ${start.x},${start.y}"
+                " ${start.x + vP90.x},${start.y + vP90.y}"
+                " ${start.x + vM90.x},${start.y + vM90.y}"
+            ..className = "end"
+          )()
+              :
+          ""
       ),
     );
   }

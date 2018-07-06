@@ -23,7 +23,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
         (Dom.div()..className = "title")("Grid settings"),
         (Dom.div()..className = "configs")(
           (Dom.div()..className = "config")(
-              (Dom.div()..className = "title")("Gridmode:"),
+              (Dom.div()..className = "title")("Mode:"),
               (ReactDropDown()
                 ..value = props.store.gridMode
                 ..values = GridMode.values
@@ -31,20 +31,20 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
               )()
           ),
           (Dom.div()..className = "config")(
-              (Dom.div()..className = "title")("Allow Diagonal:"),
+              (Dom.div()..className = "title")("Directions:"),
               (ReactDropDown()
-                ..value = props.store.allowDiagonal
-                ..values = Bool.values
-                ..selectListener = ((newValue) => props.store.actions.allowDiagonalChanged.call(newValue))
+                ..value = props.store.directionMode
+                ..values = DirectionMode.values
+                ..selectListener = ((newValue) => props.store.actions.directionModeChanged.call(newValue))
               )()
           ),
-          props.store.allowDiagonal.value ?
+          props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Cross Corners:"),
               (ReactDropDown()
-                ..value = props.store.crossCorners
-                ..values = Bool.values
-                ..selectListener = ((newValue) => props.store.actions.crossCornersChanged.call(newValue))
+                ..value = props.store.crossCornerMode
+                ..values = CrossCornerMode.values
+                ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue))
               )()
           ) : "",
         )

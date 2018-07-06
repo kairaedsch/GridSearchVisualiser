@@ -7,14 +7,20 @@ class ExplanationNode
   final Optional<String> marking;
   final Optional<Position> parent;
   final bool selectedNodeInTurn;
+  final bool markedOpenInTurn;
+  final bool parentUpdated;
 
   ExplanationNode(NodeSearchState nodeSearchState) :
         marking = new Optional.of(nodeSearchState.nodeMarking.name),
         parent = nodeSearchState.parent,
-        selectedNodeInTurn = nodeSearchState.selectedNodeInTurn;
+        selectedNodeInTurn = nodeSearchState.selectedNodeInTurn,
+        markedOpenInTurn = nodeSearchState.markedOpenInTurn,
+        parentUpdated = nodeSearchState.parentUpdated;
 
   ExplanationNode.normal() :
         marking = const Optional.absent(),
         parent = const Optional.absent(),
-        selectedNodeInTurn = false;
+        selectedNodeInTurn = false,
+        markedOpenInTurn = false,
+        parentUpdated = false;
 }
