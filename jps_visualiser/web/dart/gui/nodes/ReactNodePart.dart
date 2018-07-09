@@ -1,9 +1,10 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
-import '../store/grid/ExplanationNode.dart';
+import '../../general/Position.dart';
 import '../store/StoreGridSettings.dart';
 import '../store/grid/StoreNode.dart';
 import '../store/grid/StructureNode.dart';
+import '../store/grid/StoreGrid.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
@@ -19,6 +20,7 @@ class ReactNodePartProps extends UiProps
   Optional<Direction> direction;
   ActionsNodeChanged actions;
   ReactGridComponent grid;
+  StoreGrid storeGrid;
 }
 
 @State()
@@ -40,6 +42,7 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
   {
     Optional<Direction> direction = props.direction;
     StructureNode structureNode = props.storeNode.structureNode;
+    Position position = props.storeNode.position;
 
     return (Dom.div()
       ..className =
@@ -51,6 +54,8 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
           (
             "part outer"
             " ${direction.value.name}"
+            " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
+            " ${props.storeGrid.leaveBlockedDirectly(position, direction.value) ? "leaveBlocked" : "leaveUnblocked"}"
             " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
           )
       ..onMouseDown = ((_) => _handleMouseDown())

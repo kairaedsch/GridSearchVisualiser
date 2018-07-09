@@ -1,3 +1,4 @@
+import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
@@ -11,6 +12,7 @@ import 'ReactNodePart.dart';
 import 'ReactArrow.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
+import 'package:w_flux/src/store.dart';
 
 @Factory()
 UiFactory<ReactNodeProps> ReactNode;
@@ -41,6 +43,18 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       );
 
   @override
+  List<Store> redrawOn() {
+      Array2D<StoreNode> storeNodes = props.storeGrid.storeNodes;
+      Position position = props.store.position;
+      List<StoreNode> neighbours = Direction.values
+          .map((d) => position.go(d))
+          .where((Position position) => position.legal(props.storeGridSettings.size))
+          .map((Position position) => storeNodes[position]).toList();
+      neighbours.add(props.store);
+      return neighbours;
+  }
+
+  @override
   ReactElement render()
   {
     StructureNode structureNode = props.store.structureNode;
@@ -65,7 +79,13 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     )(
         _renderInner(),
         _renderParentArrow(explanationNode),
-        _renderArrowsToGo()
+        _renderArrowsToGo(),
+        (Dom.div()..className = "popover")(
+          (Dom.div()..className = "content")(
+            "Hallo ich bin ein Popover"
+          ),
+          (Dom.div()..className = "arrow")()
+        )
     );
   }
 
@@ -203,6 +223,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..direction = new Optional.fromNullable(direction)
       ..actions = props.actions
       ..grid = props.grid
+      ..storeGrid = props.storeGrid
     )();
   }
 }

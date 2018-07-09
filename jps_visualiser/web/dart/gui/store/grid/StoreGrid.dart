@@ -18,11 +18,9 @@ class StoreGrid extends Store
   Optional<SearchState> get searchState => _searchState;
 
   Array2D<StoreNode> _storeNodes;
-
   Array2D<StoreNode> get storeNodes => _storeNodes;
 
   ActionsGridChanged _actions;
-
   ActionsGridChanged get actions => _actions;
 
   Position get sourcePosition =>
@@ -69,11 +67,11 @@ class StoreGrid extends Store
     bool isDirectlyBlocked;
     if (gridMode == GridMode.BASIC)
     {
-      isDirectlyBlocked = _leaveBlockedDirectly(position, direction) || _enterBlockedDirectly(position, direction);
+      isDirectlyBlocked = leaveBlockedDirectly(position, direction) || enterBlockedDirectly(position, direction);
     }
     else
     {
-      isDirectlyBlocked = _leaveBlockedDirectly(position, direction);
+      isDirectlyBlocked = leaveBlockedDirectly(position, direction);
     }
 
     if (isDirectlyBlocked)
@@ -98,10 +96,10 @@ class StoreGrid extends Store
 
     if (direction.isDiagonal && crossCornerMode == CrossCornerMode.DENY)
     {
-      bool isCornerBlocked = _leaveBlockedDirectly(position, direction)
-          || _enterBlockedDirectly(position, direction)
-          || _leaveBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90))
-          || _enterBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90));
+      bool isCornerBlocked = leaveBlockedDirectly(position, direction)
+          || enterBlockedDirectly(position, direction)
+          || leaveBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90))
+          || enterBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90));
 
       if (isCornerBlocked)
       {
@@ -112,16 +110,18 @@ class StoreGrid extends Store
     return true;
   }
 
-  bool _leaveBlockedDirectly(Position position, Direction direction)
+  bool leaveBlockedDirectly(Position position, Direction direction)
   {
+    GridMode gridMode = _storeGridSettings.gridMode;
     Position targetPosition = position.go(direction);
-    return !targetPosition.legal(_storeNodes) || !position.legal(_storeNodes) || _storeNodes[targetPosition].structureNode.barrier.isBlocked(direction.turn(180));
+    return !targetPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[targetPosition].structureNode.barrier.isAnyBlocked() : _storeNodes[targetPosition].structureNode.barrier.isBlocked(direction.turn(180)));
   }
 
-  bool _enterBlockedDirectly(Position position, Direction direction)
+  bool enterBlockedDirectly(Position position, Direction direction)
   {
+    GridMode gridMode = _storeGridSettings.gridMode;
     Position startPosition = position.go(direction);
-    return !startPosition.legal(_storeNodes) || !position.legal(_storeNodes) || _storeNodes[position].structureNode.barrier.isBlocked(direction);
+    return !startPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[position].structureNode.barrier.isAnyBlocked() : _storeNodes[position].structureNode.barrier.isBlocked(direction));
   }
 
   void _historyActiveChanged(HistoryPart part)

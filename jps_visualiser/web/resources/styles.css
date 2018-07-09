@@ -152,59 +152,61 @@ html, body {
 }
 
 .grid .node .parts {
-    width: 100%;
-    height: 100%;
+    width: calc(var(--node-size) - 2px);
+    height: calc(var(--node-size) - 2px);
 }
 
 .grid .node .part {
-  width: calc(100%/3);
-  height: calc(100%/3);
+  width: calc((var(--node-size) - 2px) /3);
+  height: calc((var(--node-size) - 2px) /3);
   float: left;
 }
 
 .grid.ADVANCED .node .part.outer {
   opacity: 0;
   cursor: pointer;
-  background-size: calc(100% - 2px);
+  background-size: calc(((var(--node-size) - 2px) /3) - 2px);
   background-repeat: no-repeat;
   background-position: 1px 1px;
 }
 
-.grid.ADVANCED .node .part.NORTH {
+.grid.ADVANCED .node .part.leaveUnblocked.cardinal {
   background-image: url("images/nodePartNorth.svg");
 }
 
-.grid.ADVANCED .node .part.NORTH_EAST {
+.grid.ADVANCED .node .part.leaveUnblocked.diagonal {
   background-image: url("images/nodePartNorthEast.svg");
 }
 
+.grid.ADVANCED .node .part.leaveBlocked.cardinal {
+  background-image: url("images/nodePartNorthBlocked.svg");
+}
+
+.grid.ADVANCED .node .part.leaveBlocked.diagonal {
+  background-image: url("images/nodePartNorthEastBlocked.svg");
+}
+
 .grid.ADVANCED .node .part.EAST {
-  background-image: url("images/nodePartNorth.svg");
   transform: rotate(90deg);
 }
 
 .grid.ADVANCED .node .part.SOUTH_EAST {
-  background-image: url("images/nodePartNorthEast.svg");
   transform: rotate(90deg);
 }
 
 .grid.ADVANCED .node .part.SOUTH {
-  background-image: url("images/nodePartNorth.svg");
   transform: rotate(180deg);
 }
 
 .grid.ADVANCED .node .part.SOUTH_WEST {
-  background-image: url("images/nodePartNorthEast.svg");
   transform: rotate(180deg);
 }
 
 .grid.ADVANCED .node .part.WEST {
-  background-image: url("images/nodePartNorth.svg");
   transform: rotate(270deg);
 }
 
 .grid.ADVANCED .node .part.NORTH_WEST {
-  background-image: url("images/nodePartNorthEast.svg");
   transform: rotate(270deg);
 }
 
@@ -238,7 +240,7 @@ html, body {
   background: var(--color-second);
 }
 
-.grid .arrow {
+.grid .arrowParent .arrow, .grid .arrowsToGo .arrow {
   position: absolute;
   width: 100vh;
   height: 100vw;
@@ -266,11 +268,11 @@ html, body {
 }
 
 .grid .node .arrowsToGo .arrow .svg {
-  opacity: 0.05;
+  opacity: 0.075;
 }
 
 .grid .node.anyBlocked .arrowsToGo .arrow .svg {
-   opacity: 0.15;
+   opacity: 0.1;
 }
 
 .grid .arrow .svg {
@@ -284,6 +286,20 @@ html, body {
 
 .grid .arrow .svg .end {
   stroke-width: 0;
+}
+
+.popover {
+  position: absolute;
+  width: 200px;
+}
+
+.popover .arrow {
+  height: 20px;
+  background: blue;
+}
+
+.popover .content {
+  background: #EEE;
 }
 
 .dropDown {
