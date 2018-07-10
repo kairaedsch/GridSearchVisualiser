@@ -240,51 +240,54 @@ html, body {
   background: var(--color-second);
 }
 
-.grid .arrowParent .arrow, .grid .arrowsToGo .arrow {
+.nodeArrow {
   position: absolute;
   width: 100vh;
   height: 100vw;
   top: 0;
   left: 0;
   pointer-events: none;
+}
+
+.grid .node .arrowParent .nodeArrow, .grid .node .arrowsToGo .nodeArrow {
   display: none;
 }
 
-.grid .node:hover .arrow, .grid .node.hover .arrow, .grid .node.markedOpenInTurn .arrowParent .arrow {
+.grid .node:hover .nodeArrow, .grid .node.hover .nodeArrow, .grid .node.markedOpenInTurn .arrowParent .nodeArrow {
   display: block;
 }
 
-.grid .arrow .svg {
+.grid .nodeArrow .svg {
   width: 100%;
   height: 100%;
 }
 
-.grid .node .arrowParent .arrow .svg {
+.grid .node .arrowParent .nodeArrow .svg {
   opacity: 0.5;
 }
 
-.grid .node.markedOpenInTurn .arrowParent .arrow .svg {
+.grid .node.markedOpenInTurn .arrowParent .nodeArrow .svg {
   opacity: 0.75;
 }
 
-.grid .node .arrowsToGo .arrow .svg {
+.grid .node .arrowsToGo .nodeArrow .svg {
   opacity: 0.075;
 }
 
-.grid .node.anyBlocked .arrowsToGo .arrow .svg {
+.grid .node.anyBlocked .arrowsToGo .nodeArrow .svg {
    opacity: 0.1;
 }
 
-.grid .arrow .svg {
+.grid .nodeArrow .svg {
   stroke: #000;
   fill: #000;
 }
 
-.grid .arrow .svg .line {
+.grid .nodeArrow .svg .line {
   stroke-width: 0.025;
 }
 
-.grid .arrow .svg .end {
+.grid .nodeArrow .svg .end {
   stroke-width: 0;
 }
 

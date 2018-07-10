@@ -135,6 +135,7 @@ class StoreGrid extends Store implements Size
   {
     _historyPart = new Optional.of(part);
     _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(part.explanationNodes[n.position]));
+    trigger();
   }
 
   void _changeGridMode(GridMode newGridMode)

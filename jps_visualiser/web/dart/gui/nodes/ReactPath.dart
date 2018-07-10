@@ -38,8 +38,8 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
             ..size = props.size
             ..sourceNode = props.path[i]
             ..targetNode = props.path[i + 1]
-            ..showStart = props.showStart && (i + 1 == props.path.length - 1)
-            ..showEnd = props.showEnd && (i == 0)
+            ..showStart = props.showStart && (i == 0)
+            ..showEnd = props.showEnd && (i + 1 == props.path.length - 1)
           )()
       );
     }

@@ -56,7 +56,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     vM90 = (vM90 + v.normalized()) * arrowSize;
 
     return (Dom.div()
-      ..className = "arrow"
+      ..className = "nodeArrow"
       ..style =
       {
         "width": "${props.size.width * Settings.nodeSize}px",
