@@ -62,13 +62,15 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
           }
     )(
         (Dom.div()
-          ..className = "grid")(
+          ..className = "nodes")(
             new List<ReactElement>.generate(storeNodes.height, _renderRow)
         ),
-       /* (ReactPath()
-          ..path = props.store.searchState.value.
-            ..showEnd = true
-        )()*/
+        props.store.historyPart.isPresent ?
+        (ReactPath()
+          ..size = props.storeGridSettings.size
+          ..path = props.store.historyPart.value.path
+          ..showEnd = true
+        )() : null
     );
   }
 
@@ -86,7 +88,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   ReactElement _renderNode(Position pos)
   {
-    StoreNode storeNode = props.store.storeNodes[pos];
+    StoreNode storeNode = props.store[pos];
 
     return (
         ReactNode()

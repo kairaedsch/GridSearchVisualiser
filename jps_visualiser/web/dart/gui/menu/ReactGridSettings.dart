@@ -46,7 +46,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 ..values = CrossCornerMode.values
                 ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue))
               )()
-          ) : "",
+          ) : null,
         )
     );
   }

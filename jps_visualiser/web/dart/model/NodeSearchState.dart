@@ -8,13 +8,18 @@ class NodeSearchState
   bool selectedNodeInTurn;
   bool markedOpenInTurn;
   bool parentUpdated;
+  Optional<String> _info;
+  Optional<String> get info => _info;
 
   NodeSearchState() :
         nodeMarking = NodeMarking.UNMARKED_NODE,
         parent = const Optional.absent(),
         selectedNodeInTurn = false,
         markedOpenInTurn = false,
-        parentUpdated = false;
+        parentUpdated = false,
+        _info = const Optional.absent();
+
+  void addInfo(String newInfo) => _info = new Optional.of((_info.isPresent ? _info.value + " " : "") + newInfo);
 }
 
 class NodeMarking

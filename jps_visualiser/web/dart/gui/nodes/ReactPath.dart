@@ -30,7 +30,7 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
   @override
   ReactElement render()
   {
-    List<ReactElement> arrows;
+    List<ReactElement> arrows = [];
     for (int i = 0; i < props.path.length - 1; i++)
     {
       arrows.add(
@@ -38,7 +38,8 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
             ..size = props.size
             ..sourceNode = props.path[i]
             ..targetNode = props.path[i + 1]
-            ..showEnd = i + 1 == props.path.length - 1
+            ..showStart = props.showStart && (i + 1 == props.path.length - 1)
+            ..showEnd = props.showEnd && (i == 0)
           )()
       );
     }

@@ -7,8 +7,8 @@ class Grid implements Size
 {
   final Array2D<Node> _grid;
 
-  Grid(int width, int height, Node producer(Position pos))
-      : _grid = new Array2D<Node>(width, height, producer);
+  Grid(Size size, Node producer(Position pos))
+      : _grid = new Array2D<Node>(size, producer);
 
   bool leaveAble(Position pos, Direction direction)
   {

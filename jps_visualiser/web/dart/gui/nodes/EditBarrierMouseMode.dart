@@ -17,7 +17,7 @@ class EditBarrierMouseMode extends MouseMode
 
   void evaluateNode(Position position)
   {
-    StoreNode storeNode = reactGrid.props.store.storeNodes[position];
+    StoreNode storeNode = reactGrid.props.store[position];
     StructureNode structureNode = storeNode.structureNode;
 
     if (reactGrid.props.storeGridSettings.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
@@ -32,7 +32,7 @@ class EditBarrierMouseMode extends MouseMode
   {
     if (reactGrid.props.storeGridSettings.gridMode == GridMode.ADVANCED && direction != null)
     {
-      StoreNode storeNode = reactGrid.props.store.storeNodes[position];
+      StoreNode storeNode = reactGrid.props.store[position];
       StructureNode structureNode = storeNode.structureNode;
 
       bool easyFillModus = getAndUpdateEasyFillModus(!structureNode.barrier.isBlocked(direction));

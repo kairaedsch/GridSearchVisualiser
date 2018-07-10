@@ -1,6 +1,7 @@
 import '../../../general/Array2D.dart';
 import '../../../general/Direction.dart';
 import '../../../general/Position.dart';
+import '../../../general/Size.dart';
 import '../../../model/Grid.dart';
 import '../../../model/SearchState.dart';
 import '../StoreGridSettings.dart';
@@ -11,14 +12,22 @@ import '../history/StoreHistory.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
 
-class StoreGrid extends Store
+class StoreGrid extends Store implements Size
 {
   StoreGridSettings _storeGridSettings;
-  Optional<SearchState> _searchState;
-  Optional<SearchState> get searchState => _searchState;
+
+  Optional<HistoryPart> _historyPart;
+  Optional<HistoryPart> get historyPart => _historyPart;
 
   Array2D<StoreNode> _storeNodes;
   Array2D<StoreNode> get storeNodes => _storeNodes;
+  StoreNode operator [](Position pos) => _storeNodes[pos];
+
+  @override
+  int get width => _storeNodes.width;
+
+  @override
+  int get height => _storeNodes.height;
 
   ActionsGridChanged _actions;
   ActionsGridChanged get actions => _actions;
@@ -37,10 +46,8 @@ class StoreGrid extends Store
 
   StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory)
   {
-    int width = _storeGridSettings.size.width;
-    int height = _storeGridSettings.size.height;
-
-    _storeNodes = new Array2D<StoreNode>(width, height, (Position pos) => new StoreNode(pos));
+    _historyPart = const Optional.absent();
+    _storeNodes = new Array2D<StoreNode>(_storeGridSettings.size, (Position pos) => new StoreNode(pos));
     StoreNode sourceStoreNode = _storeNodes[new Position(5, 5)];
     sourceStoreNode.actions.structureNodeChanged.call(sourceStoreNode.structureNode.clone(type: StructureNodeType.SOURCE_NODE));
 
@@ -55,7 +62,7 @@ class StoreGrid extends Store
 
   Grid toGrid()
   {
-    return new Grid(_storeNodes.width, _storeNodes.height, (Position pos) => new Node(pos, (direction) => leaveAble(pos, direction)));
+    return new Grid(_storeNodes, (Position pos) => new Node(pos, (direction) => leaveAble(pos, direction)));
   }
 
   bool leaveAble(Position position, Direction direction)
@@ -126,8 +133,8 @@ class StoreGrid extends Store
 
   void _historyActiveChanged(HistoryPart part)
   {
-    _searchState = new Optional.of(part.searchState);
-    _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(_searchState.value[n.position]));
+    _historyPart = new Optional.of(part);
+    _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(part.explanationNodes[n.position]));
   }
 
   void _changeGridMode(GridMode newGridMode)

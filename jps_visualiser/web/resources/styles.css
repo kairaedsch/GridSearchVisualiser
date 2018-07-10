@@ -290,16 +290,39 @@ html, body {
 
 .popover {
   position: absolute;
-  width: 200px;
+  max-width: 400px;
+
+  z-index: 1;
+  display: none;
 }
 
-.popover .arrow {
-  height: 20px;
-  background: blue;
+.node:hover .popover {
+  display: block;
+}
+
+.node:hover .popover:hover {
+  display: none;
 }
 
 .popover .content {
-  background: #EEE;
+  padding: 5px 8px;
+  font-size: 14px;
+
+  background: var(--color-main);
+  color: #FFF;
+  border-radius: 3px;
+  border: 1px solid #FFF;
+  white-space: pre-wrap;
+}
+
+.popover .arrow {
+  height: 10px;
+  margin-left: 10px;
+  margin-top: -1px;
+
+  background: url("images/popoverArrow.svg") no-repeat;
+  background-size: auto 10px;
+  background-position: 10px 0;
 }
 
 .dropDown {

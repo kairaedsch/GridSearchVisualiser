@@ -26,10 +26,11 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
   double arrowInset = 0.15;
 
   @override
-  getDefaultProps() => (newProps()
-    ..showEnd = false
-    ..showStart = false
-  );
+  getDefaultProps() =>
+      (newProps()
+        ..showEnd = false
+        ..showStart = false
+      );
 
   @override
   ReactElement render()
@@ -74,15 +75,15 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
           )(),
           props.showEnd
               ?
-            (Dom.polygon()
-              ..points = ""
-                  " ${end.x},${end.y}"
-                  " ${end.x + vBP90.x},${end.y + vBP90.y}"
-                  " ${end.x + vBM90.x},${end.y + vBM90.y}"
-              ..className = "end"
-            )()
+          (Dom.polygon()
+            ..points = ""
+                " ${end.x},${end.y}"
+                " ${end.x + vBP90.x},${end.y + vBP90.y}"
+                " ${end.x + vBM90.x},${end.y + vBM90.y}"
+            ..className = "end"
+          )()
               :
-              "",
+          null,
           props.showStart
               ?
           (Dom.polygon()
@@ -93,7 +94,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
             ..className = "end"
           )()
               :
-          ""
+          null
       ),
     );
   }

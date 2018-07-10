@@ -20,8 +20,9 @@ class Dijkstra extends Algorithm
     Function getDistance = (n) => distance.containsKey(n) ? distance[n] : double.INFINITY;
 
     Map<Node, Node> parent = new Map<Node, Node>();
-    List<Node> open = [start];
-    List<Node> closed = [];
+    Set<Node> open = new Set()
+      ..add(start);
+    Set<Node> closed = new Set();
 
     int turn = 0;
     while (open.isNotEmpty)
@@ -30,6 +31,7 @@ class Dijkstra extends Algorithm
 
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
       searchState[nStar.position].selectedNodeInTurn = true;
+      searchState[nStar.position].addInfo("I am the active node in this turn.");
 
       if (nStar == target)
       {
@@ -51,22 +53,38 @@ class Dijkstra extends Algorithm
         open.remove(nStar);
         closed.add(nStar);
 
-        for (Node n in grid.neighbours(nStar).where((n) => !closed.contains(n) && !open.contains(n)))
+        for (Node n in grid.neighbours(nStar))
         {
-          searchState[n.position].markedOpenInTurn = true;
-          open.add(n);
-          if (!distance.containsKey(n) || getDistance(nStar) + nStar.distanceTo(n) <  getDistance(n))
+          if (closed.contains(n))
           {
+            searchState[n.position].addInfo("Although I am a neighbour of the active node, I am ignored as I am marked as closed. Therefore we can asume, that we already found the best path from the source node to me.");
+          }
+          else
+          {
+            if (open.contains(n))
+            {
+              searchState[n.position].addInfo("I am already in the open set.");
+            }
+            else
+            {
+              searchState[n.position].markedOpenInTurn = true;
+              open.add(n);
+              searchState[n.position].addInfo("I am newly marked as open as I am a neighbour of the active node and have not been marked yet.");
+            }
+
+            if (!distance.containsKey(n) || getDistance(nStar) + nStar.distanceTo(n) < getDistance(n))
+            {
               parent[n] = nStar;
               distance[n] = getDistance(nStar) + nStar.distanceTo(n);
               searchState[nStar.position].parentUpdated = true;
+            }
           }
         }
       }
 
       open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
       closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
-      parent.forEach((n, p) => searchState[n.position].parent =  new Optional.of(p.position));
+      parent.forEach((n, p) => searchState[n.position].parent = new Optional.of(p.position));
 
       searchHistory.add(searchState);
       turn++;

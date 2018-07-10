@@ -5,20 +5,20 @@ import 'NodeSearchState.dart';
 
 class SearchState implements Size
 {
-  final Array2D<NodeSearchState> grid;
-
+  final Array2D<NodeSearchState> _grid;
   final int id;
+  String title;
 
   SearchState(this.id, Size size) :
-        grid = new Array2D(size.width, size.height, (Position pos) => new NodeSearchState());
+        _grid = new Array2D(size, (Position pos) => new NodeSearchState());
 
-  NodeSearchState operator [](Position pos) => grid[pos];
-
-  @override
-  int get width => grid.width;
+  NodeSearchState operator [](Position pos) => _grid[pos];
 
   @override
-  int get height => grid.height;
+  int get width => _grid.width;
 
-  Iterable<NodeSearchState> get iterable => grid.iterable;
+  @override
+  int get height => _grid.height;
+
+  Iterable<NodeSearchState> get iterable => _grid.iterable;
 }

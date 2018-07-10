@@ -13,7 +13,7 @@ class EditNodeTypeMouseMode extends MouseMode
 
   EditNodeTypeMouseMode(ReactGridComponent reactGrid, Position position) : super(reactGrid)
   {
-    _CurrentStoreNode = reactGrid.props.store.storeNodes[position];
+    _CurrentStoreNode = reactGrid.props.store[position];
     _type = _CurrentStoreNode.structureNode.type;
   }
 
@@ -21,7 +21,7 @@ class EditNodeTypeMouseMode extends MouseMode
 
   void evaluateNode(Position position)
   {
-    StoreNode newStoreNode = reactGrid.props.store.storeNodes[position];
+    StoreNode newStoreNode = reactGrid.props.store[position];
     if (newStoreNode.structureNode.type == StructureNodeType.NORMAL_NODE && (!newStoreNode.structureNode.barrier.isAnyBlocked() || reactGrid.props.storeGridSettings.gridMode == GridMode.ADVANCED))
     {
       StructureNode _CurrentStoreNodeUpdated = _CurrentStoreNode.structureNode.clone(type: StructureNodeType.NORMAL_NODE);

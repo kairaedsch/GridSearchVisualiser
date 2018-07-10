@@ -7,9 +7,10 @@ import '../store/StoreGridSettings.dart';
 import '../store/grid/StoreGrid.dart';
 import '../store/grid/StoreNode.dart';
 import '../store/grid/StructureNode.dart';
+import '../../general/gui/ReactPopover.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
-import 'ReactArrow.dart';
+import 'ReactPath.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/src/store.dart';
@@ -44,14 +45,14 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
   @override
   List<Store> redrawOn() {
-      Array2D<StoreNode> storeNodes = props.storeGrid.storeNodes;
-      Position position = props.store.position;
-      List<StoreNode> neighbours = Direction.values
-          .map((d) => position.go(d))
-          .where((Position position) => position.legal(props.storeGridSettings.size))
-          .map((Position position) => storeNodes[position]).toList();
-      neighbours.add(props.store);
-      return neighbours;
+    Position position = props.store.position;
+    StoreGrid storeGrid = props.storeGrid;
+    List<StoreNode> neighbours = Direction.values
+        .map((d) => position.go(d))
+        .where((Position position) => position.legal(props.storeGridSettings.size))
+        .map((Position position) => storeGrid[position]).toList();
+    neighbours.add(props.store);
+    return neighbours;
   }
 
   @override
@@ -77,31 +78,27 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       ..onMouseEnter = ((_) => _handleMouseEnter())
       ..onMouseLeave = ((_) => _handleMouseLeave())
     )(
+        (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
         _renderInner(),
-        _renderParentArrow(explanationNode),
-        _renderArrowsToGo(),
-        (Dom.div()..className = "popover")(
-          (Dom.div()..className = "content")(
-            "Hallo ich bin ein Popover"
-          ),
-          (Dom.div()..className = "arrow")()
-        )
+        _renderParentArrow(props.store.position),
+        _renderArrowsToGo()
     );
   }
 
-  ReactElement _renderParentArrow(ExplanationNode explanationNode)
+  ReactElement _renderParentArrow(Position position)
   {
+    ExplanationNode explanationNode = props.storeGrid[position].explanationNode;
+
     if (!explanationNode.parent.isPresent)
     {
-      return Dom.div()();
+      return null;
     }
 
     return (Dom.div()
       ..className = "arrowParent")(
-        (ReactArrow()
+        (ReactPath()
           ..size = props.storeGridSettings.size
-          ..sourceNode = explanationNode.parent.value
-          ..targetNode = props.store.position
+          ..path = [explanationNode.parent.value, position]
           ..showEnd = true
         )()
     );
@@ -111,7 +108,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   {
     if (!state.mouseIsOver)
     {
-      return Dom.div()();
+      return null;
     }
 
     return (Dom.div()
@@ -125,24 +122,25 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     Position neighbourPosition = props.store.position.go(direction);
     if (!neighbourPosition.legal(props.storeGridSettings.size))
     {
-      return Dom.div()();
+      return null;
     }
 
     bool leaveAble = props.storeGrid.leaveAble(props.store.position, direction);
     bool enterAble = props.storeGrid.leaveAble(neighbourPosition, direction.turn(180));
 
-    return (enterAble || leaveAble)
-        ?
-    (ReactArrow()
-      ..key = direction
-      ..size = props.storeGridSettings.size
-      ..sourceNode = props.store.position
-      ..targetNode = neighbourPosition
-      ..showEnd = leaveAble && !(enterAble && leaveAble)
-      ..showStart = enterAble && !(enterAble && leaveAble)
-    )()
-        :
-    Dom.div()();
+    if (!enterAble && !leaveAble)
+    {
+      return null;
+    }
+
+    return
+      (ReactPath()
+        ..key = direction
+        ..size = props.storeGridSettings.size
+        ..path = [props.store.position, neighbourPosition]
+        ..showEnd = leaveAble && !(enterAble && leaveAble)
+        ..showStart = enterAble && !(enterAble && leaveAble)
+      )();
   }
 
   void _handleMouseDown()
@@ -165,6 +163,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     {
       _triggerMouseMode();
     }
+
     setState(newState()
       ..mouseIsOver = true
       ..mouseIsDown = MouseTracker.tracker.mouseIsDown
@@ -190,18 +189,19 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {
-        return Dom.div()();
+        return null;
       }
       if (props.storeGridSettings.gridMode == GridMode.ADVANCED)
       {
         if (structureNode.barrier.isNoneBlocked() && !state.mouseIsOver)
         {
-          return Dom.div()();
+          return null;
         }
       }
     }
 
-    return (Dom.div()..className = "parts")(
+    return (Dom.div()
+      ..className = "parts")(
         _renderPart(direction: Direction.NORTH_WEST),
         _renderPart(direction: Direction.NORTH),
         _renderPart(direction: Direction.NORTH_EAST),

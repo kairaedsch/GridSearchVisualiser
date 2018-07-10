@@ -33,9 +33,9 @@ class StoreNode extends Store
     trigger();
   }
 
-  void _changeExplanationNode(NodeSearchState nodeSearchState)
+  void _changeExplanationNode(ExplanationNode explanationNode)
   {
-    _explanationNode = new ExplanationNode(nodeSearchState);
+    _explanationNode = explanationNode;
     trigger();
   }
 }
@@ -43,5 +43,5 @@ class StoreNode extends Store
 class ActionsNodeChanged
 {
   final Action<StructureNode> structureNodeChanged = new Action<StructureNode>();
-  final Action<NodeSearchState> explanationNodeChanged = new Action<NodeSearchState>();
+  final Action<ExplanationNode> explanationNodeChanged = new Action<ExplanationNode>();
 }
