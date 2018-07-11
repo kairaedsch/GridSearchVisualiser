@@ -2,16 +2,31 @@
 
 :root {
   --node-size: 62px;
+  --node-parts-size: calc(var(--node-size) - 2px);
+  --node-part-size: calc((var(--node-size) - 2px) / 3);
+  --node-part-size-inner: calc((var(--node-size) - 2px) / 3 - 2px);
   --node-part-height: 10px;
   --node-part-shadow: 14px;
-  --color-main: #0095FF;
-  --color-main-dark: #007ce6;
+
   --color-main-darker: #004d8f;
+  --color-main-dark: #007ce6;
+  --color-main: #0095FF;
   --color-main-light: #5bbaff;
+
+  --color-second-light: #f50505;
   --color-second: #CA0404;
-  --color-third: #e9b330;
-  --color-fourth: #2AB936;
+  --color-second-dark: #890303;
+
+  --color-third-lighter: #fff48c;
+  --color-third-light: #ffdd0f;
+  --color-third: #edc420;
+  --color-third-dark: #ceab1c;
+
+  --color-fourth-lighter: #54fb61;
   --color-fourth-light: #4ce258;
+  --color-fourth: #2fc13c;
+  --color-fourth-dark: #25a832;
+  --color-fourth-darker: #197221;
 }
 
 *, *:before, *:after {
@@ -85,58 +100,14 @@ html, body {
   animation: nodeChange 0.2s ease-out 1;
 }
 
-.grid.BASIC .node.totalBlocked {
-  background: var(--color-main);
-  border-color: var(--color-main-dark);
-  animation-name: nodeChangeBlocked;
-}
-
 .grid.BASIC .node:hover, .node.hover {
   border-color: var(--color-main-light);
 }
 
-.grid.BASIC .node.totalBlocked:hover, .node.totalBlocked.hover {
-  border-color: var(--color-main-darker);
-}
-
-.grid.BASIC .node {
-  cursor: pointer;
-}
-
-.grid.BASIC .node.SOURCE_NODE, .grid.BASIC .node.TARGET_NODE {
-  cursor: move;
-}
-
-.grid .node.SOURCE_NODE.hover {
-  border-color: var(--color-fourth);
-}
-
-.grid .node.TARGET_NODE.hover {
-  border-color: var(--color-second);
-}
-
-.grid .node.EditBarrierMouseMode.hover, .grid .node.EditBarrierMouseMode.hover * {
-  cursor: pointer !important;
-}
-
-.grid .node.EditNodeTypeMouseMode.hover, .grid .node.EditNodeTypeMouseMode.hover * {
-  cursor: move !important;
-}
-
-.grid .node.MARKED_OPEN_NODE {
-  background: var(--color-fourth) !important;
-}
-
-.grid .node.MARKED_OPEN_NODE.markedOpenInTurn {
-  background: var(--color-fourth-light) !important;
-}
-
-.grid .node.MARKED_CLOSED_NODE {
-  background: #CCC !important;
-}
-
-.grid .node.selectedNodeInTurn {
-  background: var(--color-third) !important;
+.grid.BASIC .node.totalBlocked {
+  background: var(--color-main);
+  border-color: var(--color-main-light) var(--color-main-dark) var(--color-main-dark) var(--color-main-light);
+  animation-name: nodeChangeBlocked;
 }
 
 @keyframes nodeChange {
@@ -151,21 +122,76 @@ html, body {
   100% {transform: scale(1);}
 }
 
+.grid.BASIC .node.totalBlocked:hover, .grid.BASIC .node.totalBlocked.hover {
+  border-color: var(--color-main-darker);
+}
+
+.grid.BASIC .node {
+  cursor: pointer;
+}
+
+.grid.BASIC .node.SOURCE_NODE, .grid.BASIC .node.TARGET_NODE {
+  cursor: move;
+}
+
+.grid .node.SOURCE_NODE.hover {
+  border-color: var(--color-fourth-dark);
+}
+
+.grid .node.TARGET_NODE.hover {
+  border-color:var(--color-second-dark);
+}
+
+.grid .node.EditBarrierMouseMode.hover, .grid .node.EditBarrierMouseMode.hover * {
+  cursor: pointer !important;
+}
+
+.grid .node.EditNodeTypeMouseMode.hover, .grid .node.EditNodeTypeMouseMode.hover * {
+  cursor: move !important;
+}
+
+.grid .node.MARKED_OPEN_NODE {
+  background: var(--color-fourth);
+  border-color: var(--color-fourth-dark);
+}
+
+.grid .node.MARKED_OPEN_NODE:hover, .grid .node.MARKED_OPEN_NODE.hover {
+  border-color: var(--color-fourth-darker);
+}
+
+.grid .node.MARKED_OPEN_NODE.markedOpenInTurn {
+  background: var(--color-fourth-light);
+  border-color: var(--color-fourth);
+}
+
+.grid .node.MARKED_OPEN_NODE.markedOpenInTurn:hover, .grid .node.MARKED_OPEN_NODE.markedOpenInTurn.hover {
+  border-color: var(--color-fourth-dark);
+}
+
+.grid .node.MARKED_CLOSED_NODE {
+  background: #CCC;
+  border-color: #BBB;
+}
+
+.grid .node.MARKED_CLOSED_NODE:hover, .grid .node.MARKED_CLOSED_NODE.hover {
+  border-color: #999;
+}
+
 .grid .node .parts {
-    width: calc(var(--node-size) - 2px);
-    height: calc(var(--node-size) - 2px);
+  width: var(--node-parts-size);
+  height: var(--node-parts-size);
 }
 
 .grid .node .part {
-  width: calc((var(--node-size) - 2px) /3);
-  height: calc((var(--node-size) - 2px) /3);
+  width: var(--node-part-size);
+  height: var(--node-part-size);
   float: left;
 }
 
 .grid.ADVANCED .node .part.outer {
   opacity: 0;
   cursor: pointer;
-  background-size: calc(((var(--node-size) - 2px) /3) - 2px);
+  background-size: var(--node-part-size-inner);
   background-repeat: no-repeat;
   background-position: 1px 1px;
 }
@@ -210,8 +236,12 @@ html, body {
   transform: rotate(270deg);
 }
 
-.grid.ADVANCED .node.mouseUp .part.outer:hover {
+.grid.ADVANCED .node.mouseUp .part.outer.unblocked:hover {
   animation: nodeHover 1s linear infinite;
+}
+
+.grid.ADVANCED .node .part.outer.blocked {
+  opacity: 1;
 }
 
 @keyframes nodeHover {
@@ -222,22 +252,33 @@ html, body {
   100% {opacity: 0.8;}
 }
 
-.grid.ADVANCED .node .part.outer.blocked {
-  opacity: 1;
-  animation: none !important;
+.grid .node .part.inner {
+  border-radius: 100%;
+  border: 2px solid transparent;
 }
 
 .grid .node.SOURCE_NODE .part.inner, .grid .node.TARGET_NODE .part.inner {
-  border-radius: 100%;
   cursor: move;
 }
 
 .grid .node.SOURCE_NODE .part.inner {
   background: var(--color-fourth);
+  border-color: var(--color-fourth-light) var(--color-fourth-dark) var(--color-fourth-dark) var(--color-fourth-light);
 }
 
 .grid .node.TARGET_NODE .part.inner {
   background: var(--color-second);
+  border-color: var(--color-second-light) var(--color-second-dark) var(--color-second-dark) var(--color-second-light);
+}
+
+.grid .node.selectedNodeInTurn .part.inner {
+  animation: selectedNodeBlink 1s ease-in-out infinite;
+}
+
+@keyframes selectedNodeBlink {
+  0% {}
+  50% {background: var(--color-third); border-color: var(--color-third-light) var(--color-third-dark) var(--color-third-dark) var(--color-third-light);}
+  100% {}
 }
 
 .nodeArrow {
@@ -267,7 +308,13 @@ html, body {
 }
 
 .grid .node.markedOpenInTurn .arrowParent .nodeArrow .svg {
-  opacity: 0.75;
+  animation: arrowBlink 1s ease-in-out infinite;
+}
+
+@keyframes arrowBlink {
+  0% {opacity: 1;}
+  50% {opacity: 0.5;}
+  100% {opacity: 1;}
 }
 
 .grid .node .arrowsToGo .nodeArrow .svg {

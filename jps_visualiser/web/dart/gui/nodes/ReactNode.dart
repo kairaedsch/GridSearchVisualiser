@@ -70,7 +70,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
           " ${explanationNode.selectedNodeInTurn ? "selectedNodeInTurn" : "" }"
           " ${explanationNode.markedOpenInTurn ? "markedOpenInTurn" : "" }"
           " ${explanationNode.parentUpdated ? "parentUpdated" : "" }"
-          " ${state.mouseIsOver ? "hover" : ""}"
+          " ${state.mouseIsOver ? "hover" : "noHover"}"
           " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
           " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
       ..onMouseDown = ((_) => _handleMouseDown())
@@ -184,8 +184,9 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   ReactElement _renderInner()
   {
     StructureNode structureNode = props.store.structureNode;
+    ExplanationNode explanationNode = props.store.explanationNode;
 
-    if (structureNode.type == StructureNodeType.NORMAL_NODE)
+    if (structureNode.type == StructureNodeType.NORMAL_NODE && !explanationNode.selectedNodeInTurn)
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {
