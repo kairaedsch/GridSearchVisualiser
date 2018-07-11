@@ -3,6 +3,7 @@ import '../../../general/Direction.dart';
 import '../../../general/Position.dart';
 import '../../../general/Size.dart';
 import '../../../model/Grid.dart';
+import '../../../model/SearchHistory.dart';
 import '../../../model/SearchState.dart';
 import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
@@ -15,9 +16,6 @@ import 'package:w_flux/w_flux.dart';
 class StoreGrid extends Store implements Size
 {
   StoreGridSettings _storeGridSettings;
-
-  Optional<HistoryPart> _historyPart;
-  Optional<HistoryPart> get historyPart => _historyPart;
 
   Array2D<StoreNode> _storeNodes;
   Array2D<StoreNode> get storeNodes => _storeNodes;
@@ -46,7 +44,6 @@ class StoreGrid extends Store implements Size
 
   StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory)
   {
-    _historyPart = const Optional.absent();
     _storeNodes = new Array2D<StoreNode>(_storeGridSettings.size, (Position pos) => new StoreNode(pos));
     StoreNode sourceStoreNode = _storeNodes[new Position(5, 5)];
     sourceStoreNode.actions.structureNodeChanged.call(sourceStoreNode.structureNode.clone(type: StructureNodeType.SOURCE_NODE));
@@ -54,10 +51,11 @@ class StoreGrid extends Store implements Size
     StoreNode targetStoreNode = _storeNodes[new Position(10, 5)];
     targetStoreNode.actions.structureNodeChanged.call(targetStoreNode.structureNode.clone(type: StructureNodeType.TARGET_NODE));
 
-    _actions = new ActionsGridChanged();
-
     actionsHistory.activeChanged.listen(_historyActiveChanged);
+
     _storeGridSettings.actions.gridModeChanged.listen(_changeGridMode);
+
+    _actions = new ActionsGridChanged();
   }
 
   Grid toGrid()
@@ -131,11 +129,9 @@ class StoreGrid extends Store implements Size
     return !startPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[position].structureNode.barrier.isAnyBlocked() : _storeNodes[position].structureNode.barrier.isBlocked(direction));
   }
 
-  void _historyActiveChanged(HistoryPart part)
+  void _historyActiveChanged(Optional<HistoryPart> part)
   {
-    _historyPart = new Optional.of(part);
-    _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(part.explanationNodes[n.position]));
-    trigger();
+    _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(part.transform((p) => p.explanationNodes[n.position])));
   }
 
   void _changeGridMode(GridMode newGridMode)

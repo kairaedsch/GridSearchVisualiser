@@ -55,48 +55,49 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     vP90 = (vP90 + v.normalized()) * arrowSize;
     vM90 = (vM90 + v.normalized()) * arrowSize;
 
-    return (Dom.div()
-      ..className = "nodeArrow"
-      ..style =
-      {
-        "width": "${props.size.width * Settings.nodeSize}px",
-        "height": "${props.size.height * Settings.nodeSize}px"
-      }
-    )(
-      (Dom.svg()
-        ..className = "svg"
-        ..viewBox = "-0.5 -0.5 ${props.size.width} ${props.size.height}"
+    return
+      (Dom.div()
+        ..className = "nodeArrow"
+        ..style =
+        {
+          "width": "${props.size.width * Settings.nodeSize}px",
+          "height": "${props.size.height * Settings.nodeSize}px"
+        }
       )(
-          (Dom.polygon()
-            ..points = ""
-                " ${start.x},${start.y}"
-                " ${end.x},${end.y}"
-            ..className = "line"
-          )(),
-          props.showEnd
-              ?
-          (Dom.polygon()
-            ..points = ""
-                " ${end.x},${end.y}"
-                " ${end.x + vBP90.x},${end.y + vBP90.y}"
-                " ${end.x + vBM90.x},${end.y + vBM90.y}"
-            ..className = "end"
-          )()
-              :
-          null,
-          props.showStart
-              ?
-          (Dom.polygon()
-            ..points = ""
-                " ${start.x},${start.y}"
-                " ${start.x + vP90.x},${start.y + vP90.y}"
-                " ${start.x + vM90.x},${start.y + vM90.y}"
-            ..className = "end"
-          )()
-              :
-          null
-      ),
-    );
+        (Dom.svg()
+          ..className = "svg"
+          ..viewBox = "-0.5 -0.5 ${props.size.width} ${props.size.height}"
+        )(
+            (Dom.polygon()
+              ..points = ""
+                  " ${start.x},${start.y}"
+                  " ${end.x},${end.y}"
+              ..className = "line"
+            )(),
+            props.showEnd
+                ?
+            (Dom.polygon()
+              ..points = ""
+                  " ${end.x},${end.y}"
+                  " ${end.x + vBP90.x},${end.y + vBP90.y}"
+                  " ${end.x + vBM90.x},${end.y + vBM90.y}"
+              ..className = "end"
+            )()
+                :
+            null,
+            props.showStart
+                ?
+            (Dom.polygon()
+              ..points = ""
+                  " ${start.x},${start.y}"
+                  " ${start.x + vP90.x},${start.y + vP90.y}"
+                  " ${start.x + vM90.x},${start.y + vM90.y}"
+              ..className = "end"
+            )()
+                :
+            null
+        ),
+      );
   }
 
   Vector2 rotate(Vector2 vec, double angle)

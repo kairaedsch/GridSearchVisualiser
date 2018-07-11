@@ -8,6 +8,7 @@ class SearchState implements Size
   final Array2D<NodeSearchState> _grid;
   final int id;
   String title;
+  Position activeNodeInTurn;
 
   SearchState(this.id, Size size) :
         _grid = new Array2D(size, (Position pos) => new NodeSearchState());

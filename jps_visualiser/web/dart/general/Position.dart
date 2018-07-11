@@ -9,11 +9,9 @@ class Position
 
   const Position(this.x, this.y);
 
-  String toString() => "($x, $y)";
-
-  String toSVG() => "${x}, ${y}";
-
   double length() => sqrt(x * x + y * y);
+
+  bool operator ==(Position pos) => pos.x == x && pos.y == y;
 
   Position operator -(Position pos) => new Position(x - pos.x, y - pos.y);
 
@@ -27,4 +25,7 @@ class Position
   {
     return x >= 0 && x < size.width && y >= 0 && y < size.height;
   }
+
+  @override
+  String toString() => "($x, $y)";
 }

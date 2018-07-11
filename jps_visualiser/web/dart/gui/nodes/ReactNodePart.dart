@@ -44,24 +44,25 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
     StructureNode structureNode = props.storeNode.structureNode;
     Position position = props.storeNode.position;
 
-    return (Dom.div()
-      ..className =
-          direction.isEmpty ?
-          (
-              "part inner"
-          )
-              :
-          (
+    return
+      (Dom.div()
+        ..className =
+        direction.isEmpty ?
+        (
+            "part inner"
+        )
+            :
+        (
             "part outer"
-            " ${direction.value.name}"
-            " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
-            " ${props.storeGrid.leaveBlockedDirectly(position, direction.value) ? "leaveBlocked" : "leaveUnblocked"}"
-            " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
-          )
-      ..onMouseDown = ((_) => _handleMouseDown())
-      ..onMouseEnter = ((_) => _handleMouseEnter())
-      ..onMouseLeave = ((_) => _handleMouseLeave())
-    )();
+                " ${direction.value.name}"
+                " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
+                " ${props.storeGrid.leaveBlockedDirectly(position, direction.value) ? "leaveBlocked" : "leaveUnblocked"}"
+                " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
+        )
+        ..onMouseDown = ((_) => _handleMouseDown())
+        ..onMouseEnter = ((_) => _handleMouseEnter())
+        ..onMouseLeave = ((_) => _handleMouseLeave())
+      )();
   }
 
   void _handleMouseDown() {

@@ -61,47 +61,55 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     StructureNode structureNode = props.store.structureNode;
     ExplanationNode explanationNode = props.store.explanationNode;
 
-    return (Dom.div()
-      ..className = "node"
-          " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
-          " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
-          " ${structureNode.type.name}"
-          " ${explanationNode.marking.or("")}"
-          " ${explanationNode.selectedNodeInTurn ? "selectedNodeInTurn" : "" }"
-          " ${explanationNode.markedOpenInTurn ? "markedOpenInTurn" : "" }"
-          " ${explanationNode.parentUpdated ? "parentUpdated" : "" }"
-          " ${state.mouseIsOver ? "hover" : "noHover"}"
-          " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
-          " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
-      ..onMouseDown = ((_) => _handleMouseDown())
-      ..onMouseUp = ((_) => _handleMouseUp())
-      ..onMouseEnter = ((_) => _handleMouseEnter())
-      ..onMouseLeave = ((_) => _handleMouseLeave())
-    )(
-        (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
-        _renderInner(),
-        _renderParentArrow(props.store.position),
-        _renderArrowsToGo()
-    );
+    return
+      (Dom.div()
+        ..className = "node"
+            " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
+            " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
+            " ${structureNode.type.name}"
+            " ${explanationNode.marking.or("")}"
+            " ${explanationNode.activeNodeInTurn ? "activeNodeInTurn" : "" }"
+            " ${explanationNode.markedOpenInTurn ? "markedOpenInTurn" : "" }"
+            " ${explanationNode.parentUpdated ? "parentUpdated" : "" }"
+            " ${state.mouseIsOver ? "hover" : "noHover"}"
+            " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
+            " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
+        ..onMouseDown = ((_) => _handleMouseDown())
+        ..onMouseUp = ((_) => _handleMouseUp())
+        ..onMouseEnter = ((_) => _handleMouseEnter())
+        ..onMouseLeave = ((_) => _handleMouseLeave())
+      )(
+          (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
+          _renderInner(),
+          _renderParentArrow(),
+          _renderArrowsToGo()
+      );
   }
 
-  ReactElement _renderParentArrow(Position position)
+  ReactElement _renderParentArrow()
   {
-    ExplanationNode explanationNode = props.storeGrid[position].explanationNode;
-
-    if (!explanationNode.parent.isPresent)
+    if (!props.store.explanationNode.parent.isPresent)
     {
       return null;
     }
 
-    return (Dom.div()
-      ..className = "arrowParent")(
-        (ReactPath()
-          ..size = props.storeGridSettings.size
-          ..path = [explanationNode.parent.value, position]
-          ..showEnd = true
-        )()
-    );
+    Optional<Position> parent = new Optional.of(props.store.position);
+    List<Position> path = [];
+    while (parent.isPresent)
+    {
+      path.add(parent.value);
+      parent = props.storeGrid[parent.value].explanationNode.parent;
+    }
+
+    return
+      (Dom.div()
+        ..className = "arrowParents")(
+          (ReactPath()
+            ..size = props.storeGridSettings.size
+            ..path = path
+            ..showStart = true
+          )()
+      );
   }
 
   ReactElement _renderArrowsToGo()
@@ -111,10 +119,11 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       return null;
     }
 
-    return (Dom.div()
-      ..className = "arrowsToGo")(
-        Direction.values.map(_renderArrowToGo).toList()
-    );
+    return
+      (Dom.div()
+        ..className = "arrowsToGo")(
+          Direction.values.map(_renderArrowToGo).toList()
+      );
   }
 
   ReactElement _renderArrowToGo(Direction direction)
@@ -186,7 +195,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     StructureNode structureNode = props.store.structureNode;
     ExplanationNode explanationNode = props.store.explanationNode;
 
-    if (structureNode.type == StructureNodeType.NORMAL_NODE && !explanationNode.selectedNodeInTurn)
+    if (structureNode.type == StructureNodeType.NORMAL_NODE && !explanationNode.activeNodeInTurn)
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {
@@ -201,30 +210,32 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       }
     }
 
-    return (Dom.div()
-      ..className = "parts")(
-        _renderPart(direction: Direction.NORTH_WEST),
-        _renderPart(direction: Direction.NORTH),
-        _renderPart(direction: Direction.NORTH_EAST),
-        _renderPart(direction: Direction.WEST),
-        _renderPart(),
-        _renderPart(direction: Direction.EAST),
-        _renderPart(direction: Direction.SOUTH_WEST),
-        _renderPart(direction: Direction.SOUTH),
-        _renderPart(direction: Direction.SOUTH_EAST)
-    );
+    return
+      (Dom.div()
+        ..className = "parts")(
+          _renderPart(direction: Direction.NORTH_WEST),
+          _renderPart(direction: Direction.NORTH),
+          _renderPart(direction: Direction.NORTH_EAST),
+          _renderPart(direction: Direction.WEST),
+          _renderPart(),
+          _renderPart(direction: Direction.EAST),
+          _renderPart(direction: Direction.SOUTH_WEST),
+          _renderPart(direction: Direction.SOUTH),
+          _renderPart(direction: Direction.SOUTH_EAST)
+      );
   }
 
   ReactElement _renderPart({Direction direction})
   {
-    return (ReactNodePart()
-      ..key = direction
-      ..storeGridSettings = props.storeGridSettings
-      ..storeNode = props.store
-      ..direction = new Optional.fromNullable(direction)
-      ..actions = props.actions
-      ..grid = props.grid
-      ..storeGrid = props.storeGrid
-    )();
+    return
+      (ReactNodePart()
+        ..key = direction
+        ..storeGridSettings = props.storeGridSettings
+        ..storeNode = props.store
+        ..direction = new Optional.fromNullable(direction)
+        ..actions = props.actions
+        ..grid = props.grid
+        ..storeGrid = props.storeGrid
+      )();
   }
 }

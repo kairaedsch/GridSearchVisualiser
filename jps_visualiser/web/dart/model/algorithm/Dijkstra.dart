@@ -30,8 +30,9 @@ class Dijkstra extends Algorithm
       SearchState searchState = new SearchState(turn, grid);
 
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
-      searchState[nStar.position].selectedNodeInTurn = true;
+      searchState.activeNodeInTurn = nStar.position;
       searchState[nStar.position].addInfo("I am the active node in this turn.");
+      searchState.title = "Turn $turn with active node at ${nStar.position}";
 
       if (nStar == target)
       {

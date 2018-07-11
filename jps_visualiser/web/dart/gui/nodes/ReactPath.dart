@@ -35,6 +35,7 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
     {
       arrows.add(
           (ReactArrow()
+            ..key = i
             ..size = props.size
             ..sourceNode = props.path[i]
             ..targetNode = props.path[i + 1]
@@ -44,6 +45,11 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
       );
     }
 
-    return (Dom.div()..className = "finalPath")(arrows);
+    return
+      (Dom.div()
+        ..className = "finalPath"
+      )(
+          arrows
+      );
   }
 }

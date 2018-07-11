@@ -9,10 +9,12 @@ class HistoryPart
   final int id;
   final String title;
   final List<Position> path;
+  final Position activeNodeInTurn;
 
   HistoryPart(SearchState searchState)
       : id = searchState.id,
         title = searchState.title,
-        explanationNodes = new Array2D(searchState, (p) => new ExplanationNode(searchState[p])),
-        path = [new Position(0, 0), new Position(4, 6), new Position(2, 8)];
+        explanationNodes = new Array2D(searchState, (p) => new ExplanationNode(searchState[p], p == searchState.activeNodeInTurn)),
+        path = [new Position(0, 0), new Position(4, 6), new Position(2, 8)],
+        activeNodeInTurn = searchState.activeNodeInTurn;
 }

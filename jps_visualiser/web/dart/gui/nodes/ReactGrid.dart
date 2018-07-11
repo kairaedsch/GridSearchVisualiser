@@ -51,54 +51,49 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
-    return (
-        Dom.div()
-          ..className = "grid"
-              " ${props.storeGridSettings.gridMode.name}"
-          ..style =
-          {
-            "width": "${Settings.nodeSize * storeNodes.width}px",
-            "height": "${Settings.nodeSize * storeNodes.height}px"
-          }
-    )(
-        (Dom.div()
-          ..className = "nodes")(
-            new List<ReactElement>.generate(storeNodes.height, _renderRow)
-        ),
-        props.store.historyPart.isPresent ?
-        (ReactPath()
-          ..size = props.storeGridSettings.size
-          ..path = props.store.historyPart.value.path
-          ..showEnd = true
-        )() : null
-    );
+    return
+      (Dom.div()
+        ..className = "grid"
+            " ${props.storeGridSettings.gridMode.name}"
+        ..style =
+        {
+          "width": "${Settings.nodeSize * storeNodes.width}px",
+          "height": "${Settings.nodeSize * storeNodes.height}px"
+        }
+      )(
+          (Dom.div()
+            ..className = "nodes")(
+              new List<ReactElement>.generate(storeNodes.height, _renderRow)
+          )
+      );
   }
 
   ReactElement _renderRow(int y)
   {
     Array2D<StoreNode> storeNodes = props.store.storeNodes;
 
-    return (Dom.div()
-      ..className = "row"
-      ..key = y
-    )(
-        new List<ReactElement>.generate(storeNodes.width, (x) => _renderNode(new Position(x, y)))
-    );
+    return
+      (Dom.div()
+        ..className = "row"
+        ..key = y
+      )(
+          new List<ReactElement>.generate(storeNodes.width, (x) => _renderNode(new Position(x, y)))
+      );
   }
 
   ReactElement _renderNode(Position pos)
   {
     StoreNode storeNode = props.store[pos];
 
-    return (
-        ReactNode()
-          ..key = pos
-          ..storeGridSettings = props.storeGridSettings
-          ..storeGrid = props.store
-          ..store = storeNode
-          ..actions = storeNode.actions
-          ..grid = this
-    )();
+    return
+      (ReactNode()
+        ..key = pos
+        ..storeGridSettings = props.storeGridSettings
+        ..storeGrid = props.store
+        ..store = storeNode
+        ..actions = storeNode.actions
+        ..grid = this
+      )();
   }
 
   void updateMouseModeFromNode(StoreNode storeNode)
