@@ -18,6 +18,7 @@ class ReactDropDownProps extends UiProps
 class ReactDropDownState extends UiState
 {
   bool isOpen;
+  int width;
 }
 
 @Component()
@@ -27,6 +28,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
   Map getInitialState() =>
       (newState()
         ..isOpen = false
+        ..width = 50
       );
 
   @override
@@ -38,32 +40,49 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
             " ${state.isOpen ? "open" : ""}"
         ..onMouseLeave = ((_) => _setClosed())
       )(
-        (Dom.div()
-          ..className = "value current"
-          ..onClick = ((_) => _toggleOpen())
-        )(props.value.dropDownName),
-
-        (Dom.div()
-          ..className = "drop"
-        )(
-          (Dom.div()
-            ..className = "arrowLine")(),
-          (Dom.div()
-            ..className = "values")(
-              props.values
-                  .map((value) =>
-                  (Dom.div()
-                    ..className = "value"
-                        " ${props.value == value ? "selected" : ""}"
-                    ..key = value
-                    ..onClick = ((_) => _handleValueClick(value))
-                  )(
-                      value.dropDownName
-                  ))
-                  .toList()
-          ),
-        ),
+          (ResizeSensor()
+            ..onResize = _resized
+            ..onInitialize = _resized
+            ..isFlexChild = true
+          )(
+            (Dom.div()
+              ..className = "value current"
+              ..onClick = ((_) => _toggleOpen())
+            )(
+                props.value.dropDownName
+            ),
+            (Dom.div()
+              ..className = "drop"
+              ..style =
+              {
+                "width": "${state.width}px"
+              }
+            )(
+              (Dom.div()..className = "arrowLine")(),
+              (Dom.div()
+                ..className = "values")(
+                  props.values
+                      .map((value) =>
+                      (Dom.div()
+                        ..className = "value"
+                            " ${props.value == value ? "selected" : ""}"
+                        ..key = value
+                        ..onClick = ((_) => _handleValueClick(value))
+                      )(
+                          value.dropDownName
+                      ))
+                      .toList()
+              ),
+            ),
+          )
       );
+  }
+
+  ResizeSensorHandler _resized(ResizeSensorEvent event)
+  {
+    setState(newState()
+      ..width = event.newWidth
+    );
   }
 
   void _handleValueClick(DropDownElement value)

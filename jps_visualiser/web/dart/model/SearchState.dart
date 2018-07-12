@@ -6,11 +6,11 @@ import 'NodeSearchState.dart';
 class SearchState implements Size
 {
   final Array2D<NodeSearchState> _grid;
-  final int id;
+  final int turn;
   String title;
   Position activeNodeInTurn;
 
-  SearchState(this.id, Size size) :
+  SearchState(this.turn, Size size) :
         _grid = new Array2D(size, (Position pos) => new NodeSearchState());
 
   NodeSearchState operator [](Position pos) => _grid[pos];

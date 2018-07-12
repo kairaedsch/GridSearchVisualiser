@@ -6,13 +6,13 @@ import '../grid/ExplanationNode.dart';
 class HistoryPart
 {
   final Array2D<ExplanationNode> explanationNodes;
-  final int id;
+  final int turn;
   final String title;
   final List<Position> path;
   final Position activeNodeInTurn;
 
   HistoryPart(SearchState searchState)
-      : id = searchState.id,
+      : turn = searchState.turn,
         title = searchState.title,
         explanationNodes = new Array2D(searchState, (p) => new ExplanationNode(searchState[p], p == searchState.activeNodeInTurn)),
         path = [new Position(0, 0), new Position(4, 6), new Position(2, 8)],

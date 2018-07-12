@@ -24,8 +24,8 @@ class Dijkstra extends Algorithm
       ..add(start);
     Set<Node> closed = new Set();
 
-    int turn = 0;
-    while (open.isNotEmpty)
+    int turn;
+    for (turn = 1; open.isNotEmpty; turn++)
     {
       SearchState searchState = new SearchState(turn, grid);
 
@@ -88,8 +88,10 @@ class Dijkstra extends Algorithm
       parent.forEach((n, p) => searchState[n.position].parent = new Optional.of(p.position));
 
       searchHistory.add(searchState);
-      turn++;
     }
+
+    searchHistory.title = "Searched with dijkstra in $turn turns";
+
     return searchHistory;
   }
 }

@@ -30,18 +30,19 @@ class StoreHistory extends Store
   {
     _history = new Optional.of(new History(searchHistory));
 
-    HistoryPart newActive = null;
+    Optional<HistoryPart> newActive = const Optional.absent();
     if (active.isPresent)
     {
       newActive = _history.value.parts
           .where((hp) => hp.activeNodeInTurn == active.value.activeNodeInTurn)
-          .first;
+          .map((hp) => new Optional.of(hp))
+          .firstWhere((hp) => true, orElse: () => const Optional.absent());
     }
-    if (newActive == null)
+    if (newActive.isEmpty && _history.value.parts.length > 0)
     {
-      newActive = _history.value.parts[0];
+      newActive = new Optional.of(_history.value.parts[0]);
     }
-    _actions.activeChanged.call(new Optional.of(newActive));
+    _actions.activeChanged.call(newActive);
     trigger();
   }
 

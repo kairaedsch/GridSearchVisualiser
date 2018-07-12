@@ -30,15 +30,15 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
     StoreHistory storeHistory = props.store.storeHistory;
 
     return (
-    Dom.div()..id = "content")(
-      (Dom.div()..id = "leftContent")(
+    Dom.div()..className = "content")(
+      (Dom.div()..className = "leftContent")(
         (ReactGrid()
           ..storeGridSettings = storeGridSettings
           ..store = storeGrid
           ..actions = storeGrid.actions
         )()
       ),
-      (Dom.div()..id = "rightContent")(
+      (Dom.div()..className = "rightContent")(
         (Dom.div()..className = "gridSettingsContainer")(
             (ReactGridSettings()
               ..store = storeGridSettings

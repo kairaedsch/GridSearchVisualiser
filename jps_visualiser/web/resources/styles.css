@@ -47,21 +47,21 @@ html, body {
   overflow: hidden;
 }
 
-#content {
+.content {
 
 }
 
-#leftContent, #rightContent {
+.leftContent, .rightContent {
   float: left;
   height: 100vh;
   overflow: hidden;
 }
 
-#leftContent {
+.leftContent {
   width: 60%;
 }
 
-#rightContent {
+.rightContent {
   width: 40%;
   display: flex;
   flex-direction: column;
@@ -377,7 +377,7 @@ html, body {
 }
 
 .dropDown .value {
-  padding: 5px 33px 5px 8px;
+  padding: 5px 8px;
   font-size: 14px;
 
   cursor: pointer;
@@ -387,6 +387,12 @@ html, body {
 }
 
 .dropDown .value.selected, .dropDown .value.current {
+  background: var(--color-main);
+}
+
+.dropDown .value.current {
+  padding-right: 33px;
+
   background: var(--color-main);
 }
 
@@ -411,6 +417,7 @@ html, body {
   padding-top: 5px;
   min-width: 100px;
   display: none;
+  z-index: 1;
 }
 
 .dropDown.open .drop {
@@ -477,7 +484,6 @@ html, body {
 
 .config .dropDown {
   flex-grow: 1;
-  overflow: hidden;
   margin-right: auto;
 }
 
@@ -508,33 +514,50 @@ html, body {
 }
 
 .history {
+  padding-top: 10px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.history .algorithmOverview {
-  padding: 5px 8px;
+.history>.title {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 10px;
 }
 
 .history .parts {
+  padding: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(33px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+
+  border: solid #DDD;
+  border-width: 1px 0;
 }
 
 .history .parts .part {
   padding: 5px 8px;
+  float: left;
+  width: 50px;
+  border: 1px solid transparent;
 
+  text-align: center;
   cursor: pointer;
 }
 
 .history .parts .part:hover {
+  color: #FFF;
+  font-weight: 600;
   background: var(--color-main-light);
+  border-color: var(--color-main);
 }
 
 .history .parts .part.selected {
-  background: var(--color-main);
   color: #FFF;
+  font-weight: 600;
+  background: var(--color-main);
+  border-color: var(--color-main-dark);
 }
 
 .history .turnOverview {

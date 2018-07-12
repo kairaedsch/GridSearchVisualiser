@@ -8,9 +8,9 @@ import 'HistoryPart.dart';
 class History
 {
   final List<HistoryPart> parts;
-  final String algorithmOverviewText;
+  final String title;
 
   History(SearchHistory searchHistory)
       : parts = searchHistory.history.map((SearchState searchState) => new HistoryPart(searchState)).toList(growable: false),
-        algorithmOverviewText = "I am an algorithm. hehehe .. MuuuuuHaHaHaHa";
+        title = searchHistory.title;
 }

@@ -1,4 +1,3 @@
-import '../../general/Bool.dart';
 import '../../general/gui/DropDownElement.dart';
 import '../../model/algorithm/Algorithm.dart';
 import '../../model/algorithm/Dijkstra.dart';
@@ -8,7 +7,6 @@ import '../../model/heuristics/Heuristic.dart';
 import '../../model/heuristics/Manhattan.dart';
 import '../../model/heuristics/Octile.dart';
 import 'package:w_flux/w_flux.dart';
-import 'package:tuple/tuple.dart';
 
 class StoreAlgorithmSettings extends Store
 {

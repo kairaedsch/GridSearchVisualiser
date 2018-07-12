@@ -10,6 +10,8 @@ class SearchHistory
   List<SearchState> _history;
   List<SearchState> get history => _history;
 
+  String title;
+
   SearchHistory()
   {
     _history = [];

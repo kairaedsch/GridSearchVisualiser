@@ -29,8 +29,8 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
 
     return
       (Dom.div()..className = "history")(
-        (Dom.div()..className = "algorithmOverview")(
-            history.algorithmOverviewText
+        (Dom.div()..className = "title")(
+            history.title
         ),
         (Dom.div()..className = "parts")(
             history.parts.map((p) => renderPart(p))
@@ -48,10 +48,10 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
     bool selected = (props.store.active.isPresent && part == props.store.active.value);
     return
       (Dom.div()
-        ..key = part.id
+        ..key = part.turn
         ..className = "part"
             " ${selected ? "selected" : ""}"
         ..onClick = ((_) => props.store.actions.activeChanged.call(selected ? const Optional.absent() : new Optional.of(part)))
-      )(part.id);
+      )(part.turn);
   }
 }
