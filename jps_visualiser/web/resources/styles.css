@@ -530,6 +530,8 @@ html, body {
 .history .parts {
   padding: 10px;
   display: grid;
+  max-height: 50vh;
+  overflow-y: scroll;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
   border: solid #DDD;
