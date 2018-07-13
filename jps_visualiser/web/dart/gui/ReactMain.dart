@@ -56,6 +56,7 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
             (ReactHistory()
               ..store = storeHistory
               ..actions = storeHistory.actions
+              ..storeGrid = storeGrid
             )()
         )
       )

@@ -1,6 +1,9 @@
+import '../../model/history/Explanation.dart';
+import '../store/grid/StoreGrid.dart';
 import '../store/history/History.dart';
 import '../store/history/StoreHistory.dart';
 import '../store/history/HistoryPart.dart';
+import 'ReactExplanationPart.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 
@@ -10,7 +13,7 @@ UiFactory<ReactHistoryProps> ReactHistory;
 @Props()
 class ReactHistoryProps extends FluxUiProps<ActionsHistory, StoreHistory>
 {
-
+  StoreGrid storeGrid;
 }
 
 @Component()
@@ -33,17 +36,28 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
             history.title
         ),
         (Dom.div()..className = "parts")(
-            history.parts.map((p) => renderPart(p))
+            history.parts.map((p) => _renderPart(p))
         ),
         historyPart.isEmpty
           ?
-        (Dom.div()..className = "turnOverview")("Select a step to see futher informations about it here")
+        (Dom.div()..className = "turnOverview")(
+            (Dom.div()..className = "title")(
+                "Select a step to see futher informations about it here"
+            )
+        )
           :
-        (Dom.div()..className = "turnOverview")(historyPart.value.title)
+        (Dom.div()..className = "turnOverview")(
+            (Dom.div()..className = "title")(
+                _renderExplanation(historyPart.value.title)
+            ),
+            (Dom.div()..className = "description")(
+                _renderExplanation(historyPart.value.description)
+            )
+        )
       );
   }
 
-  ReactElement renderPart(HistoryPart part)
+  ReactElement _renderPart(HistoryPart part)
   {
     bool selected = (props.store.active.isPresent && part == props.store.active.value);
     return
@@ -53,5 +67,21 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
             " ${selected ? "selected" : ""}"
         ..onClick = ((_) => props.store.actions.activeChanged.call(selected ? const Optional.absent() : new Optional.of(part)))
       )(part.turn);
+  }
+
+  ReactElement _renderExplanation(Explanation explanation)
+  {
+    return
+      (Dom.div()..className = "explanation")(
+          explanation.explanation.map((ep)
+          {
+            return
+              (ReactExplanationPart()
+                ..explanationPart = ep
+                ..key = ep.hashCode
+                ..storeGrid = props.storeGrid
+              )();
+          }).toList()
+      );
   }
 }

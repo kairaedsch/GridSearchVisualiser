@@ -1,5 +1,5 @@
-import '../../../model/SearchHistory.dart';
-import '../../../model/SearchState.dart';
+import '../../../model/history/SearchHistory.dart';
+import '../../../model/history/SearchState.dart';
 import 'History.dart';
 import 'HistoryPart.dart';
 import 'package:quiver/core.dart';

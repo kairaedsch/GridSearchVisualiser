@@ -66,6 +66,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..className = "node"
             " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
             " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
+            " ${props.store.highlight.isPresent ? "highlight highlight_${props.store.highlight.value}" : ""}"
             " ${structureNode.type.name}"
             " ${explanationNode.marking.or("")}"
             " ${explanationNode.activeNodeInTurn ? "activeNodeInTurn" : "" }"
@@ -93,21 +94,13 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       return null;
     }
 
-    Optional<Position> parent = new Optional.of(props.store.position);
-    List<Position> path = [];
-    while (parent.isPresent)
-    {
-      path.add(parent.value);
-      parent = props.storeGrid[parent.value].explanationNode.parent;
-    }
-
     return
       (Dom.div()
         ..className = "arrowParents")(
           (ReactPath()
             ..size = props.storeGridSettings.size
-            ..path = path
-            ..showStart = true
+            ..path = [props.store.explanationNode.parent.value, props.store.position]
+            ..showEnd = true
           )()
       );
   }
@@ -199,13 +192,13 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {
-        return null;
+        return (Dom.div()..className = "parts")();
       }
       if (props.storeGridSettings.gridMode == GridMode.ADVANCED)
       {
         if (structureNode.barrier.isNoneBlocked() && !state.mouseIsOver)
         {
-          return null;
+          return (Dom.div()..className = "parts")();
         }
       }
     }

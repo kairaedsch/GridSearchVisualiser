@@ -1,6 +1,6 @@
 import '../../general/Position.dart';
 import '../Grid.dart';
-import '../SearchHistory.dart';
+import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
 
 abstract class Algorithm

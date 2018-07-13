@@ -1,20 +1,16 @@
-import '../general/Position.dart';
+import '../../general/Position.dart';
 import 'package:quiver/core.dart';
 
 class NodeSearchState
 {
   NodeMarking nodeMarking;
   Optional<Position> parent;
-  bool markedOpenInTurn;
-  bool parentUpdated;
   Optional<String> _info;
   Optional<String> get info => _info;
 
   NodeSearchState() :
         nodeMarking = NodeMarking.UNMARKED_NODE,
         parent = const Optional.absent(),
-        markedOpenInTurn = false,
-        parentUpdated = false,
         _info = const Optional.absent();
 
   void addInfo(String newInfo) => _info = new Optional.of((_info.isPresent ? _info.value + " " : "") + newInfo);

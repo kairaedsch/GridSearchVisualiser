@@ -1,5 +1,6 @@
 import '../../../general/Position.dart';
-import '../../../model/NodeSearchState.dart';
+import '../../../model/history/NodeSearchState.dart';
+import '../../../model/history/SearchState.dart';
 import 'package:quiver/core.dart';
 
 class ExplanationNode
@@ -11,12 +12,13 @@ class ExplanationNode
   final bool markedOpenInTurn;
   final bool parentUpdated;
 
-  ExplanationNode(NodeSearchState nodeSearchState, this.activeNodeInTurn) :
-        marking = new Optional.of(nodeSearchState.nodeMarking.name),
-        parent = nodeSearchState.parent,
-        markedOpenInTurn = nodeSearchState.markedOpenInTurn,
-        parentUpdated = nodeSearchState.parentUpdated,
-        info = nodeSearchState.info;
+  ExplanationNode(SearchState searchState, Position position) :
+        marking = new Optional.of(searchState[position].nodeMarking.name),
+        parent = searchState[position].parent,
+        activeNodeInTurn = searchState.activeNodeInTurn == position,
+        markedOpenInTurn = searchState.markedOpenInTurn.contains(position),
+        parentUpdated = searchState.parentUpdated.contains(position),
+        info = searchState[position].info;
 
   const ExplanationNode.normal() :
         marking = const Optional.absent(),

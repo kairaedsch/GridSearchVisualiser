@@ -1,7 +1,8 @@
 import '../Grid.dart';
-import '../NodeSearchState.dart';
-import '../SearchHistory.dart';
-import '../SearchState.dart';
+import '../history/Explanation.dart';
+import '../history/NodeSearchState.dart';
+import '../history/SearchHistory.dart';
+import '../history/SearchState.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'package:quiver/core.dart';
@@ -32,7 +33,6 @@ class Dijkstra extends Algorithm
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
       searchState.activeNodeInTurn = nStar.position;
       searchState[nStar.position].addInfo("I am the active node in this turn.");
-      searchState.title = "Turn $turn with active node at ${nStar.position}";
 
       if (nStar == target)
       {
@@ -68,7 +68,7 @@ class Dijkstra extends Algorithm
             }
             else
             {
-              searchState[n.position].markedOpenInTurn = true;
+              searchState.markedOpenInTurn.add(n.position);
               open.add(n);
               searchState[n.position].addInfo("I am newly marked as open as I am a neighbour of the active node and have not been marked yet.");
             }
@@ -77,7 +77,7 @@ class Dijkstra extends Algorithm
             {
               parent[n] = nStar;
               distance[n] = getDistance(nStar) + nStar.distanceTo(n);
-              searchState[nStar.position].parentUpdated = true;
+              searchState.parentUpdated.add(n.position);
             }
           }
         }
@@ -86,6 +86,16 @@ class Dijkstra extends Algorithm
       open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
       closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
       parent.forEach((n, p) => searchState[n.position].parent = new Optional.of(p.position));
+
+      searchState.title = new Explanation()
+        ..addT("Turn $turn with ")
+        ..addN("active node", [nStar.position], "ACTIVE_NODE")
+        ..addT("at ${nStar.position}");
+
+      searchState.description = new Explanation()
+        ..addT("BalBlaBla Mr. Freeman")
+        ..addN("neighbour nodes", grid.neighbours(nStar).map((n) => n.position).toList(), "NEIGHBOUR_NODE")
+        ..addT("are very many here");
 
       searchHistory.add(searchState);
     }

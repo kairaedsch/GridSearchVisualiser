@@ -175,6 +175,18 @@ html, body {
   height: var(--node-parts-size);
 }
 
+.grid .node.highlight .parts {
+  --color-highlight: #FFF;
+  background: radial-gradient(#FFF, #FFF 2.5%, var(--color-highlight) 2.5%, var(--color-highlight) 7.5%, #FFF 7.5%, #FFF 10%, transparent 10%, transparent 50%);
+
+  animation: highlight 3s linear infinite;
+}
+
+@keyframes highlight {
+  0%   {background-size: 100%; background-position: 0 0}
+  100% {background-size: 500%; background-position: -250% -250%}
+}
+
 .grid .node .part {
   width: var(--node-part-size);
   height: var(--node-part-size);
@@ -530,12 +542,18 @@ html, body {
 .history .parts {
   padding: 10px;
   display: grid;
-  max-height: 50vh;
-  overflow-y: scroll;
+  max-height: 30vh;
+  overflow-y: auto;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
   border: solid #DDD;
   border-width: 1px 0;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .history .parts .part {
@@ -565,4 +583,49 @@ html, body {
 .history .turnOverview {
   flex-grow: 1;
   padding: 5px 8px;
+}
+
+.history .turnOverview .title {
+  text-align: center;
+}
+
+.history .turnOverview .title .explanationPart {
+  font-size: 22px;
+  font-weight: 600;
+  padding: 6px 10px;
+  margin: 2px 0;
+}
+
+.history .turnOverview .description .explanationPart {
+  padding: 3px 8px;
+  margin: 2px 0;
+}
+
+.explanationPart {
+  display: inline-block;
+}
+
+.explanationPart.typed {
+  color: #FFF;
+  cursor: help;
+}
+
+.explanationPart.untyped {
+  color: #333;
+}
+
+.explanationPart.ACTIVE_NODE {
+  background: var(--color-third);
+}
+
+.grid .node.highlight_ACTIVE_NODE .parts {
+  --color-highlight: var(--color-third);
+}
+
+.explanationPart.NEIGHBOUR_NODE {
+  background: var(--color-main);
+}
+
+.grid .node.highlight_NEIGHBOUR_NODE .parts {
+  --color-highlight: var(--color-main);
 }

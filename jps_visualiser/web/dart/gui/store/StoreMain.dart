@@ -1,6 +1,6 @@
 import '../../general/Position.dart';
 import '../../general/Size.dart';
-import '../../model/SearchHistory.dart';
+import '../../model/history/SearchHistory.dart';
 import '../../model/algorithm/Algorithm.dart';
 import '../../model/heuristics/Heuristic.dart';
 import 'grid/ExplanationNode.dart';

@@ -1,4 +1,4 @@
-import 'Grid.dart';
+import '../Grid.dart';
 import 'SearchState.dart';
 import 'package:quiver/core.dart';
 
