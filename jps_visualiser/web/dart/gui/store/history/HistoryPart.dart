@@ -9,7 +9,7 @@ class HistoryPart
   final Array2D<ExplanationNode> explanationNodes;
   final int turn;
   final Explanation title;
-  final Explanation description;
+  final List<Explanation> description;
   final List<Position> path;
   final Position activeNodeInTurn;
 

@@ -8,25 +8,30 @@
   --node-part-height: 10px;
   --node-part-shadow: 14px;
 
-  --color-main-darker: #004d8f;
-  --color-main-dark: #007ce6;
-  --color-main: #0095FF;
-  --color-main-light: #5bbaff;
+  --color-blue-darker: #004d8f;
+  --color-blue-dark: #007ce6;
+  --color-blue: #0095FF;
+  --color-blue-light: #5bbaff;
 
-  --color-second-light: #f50505;
-  --color-second: #CA0404;
-  --color-second-dark: #890303;
+  --color-red-light: #f50505;
+  --color-red: #CA0404;
+  --color-red-dark: #890303;
 
-  --color-third-lighter: #fff48c;
-  --color-third-light: #ffdd0f;
-  --color-third: #edc420;
-  --color-third-dark: #ceab1c;
+  --color-yellow-lighter: #fff48c;
+  --color-yellow-light: #ffdd0f;
+  --color-yellow: #edc420;
+  --color-yellow-dark: #ceab1c;
 
-  --color-fourth-lighter: #54fb61;
-  --color-fourth-light: #4ce258;
-  --color-fourth: #2fc13c;
-  --color-fourth-dark: #25a832;
-  --color-fourth-darker: #197221;
+  --color-green-lighter: #54fb61;
+  --color-green-light: #4ce258;
+  --color-green: #2fc13c;
+  --color-green-dark: #25a832;
+  --color-green-darker: #197221;
+
+  --color-grey-light: #EEE;
+  --color-grey: #CCC;
+  --color-grey-dark: #AAA;
+  --color-grey-darker: #888;
 }
 
 *, *:before, *:after {
@@ -94,12 +99,12 @@ html, body {
 }
 
 .grid.BASIC .node:hover, .node.hover {
-  border-color: var(--color-main-light);
+  border-color: var(--color-blue-light);
 }
 
 .grid.BASIC .node.totalBlocked {
-  background: var(--color-main);
-  border-color: var(--color-main-light) var(--color-main-dark) var(--color-main-dark) var(--color-main-light);
+  background: var(--color-blue);
+  border-color: var(--color-blue-light) var(--color-blue-dark) var(--color-blue-dark) var(--color-blue-light);
   animation-name: nodeChangeBlocked;
 }
 
@@ -116,7 +121,7 @@ html, body {
 }
 
 .grid.BASIC .node.totalBlocked:hover, .grid.BASIC .node.totalBlocked.hover {
-  border-color: var(--color-main-darker);
+  border-color: var(--color-blue-darker);
 }
 
 .grid.BASIC .node {
@@ -128,11 +133,11 @@ html, body {
 }
 
 .grid .node.SOURCE_NODE.hover {
-  border-color: var(--color-fourth-dark);
+  border-color: var(--color-green-dark);
 }
 
 .grid .node.TARGET_NODE.hover {
-  border-color:var(--color-second-dark);
+  border-color:var(--color-red-dark);
 }
 
 .grid .node.EditBarrierMouseMode.hover, .grid .node.EditBarrierMouseMode.hover * {
@@ -144,30 +149,30 @@ html, body {
 }
 
 .grid .node.MARKED_OPEN_NODE {
-  background: var(--color-fourth);
-  border-color: var(--color-fourth-dark);
+  background: var(--color-green);
+  border-color: var(--color-green-dark);
 }
 
 .grid .node.MARKED_OPEN_NODE:hover, .grid .node.MARKED_OPEN_NODE.hover {
-  border-color: var(--color-fourth-darker);
+  border-color: var(--color-green-darker);
 }
 
 .grid .node.markedOpenInTurn {
-  background: var(--color-fourth-light);
-  border-color: var(--color-fourth);
+  background: var(--color-green-light);
+  border-color: var(--color-green);
 }
 
 .grid .node.markedOpenInTurn:hover, .grid .node.MARKED_OPEN_NODE.markedOpenInTurn.hover {
-  border-color: var(--color-fourth-dark);
+  border-color: var(--color-green-dark);
 }
 
 .grid .node.MARKED_CLOSED_NODE {
-  background: #CCC;
-  border-color: #BBB;
+  background: var(--color-grey);
+  border-color: var(--color-grey-dark);
 }
 
 .grid .node.MARKED_CLOSED_NODE:hover, .grid .node.MARKED_CLOSED_NODE.hover {
-  border-color: #888;
+  border-color: var(--color-grey-darker);
 }
 
 .grid .node .parts {
@@ -177,14 +182,27 @@ html, body {
 
 .grid .node.highlight .parts {
   --color-highlight: #FFF;
-  background: radial-gradient(#FFF, #FFF 2.5%, var(--color-highlight) 2.5%, var(--color-highlight) 7.5%, #FFF 7.5%, #FFF 10%, transparent 10%, transparent 50%);
+  --ring-inner: 40%;
+  --ring-white: 5%;
+  --ring-blue: 10%;
+  --ring-0: var(--ring-inner);
+  --ring-1: calc(var(--ring-inner) + var(--ring-white));
+  --ring-2: calc(var(--ring-inner) + var(--ring-white) + var(--ring-blue));
+  --ring-3: calc(var(--ring-inner) + var(--ring-white) + var(--ring-blue) + var(--ring-white));
+  background: radial-gradient(
+          transparent, transparent var(--ring-0),
+          #FFF var(--ring-0), #FFF var(--ring-1),
+          var(--color-highlight) var(--ring-1), var(--color-highlight) var(--ring-2),
+          #FFF var(--ring-2), #FFF var(--ring-3),
+          transparent var(--ring-3), transparent 100%);
 
-  animation: highlight 3s linear infinite;
+  animation: highlight 1.5s linear infinite;
 }
 
 @keyframes highlight {
-  0%   {background-size: 100%; background-position: 0 0}
-  100% {background-size: 500%; background-position: -250% -250%}
+  0%   {opacity: 0.75;}
+  50%  {opacity: 1;}
+  100% {opacity: 0.75;}
 }
 
 .grid .node .part {
@@ -267,13 +285,13 @@ html, body {
 }
 
 .grid .node.SOURCE_NODE .part.inner {
-  background: var(--color-fourth);
-  border-color: var(--color-fourth-light) var(--color-fourth-dark) var(--color-fourth-dark) var(--color-fourth-light);
+  background: var(--color-green);
+  border-color: var(--color-green-light) var(--color-green-dark) var(--color-green-dark) var(--color-green-light);
 }
 
 .grid .node.TARGET_NODE .part.inner {
-  background: var(--color-second);
-  border-color: var(--color-second-light) var(--color-second-dark) var(--color-second-dark) var(--color-second-light);
+  background: var(--color-red);
+  border-color: var(--color-red-light) var(--color-red-dark) var(--color-red-dark) var(--color-red-light);
 }
 
 .grid .node.activeNodeInTurn .part.inner {
@@ -281,9 +299,9 @@ html, body {
 }
 
 @keyframes selectedNodeBlink {
-  0% {background: var(--color-third); border-color: var(--color-third-light) var(--color-third-dark) var(--color-third-dark) var(--color-third-light);}
-  50% {background: var(--color-third-light); border-color: var(--color-third-lighter) var(--color-third) var(--color-third) var(--color-third-lighter);}
-  100% {background: var(--color-third); border-color: var(--color-third-light) var(--color-third-dark) var(--color-third-dark) var(--color-third-light);}
+  0% {background: var(--color-yellow); border-color: var(--color-yellow-light) var(--color-yellow-dark) var(--color-yellow-dark) var(--color-yellow-light);}
+  50% {background: var(--color-yellow-light); border-color: var(--color-yellow-lighter) var(--color-yellow) var(--color-yellow) var(--color-yellow-lighter);}
+  100% {background: var(--color-yellow); border-color: var(--color-yellow-light) var(--color-yellow-dark) var(--color-yellow-dark) var(--color-yellow-light);}
 }
 
 .nodeArrow {
@@ -313,13 +331,7 @@ html, body {
 }
 
 .grid .node.markedOpenInTurn .arrowParents .nodeArrow .svg {
-  animation: arrowBlink 1s ease-in-out infinite;
-}
-
-@keyframes arrowBlink {
-  0% {opacity: 1;}
-  50% {opacity: 0.5;}
-  100% {opacity: 1;}
+  opacity: 1;
 }
 
 .grid .node .arrowsToGo .nodeArrow .svg {
@@ -335,6 +347,7 @@ html, body {
   fill: #000;
 }
 
+/*noinspection CssInvalidPropertyValue*/
 .grid .nodeArrow .svg .line {
   stroke-width: 0.025;
 }
@@ -363,7 +376,7 @@ html, body {
   padding: 5px 8px;
   font-size: 14px;
 
-  background: var(--color-main);
+  background: var(--color-blue);
   color: #FFF;
   border-radius: 3px;
   border: 1px solid #FFF;
@@ -393,23 +406,23 @@ html, body {
   font-size: 14px;
 
   cursor: pointer;
-  background: var(--color-main-light);
+  background: var(--color-blue-light);
   color: #FFF;
   overflow: hidden;
 }
 
 .dropDown .value.selected, .dropDown .value.current {
-  background: var(--color-main);
+  background: var(--color-blue);
 }
 
 .dropDown .value.current {
   padding-right: 33px;
 
-  background: var(--color-main);
+  background: var(--color-blue);
 }
 
 .dropDown .value:hover {
-   background: var(--color-main-dark);
+   background: var(--color-blue-dark);
 }
 
 .dropDown .value.current {
@@ -506,7 +519,7 @@ html, body {
   border-radius: 3px;
   cursor: pointer;
   color: #FFF;
-  background-color: var(--color-main);
+  background-color: var(--color-blue);
   background-image: url("images/run.svg");
   background-position: center left 8px;
   background-repeat: no-repeat;
@@ -515,7 +528,7 @@ html, body {
 }
 
 .button:hover {
-  background-color: var(--color-main-dark);
+  background-color: var(--color-blue-dark);
 }
 
 .historyContainer {
@@ -569,15 +582,15 @@ html, body {
 .history .parts .part:hover {
   color: #FFF;
   font-weight: 600;
-  background: var(--color-main-light);
-  border-color: var(--color-main);
+  background: var(--color-blue-light);
+  border-color: var(--color-blue);
 }
 
 .history .parts .part.selected {
   color: #FFF;
   font-weight: 600;
-  background: var(--color-main);
-  border-color: var(--color-main-dark);
+  background: var(--color-blue);
+  border-color: var(--color-blue-dark);
 }
 
 .history .turnOverview {
@@ -587,22 +600,36 @@ html, body {
 
 .history .turnOverview .title {
   text-align: center;
+  padding: 10px 0 20px 0;
 }
 
 .history .turnOverview .title .explanationPart {
   font-size: 22px;
   font-weight: 600;
+}
+
+.history .turnOverview .title .explanationPart.typed {
   padding: 6px 10px;
-  margin: 2px 0;
 }
 
 .history .turnOverview .description .explanationPart {
+  line-height: 25px;
+}
+
+.history .turnOverview .description .explanationPart.typed {
   padding: 3px 8px;
-  margin: 2px 0;
+}
+
+.explanation {
+  padding-bottom: 5px;
+}
+
+.explanation * {
+  white-space: pre-wrap;
 }
 
 .explanationPart {
-  display: inline-block;
+  display: inline;
 }
 
 .explanationPart.typed {
@@ -614,18 +641,42 @@ html, body {
   color: #333;
 }
 
-.explanationPart.ACTIVE_NODE {
-  background: var(--color-third);
+.explanationPart.blue {
+  background: var(--color-blue);
 }
 
-.grid .node.highlight_ACTIVE_NODE .parts {
-  --color-highlight: var(--color-third);
+.grid .node.highlight_blue .parts {
+  --color-highlight: var(--color-blue);
 }
 
-.explanationPart.NEIGHBOUR_NODE {
-  background: var(--color-main);
+.explanationPart.red {
+  background: var(--color-blue);
 }
 
-.grid .node.highlight_NEIGHBOUR_NODE .parts {
-  --color-highlight: var(--color-main);
+.grid .node.highlight_red .parts {
+  --color-highlight: var(--color-blue);
+}
+
+.explanationPart.yellow {
+  background: var(--color-yellow);
+}
+
+.grid .node.highlight_yellow .parts {
+  --color-highlight: var(--color-yellow);
+}
+
+.explanationPart.green {
+  background: var(--color-green);
+}
+
+.grid .node.highlight_green .parts {
+  --color-highlight: var(--color-green);
+}
+
+.explanationPart.grey {
+  background: var(--color-grey);
+}
+
+.grid .node.highlight_grey .parts {
+  --color-highlight: var(--color-grey);
 }

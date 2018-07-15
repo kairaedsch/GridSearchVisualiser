@@ -51,7 +51,7 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
                 _renderExplanation(historyPart.value.title)
             ),
             (Dom.div()..className = "description")(
-                _renderExplanation(historyPart.value.description)
+                _renderExplanations(historyPart.value.description)
             )
         )
       );
@@ -69,10 +69,21 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
       )(part.turn);
   }
 
+  ReactElement _renderExplanations(List<Explanation> explanations)
+  {
+    return
+      (Dom.div()..className = "explanations")(
+        explanations.map((e) => _renderExplanation(e))
+      );
+  }
+
   ReactElement _renderExplanation(Explanation explanation)
   {
     return
-      (Dom.div()..className = "explanation")(
+      (Dom.div()
+        ..className = "explanation"
+        ..key = explanation.hashCode
+      )(
           explanation.explanation.map((ep)
           {
             return

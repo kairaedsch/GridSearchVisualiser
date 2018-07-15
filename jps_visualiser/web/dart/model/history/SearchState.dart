@@ -9,7 +9,7 @@ class SearchState implements Size
   final Array2D<NodeSearchState> _grid;
   final int turn;
   Explanation title;
-  Explanation description;
+  List<Explanation> description = [];
   Position activeNodeInTurn;
   List<Position> markedOpenInTurn = [];
   List<Position> parentUpdated = [];
