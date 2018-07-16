@@ -1,10 +1,6 @@
 import '../../model/history/Explanation.dart';
-import '../store/grid/StoreGrid.dart';
-import '../store/history/History.dart';
-import '../store/history/StoreHistory.dart';
-import '../store/history/HistoryPart.dart';
+import '../../store/history/StoreHistory.dart';
 import 'package:over_react/over_react.dart';
-import 'package:quiver/core.dart';
 
 @Factory()
 UiFactory<ReactExplanationPartProps> ReactExplanationPart;
@@ -13,7 +9,7 @@ UiFactory<ReactExplanationPartProps> ReactExplanationPart;
 class ReactExplanationPartProps extends UiProps
 {
   ExplanationPart explanationPart;
-  StoreGrid storeGrid;
+  ActionsHistory actionsHistory;
 }
 
 @Component()
@@ -27,19 +23,16 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
     return
       (Dom.div()
         ..className = "explanationPart"
-          " ${explanationPart.type.isPresent ? "typed" : "untyped"}"
-          " ${explanationPart.type.or("")}"
-          ..onMouseEnter = ((_) => _highlightNodes(true))
-          ..onMouseLeave = ((_) => _highlightNodes(false))
+          " ${explanationPart.style.isPresent ? "styled" : "unstyled"}"
+          " ${explanationPart.style.or("")}"
+          ..onMouseEnter = (
+                  (_) => props.actionsHistory.highlightsUpdate.call(explanationPart.highlights)
+          )
+          ..onMouseLeave = (
+                  (_) => props.actionsHistory.highlightsUpdate.call([])
+          )
       )(
           explanationPart.text
       );
-  }
-
-  void _highlightNodes(bool highlight)
-  {
-    ExplanationPart explanationPart = props.explanationPart;
-
-    props.explanationPart.nodes.forEach((p) => props.storeGrid[p].actions.highlightChanged.call(highlight ? explanationPart.type : const Optional.absent()));
   }
 }

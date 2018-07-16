@@ -1,10 +1,11 @@
-import '../../general/Position.dart';
-import '../../general/Size.dart';
-import '../../model/history/SearchHistory.dart';
-import '../../model/algorithm/Algorithm.dart';
-import '../../model/heuristics/Heuristic.dart';
+import '../general/Position.dart';
+import '../general/Size.dart';
+import '../model/history/SearchHistory.dart';
+import '../model/algorithm/Algorithm.dart';
+import '../model/heuristics/Heuristic.dart';
 import 'grid/ExplanationNode.dart';
 import 'StoreAlgorithmSettings.dart';
+import 'grid/StorePaths.dart';
 import 'grid/StoreGrid.dart';
 import 'StoreGridSettings.dart';
 import 'grid/StructureNode.dart';
@@ -25,6 +26,9 @@ class StoreMain extends Store
   StoreHistory _storeHistory;
   StoreHistory get storeHistory => _storeHistory;
 
+  StorePaths _storePaths;
+  StorePaths get storePaths => _storePaths;
+
   ActionsMain _actions;
   ActionsMain get actions => _actions;
 
@@ -33,10 +37,11 @@ class StoreMain extends Store
     _storeHistory = new StoreHistory();
     _storeGridSettings = new StoreGridSettings(size);
     _storeAlgorithmSettings = new StoreAlgorithmSettings();
-    _storeGrid = new StoreGrid(storeGridSettings, _storeHistory.actions);
+    _storeGrid = new StoreGrid(_storeGridSettings, _storeHistory.actions);
+    _storePaths = new StorePaths(_storeHistory.actions);
 
     _actions = new ActionsMain();
-    _actions.runAlgorithm.listen((_) => _runAlgorithm());
+    _actions.runAlgorithm.listen((Object _) => _runAlgorithm());
   }
 
   void _runAlgorithm()
@@ -52,5 +57,5 @@ class StoreMain extends Store
 
 class ActionsMain
 {
-  final Action runAlgorithm = new Action();
+  final Action runAlgorithm = new Action<Object>();
 }

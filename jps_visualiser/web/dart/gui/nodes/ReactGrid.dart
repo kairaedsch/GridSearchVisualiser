@@ -2,15 +2,15 @@ import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
-import '../store/StoreGridSettings.dart';
-import '../store/grid/StoreNode.dart';
-import '../store/grid/StoreGrid.dart';
-import '../store/grid/StructureNode.dart';
+import '../../store/StoreGridSettings.dart';
+import '../../store/grid/StoreNode.dart';
+import '../../store/grid/StoreGrid.dart';
+import '../../store/grid/StructureNode.dart';
 import 'EditBarrierMouseMode.dart';
 import 'EditNodeTypeMouseMode.dart';
 import 'MouseMode.dart';
 import 'ReactNode.dart';
-import 'ReactPath.dart';
+import 'arrows/ReactPath.dart';
 import 'dart:async';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
@@ -56,7 +56,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
         ..className = "grid"
             " ${props.storeGridSettings.gridMode.name}"
         ..style =
-        {
+        <String, String>{
           "width": "${Settings.nodeSize * storeNodes.width}px",
           "height": "${Settings.nodeSize * storeNodes.height}px"
         }

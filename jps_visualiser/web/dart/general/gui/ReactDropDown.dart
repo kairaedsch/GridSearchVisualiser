@@ -54,6 +54,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
             (Dom.div()
               ..className = "drop"
               ..style =
+              <String, String>
               {
                 "width": "${state.width}px"
               }

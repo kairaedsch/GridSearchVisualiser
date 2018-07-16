@@ -1,6 +1,6 @@
-import '../../general/Bool.dart';
-import '../../general/Size.dart';
-import '../../general/gui/DropDownElement.dart';
+import '../general/Bool.dart';
+import '../general/Size.dart';
+import '../general/gui/DropDownElement.dart';
 import 'package:w_flux/w_flux.dart';
 import 'package:tuple/tuple.dart';
 

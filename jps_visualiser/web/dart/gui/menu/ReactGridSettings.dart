@@ -1,5 +1,5 @@
 import '../../general/Bool.dart';
-import '../store/StoreGridSettings.dart';
+import '../../store/StoreGridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
 import 'package:over_react/over_react.dart';
 
@@ -27,7 +27,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.gridMode
                 ..values = GridMode.values
-                ..selectListener = ((newValue) => props.store.actions.gridModeChanged.call(newValue))
+                ..selectListener = ((newValue) => props.store.actions.gridModeChanged.call(newValue as GridMode))
               )()
           ),
           (Dom.div()..className = "config")(
@@ -35,7 +35,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.directionMode
                 ..values = DirectionMode.values
-                ..selectListener = ((newValue) => props.store.actions.directionModeChanged.call(newValue))
+                ..selectListener = ((newValue) => props.store.actions.directionModeChanged.call(newValue as DirectionMode))
               )()
           ),
           props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
@@ -44,7 +44,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.crossCornerMode
                 ..values = CrossCornerMode.values
-                ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue))
+                ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue as CrossCornerMode))
               )()
           ) : null,
         )

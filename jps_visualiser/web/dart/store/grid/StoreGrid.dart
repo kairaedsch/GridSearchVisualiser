@@ -1,16 +1,12 @@
-import '../../../general/Array2D.dart';
-import '../../../general/Direction.dart';
-import '../../../general/Position.dart';
-import '../../../general/Size.dart';
-import '../../../model/Grid.dart';
-import '../../../model/history/SearchHistory.dart';
-import '../../../model/history/SearchState.dart';
+import '../../general/Array2D.dart';
+import '../../general/Direction.dart';
+import '../../general/Position.dart';
+import '../../general/Size.dart';
+import '../../model/Grid.dart';
 import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
-import '../history/HistoryPart.dart';
 import '../history/StoreHistory.dart';
-import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
 
 class StoreGrid extends Store implements Size
@@ -44,18 +40,21 @@ class StoreGrid extends Store implements Size
 
   StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory)
   {
-    _storeNodes = new Array2D<StoreNode>(_storeGridSettings.size, (Position pos) => new StoreNode(pos));
+    _storeNodes = new Array2D<StoreNode>(_storeGridSettings.size, (Position pos) => new StoreNode(pos, actionsHistory));
     StoreNode sourceStoreNode = _storeNodes[new Position(5, 5)];
     sourceStoreNode.actions.structureNodeChanged.call(sourceStoreNode.structureNode.clone(type: StructureNodeType.SOURCE_NODE));
 
     StoreNode targetStoreNode = _storeNodes[new Position(10, 5)];
     targetStoreNode.actions.structureNodeChanged.call(targetStoreNode.structureNode.clone(type: StructureNodeType.TARGET_NODE));
 
-    actionsHistory.activeChanged.listen(_historyActiveChanged);
-
-    _storeGridSettings.actions.gridModeChanged.listen(_changeGridMode);
+    _storeGridSettings.actions.gridModeChanged.listen(_gridSettingsGridModeChanged);
 
     _actions = new ActionsGridChanged();
+  }
+
+  void _gridSettingsGridModeChanged(GridMode newGridMode)
+  {
+    trigger();
   }
 
   Grid toGrid()
@@ -127,16 +126,6 @@ class StoreGrid extends Store implements Size
     GridMode gridMode = _storeGridSettings.gridMode;
     Position startPosition = position.go(direction);
     return !startPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[position].structureNode.barrier.isAnyBlocked() : _storeNodes[position].structureNode.barrier.isBlocked(direction));
-  }
-
-  void _historyActiveChanged(Optional<HistoryPart> part)
-  {
-    _storeNodes.iterable.forEach((StoreNode n) => n.actions.explanationNodeChanged(part.transform((p) => p.explanationNodes[n.position])));
-  }
-
-  void _changeGridMode(GridMode newGridMode)
-  {
-    trigger();
   }
 }
 

@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import 'general/Size.dart';
-import 'gui/store/StoreMain.dart';
+import 'store/StoreMain.dart';
 import 'package:over_react/react_dom.dart' as react_dom;
 import 'package:over_react/over_react.dart' as over_react;
 import 'gui/ReactMain.dart';

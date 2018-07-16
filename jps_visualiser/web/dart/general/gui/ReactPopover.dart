@@ -39,6 +39,7 @@ class ReactPopoverComponent extends UiStatefulComponent<ReactPopoverProps, React
       (Dom.div()
         ..className = "popover"
         ..style =
+        <String, String>
         {
           "marginTop": "-${state.height}px"
         }

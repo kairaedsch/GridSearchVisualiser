@@ -1,7 +1,5 @@
-import '../../general/Direction.dart';
-import '../../general/Position.dart';
-import '../../general/Settings.dart';
-import '../../general/Size.dart';
+import '../../../general/Position.dart';
+import '../../../general/Size.dart';
 import 'ReactArrow.dart';
 import 'package:over_react/over_react.dart';
 
@@ -33,21 +31,26 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
     List<ReactElement> arrows = [];
     for (int i = 0; i < props.path.length - 1; i++)
     {
+      bool start = (i == 0);
+      bool end = (i + 1 == props.path.length - 1);
+
       arrows.add(
           (ReactArrow()
             ..key = i
             ..size = props.size
             ..sourceNode = props.path[i]
             ..targetNode = props.path[i + 1]
-            ..showStart = props.showStart && (i == 0)
-            ..showEnd = props.showEnd && (i + 1 == props.path.length - 1)
+            ..showStart = props.showStart && start
+            ..showEnd = props.showEnd && end
+            ..startIntermediate = start ? 1.0 : 0.0
+            ..endIntermediate = end ? 1.0 : 0.0
           )()
       );
     }
 
     return
       (Dom.div()
-        ..className = "finalPath"
+        ..className = "path ${props.className}"
       )(
           arrows
       );

@@ -1,10 +1,10 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
-import '../store/StoreGridSettings.dart';
-import '../store/grid/StoreNode.dart';
-import '../store/grid/StructureNode.dart';
-import '../store/grid/StoreGrid.dart';
+import '../../store/StoreGridSettings.dart';
+import '../../store/grid/StoreNode.dart';
+import '../../store/grid/StructureNode.dart';
+import '../../store/grid/StoreGrid.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';

@@ -1,6 +1,7 @@
 import '../../general/Array2D.dart';
 import '../../general/Position.dart';
 import '../../general/Size.dart';
+import 'Highlight.dart';
 import 'NodeSearchState.dart';
 import 'package:quiver/core.dart';
 
@@ -14,22 +15,25 @@ class Explanation
     _explanation.add(new ExplanationPart.Text(text));
   }
 
-  void addN(String text, List<Position> nodes, String type)
+  void addH(String text, String style, List<Highlight> highlights)
   {
-    _explanation.add(new ExplanationPart.Node(text, nodes, type));
+    _explanation.add(new ExplanationPart.Highlight(text, style, highlights));
   }
 }
 
 class ExplanationPart
 {
   final String text;
-  final List<Position> nodes;
-  final Optional<String> type;
+  final List<Highlight> highlights;
+  final Optional<String> style;
 
   ExplanationPart.Text(this.text)
-      : nodes = [],
-        type = const Optional.absent();
+      : highlights = [],
+        style = const Optional.absent();
 
-  ExplanationPart.Node(this.text, this.nodes, String type)
-      : type = new Optional.of(type);
+  ExplanationPart.Highlight(this.text, String style, this.highlights)
+      : style = new Optional.of(style)
+  {
+    highlights.forEach((h) => h.setDefaultStyle(style));
+  }
 }

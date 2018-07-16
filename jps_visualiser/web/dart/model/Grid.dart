@@ -31,6 +31,8 @@ class Grid implements Size
 
   @override
   int get height => _grid.height;
+
+  Iterable<Node> get iterable => _grid.iterable;
 }
 
 class Node
@@ -40,8 +42,7 @@ class Node
   final Position position;
 
   Node(this.position, bool leaveAble(Direction direction))
-      : _leaveAble = new Map<Direction, bool>.fromIterable(Direction.values, key: (direction) => direction, value: leaveAble);
-
+      : _leaveAble = new Map<Direction, bool>.fromIterable(Direction.values, key: (Direction direction) => direction, value: leaveAble);
 
   bool leaveAble(Direction direction) {
     return _leaveAble[direction];

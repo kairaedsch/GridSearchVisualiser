@@ -1,7 +1,7 @@
-import '../../../general/Array2D.dart';
-import '../../../general/Position.dart';
-import '../../../model/history/SearchHistory.dart';
-import '../../../model/history/SearchState.dart';
+import '../../general/Array2D.dart';
+import '../../general/Position.dart';
+import '../../model/history/SearchHistory.dart';
+import '../../model/history/SearchState.dart';
 import '../grid/ExplanationNode.dart';
 import 'HistoryPart.dart';
 

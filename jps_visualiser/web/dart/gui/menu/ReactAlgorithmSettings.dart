@@ -1,7 +1,8 @@
 import '../../general/Bool.dart';
+import '../../general/gui/DropDownElement.dart';
 import '../ReactMain.dart';
-import '../store/StoreAlgorithmSettings.dart';
-import '../store/StoreGridSettings.dart';
+import '../../store/StoreAlgorithmSettings.dart';
+import '../../store/StoreGridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
 import 'package:over_react/over_react.dart';
 import 'dart:html';
@@ -30,7 +31,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
               (ReactDropDown()
                 ..value = props.store.algorithmType
                 ..values = AlgorithmType.values
-                ..selectListener = ((newValue) => props.store.actions.algorithmTypeChanged.call(newValue))
+                ..selectListener = ((newValue) => props.store.actions.algorithmTypeChanged.call(newValue as AlgorithmType))
               )()
           ),
           (Dom.div()..className = "config")(
@@ -38,7 +39,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
               (ReactDropDown()
                 ..value = props.store.heuristicType
                 ..values = HeuristicType.values
-                ..selectListener = ((newValue) => props.store.actions.heuristicTypeChanged.call(newValue))
+                ..selectListener = ((newValue) => props.store.actions.heuristicTypeChanged.call(newValue as HeuristicType))
               )()
           ),
           (Dom.div()..className = "config")(

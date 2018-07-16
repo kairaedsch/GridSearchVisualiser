@@ -1,5 +1,5 @@
-import '../../../model/history/SearchHistory.dart';
-import '../../../model/history/SearchState.dart';
+import '../../model/history/Highlight.dart';
+import '../../model/history/SearchHistory.dart';
 import 'History.dart';
 import 'HistoryPart.dart';
 import 'package:quiver/core.dart';
@@ -16,14 +16,19 @@ class StoreHistory extends Store
   ActionsHistory _actions;
   ActionsHistory get actions => _actions;
 
+  List<Highlight> _highlights;
+
   StoreHistory()
   {
     _history = const Optional.absent();
     _active = const Optional.absent();
+    _highlights = [];
 
     _actions = new ActionsHistory();
     _actions.historyChanged.listen(_historyChanged);
     _actions.activeChanged.listen(_activeChanged);
+    _actions.highlightsUpdate.listen(_highlightsUpdate);
+    _actions.highlightsChanged.listen(_highlightsChanged);
   }
 
   void _historyChanged(SearchHistory searchHistory)
@@ -48,8 +53,34 @@ class StoreHistory extends Store
 
   void _activeChanged(Optional<HistoryPart> newActive)
   {
+    bool defaultHighlights = active.isEmpty || active.value.defaultHighlights == _highlights;
     _active = newActive;
+    if (defaultHighlights || active.isEmpty)
+    {
+      _actions.highlightsUpdate.call([]);
+    }
     trigger();
+  }
+
+  void _highlightsUpdate(List<Highlight> newHighlights)
+  {
+    if (active.isEmpty)
+    {
+      _actions.highlightsChanged.call([]);
+    }
+    else if (newHighlights.isEmpty && active.value.defaultHighlights.isNotEmpty)
+    {
+      _actions.highlightsChanged.call(active.value.defaultHighlights);
+    }
+    else
+    {
+      _actions.highlightsChanged.call(newHighlights);
+    }
+  }
+
+  void _highlightsChanged(List<Highlight> newHighlights)
+  {
+    _highlights = newHighlights;
   }
 }
 
@@ -57,4 +88,6 @@ class ActionsHistory
 {
   final Action<SearchHistory> historyChanged = new Action<SearchHistory>();
   final Action<Optional<HistoryPart>> activeChanged = new Action<Optional<HistoryPart>>();
+  final Action<List<Highlight>> highlightsUpdate = new Action<List<Highlight>>();
+  final Action<List<Highlight>> highlightsChanged = new Action<List<Highlight>>();
 }

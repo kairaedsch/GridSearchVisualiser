@@ -2,15 +2,15 @@ import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
-import '../store/grid/ExplanationNode.dart';
-import '../store/StoreGridSettings.dart';
-import '../store/grid/StoreGrid.dart';
-import '../store/grid/StoreNode.dart';
-import '../store/grid/StructureNode.dart';
+import '../../store/grid/ExplanationNode.dart';
+import '../../store/StoreGridSettings.dart';
+import '../../store/grid/StoreGrid.dart';
+import '../../store/grid/StoreNode.dart';
+import '../../store/grid/StructureNode.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
-import 'ReactPath.dart';
+import 'arrows/ReactPath.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/src/store.dart';
@@ -66,12 +66,10 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..className = "node"
             " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
             " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
-            " ${props.store.highlight.isPresent ? "highlight highlight_${props.store.highlight.value}" : ""}"
+            " ${props.store.positionHighlight.isPresent ? "highlight highlight_${props.store.positionHighlight.value.style}" : ""}"
             " ${structureNode.type.name}"
             " ${explanationNode.marking.or("")}"
             " ${explanationNode.activeNodeInTurn ? "activeNodeInTurn" : "" }"
-            " ${explanationNode.markedOpenInTurn ? "markedOpenInTurn" : "" }"
-            " ${explanationNode.parentUpdated ? "parentUpdated" : "" }"
             " ${state.mouseIsOver ? "hover" : "noHover"}"
             " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
             " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
@@ -82,26 +80,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       )(
           (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
           _renderInner(),
-          _renderParentArrow(),
-          _renderArrowsToGo()
-      );
-  }
-
-  ReactElement _renderParentArrow()
-  {
-    if (!props.store.explanationNode.parent.isPresent)
-    {
-      return null;
-    }
-
-    return
-      (Dom.div()
-        ..className = "arrowParents")(
-          (ReactPath()
-            ..size = props.storeGridSettings.size
-            ..path = [props.store.explanationNode.parent.value, props.store.position]
-            ..showEnd = true
-          )()
+          _renderArrowsToGo(),
+          _renderTextHighlight()
       );
   }
 
@@ -230,5 +210,20 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..grid = props.grid
         ..storeGrid = props.storeGrid
       )();
+  }
+
+  ReactElement _renderTextHighlight()
+  {
+    if (props.store.textHighlight.isEmpty)
+    {
+      return null;
+    }
+
+    return (Dom.div()
+      ..className = "textHighlight"
+        " highlight_${props.store.textHighlight.value.style}"
+    )(
+        props.store.textHighlight.value.text
+    );
   }
 }

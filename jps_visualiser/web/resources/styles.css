@@ -1,7 +1,7 @@
 @import url('fonts/openSans.css');
 
 :root {
-  --node-size: 62px;
+  --node-size: 68px;
   --node-parts-size: calc(var(--node-size) - 2px);
   --node-part-size: calc((var(--node-size) - 2px) / 3);
   --node-part-size-inner: calc((var(--node-size) - 2px) / 3 - 2px);
@@ -157,14 +157,17 @@ html, body {
   border-color: var(--color-green-darker);
 }
 
+/* TODO remove
 .grid .node.markedOpenInTurn {
   background: var(--color-green-light);
   border-color: var(--color-green);
 }
 
+/* TODO remove
 .grid .node.markedOpenInTurn:hover, .grid .node.MARKED_OPEN_NODE.markedOpenInTurn.hover {
   border-color: var(--color-green-dark);
 }
+*/
 
 .grid .node.MARKED_CLOSED_NODE {
   background: var(--color-grey);
@@ -178,6 +181,7 @@ html, body {
 .grid .node .parts {
   width: var(--node-parts-size);
   height: var(--node-parts-size);
+  overflow: hidden;
 }
 
 .grid .node.highlight .parts {
@@ -313,25 +317,23 @@ html, body {
   pointer-events: none;
 }
 
-.grid .node .arrowParents .nodeArrow, .grid .node .arrowsToGo .nodeArrow {
-  display: none;
-}
-
-.grid .node:hover .nodeArrow, .grid .node.hover .nodeArrow, .grid .node.markedOpenInTurn .arrowParents .nodeArrow {
-  display: block;
-}
-
-.grid .nodeArrow .svg {
+.nodeArrow .svg {
   width: 100%;
   height: 100%;
 }
 
-.grid .node .arrowParents .nodeArrow .svg {
-  opacity: 0.5;
+.nodeArrow .svg {
+  stroke: #000;
+  fill: #000;
 }
 
-.grid .node.markedOpenInTurn .arrowParents .nodeArrow .svg {
-  opacity: 1;
+/*noinspection CssInvalidPropertyValue*/
+.nodeArrow .svg .line {
+  stroke-width: 0.025;
+}
+
+.nodeArrow .svg .end {
+  stroke-width: 0;
 }
 
 .grid .node .arrowsToGo .nodeArrow .svg {
@@ -339,21 +341,7 @@ html, body {
 }
 
 .grid .node.anyBlocked .arrowsToGo .nodeArrow .svg {
-   opacity: 0.1;
-}
-
-.grid .nodeArrow .svg {
-  stroke: #000;
-  fill: #000;
-}
-
-/*noinspection CssInvalidPropertyValue*/
-.grid .nodeArrow .svg .line {
-  stroke-width: 0.025;
-}
-
-.grid .nodeArrow .svg .end {
-  stroke-width: 0;
+  opacity: 0.1;
 }
 
 .popover {
@@ -556,6 +544,7 @@ html, body {
   padding: 10px;
   display: grid;
   max-height: 30vh;
+  min-height: 10vh;
   overflow-y: auto;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
@@ -595,6 +584,7 @@ html, body {
 
 .history .turnOverview {
   flex-grow: 1;
+  overflow-y: auto;
   padding: 5px 8px;
 }
 
@@ -608,7 +598,7 @@ html, body {
   font-weight: 600;
 }
 
-.history .turnOverview .title .explanationPart.typed {
+.history .turnOverview .title .explanationPart.styled {
   padding: 6px 10px;
 }
 
@@ -616,7 +606,7 @@ html, body {
   line-height: 25px;
 }
 
-.history .turnOverview .description .explanationPart.typed {
+.history .turnOverview .description .explanationPart.styled {
   padding: 3px 8px;
 }
 
@@ -632,12 +622,12 @@ html, body {
   display: inline;
 }
 
-.explanationPart.typed {
+.explanationPart.styled {
   color: #FFF;
   cursor: help;
 }
 
-.explanationPart.untyped {
+.explanationPart.unstyled {
   color: #333;
 }
 
@@ -673,10 +663,28 @@ html, body {
   --color-highlight: var(--color-green);
 }
 
+.highlight_green .nodeArrow .svg {
+  stroke: var(--color-green-darker);
+  fill: var(--color-green-darker);
+}
+
 .explanationPart.grey {
   background: var(--color-grey);
 }
 
 .grid .node.highlight_grey .parts {
   --color-highlight: var(--color-grey);
+}
+
+.textHighlight {
+  margin: -70% 0 0 25%;
+  width: 50%;
+  font-size: 20px;
+
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFF;
+  background: var(--color-green);
+  opacity: 0.999;
 }

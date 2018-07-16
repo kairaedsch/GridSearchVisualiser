@@ -1,11 +1,13 @@
 import '../Grid.dart';
 import '../history/Explanation.dart';
+import '../history/Highlight.dart';
 import '../history/NodeSearchState.dart';
 import '../history/SearchHistory.dart';
 import '../history/SearchState.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
-import 'package:quiver/core.dart';
+
+typedef Funk<T, R> = R Function(T);
 
 class Dijkstra extends Algorithm
 {
@@ -18,9 +20,29 @@ class Dijkstra extends Algorithm
 
     Map<Node, double> distance = new Map<Node, double>();
     distance[start] = 0.0;
-    Function getDistance = (n) => distance.containsKey(n) ? distance[n] : double.INFINITY;
+    Funk<Node, double> getDistance = (Node n) => distance.containsKey(n) ? distance[n] : double.INFINITY;
 
     Map<Node, Node> parent = new Map<Node, Node>();
+    Funk<Node, List<Node>> getPath = (Node n)
+    {
+      if (parent[n] == null)
+      {
+        return [];
+      }
+      List<Node> path = [];
+      {
+        path.add(n);
+        Node intermediateNode = n;
+        while (intermediateNode != start)
+        {
+          intermediateNode = parent[intermediateNode];
+          path.add(intermediateNode);
+        }
+        path = path.reversed.toList();
+      }
+      return path;
+    };
+
     Set<Node> open = new Set()
       ..add(start);
     Set<Node> closed = new Set();
@@ -29,38 +51,38 @@ class Dijkstra extends Algorithm
     for (turn = 1; open.isNotEmpty; turn++)
     {
       SearchState searchState = new SearchState(turn, grid);
-
-      searchState.title = new Explanation()
+      open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
+      closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
+      grid.iterable.forEach((n) => searchState[n.position].addInfo("Current best path is ${getDistance(n)}"));
+      searchState.title
         ..addT("Turn $turn")
       ;
 
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
       searchState.activeNodeInTurn = nStar.position;
-      searchState[nStar.position].addInfo("I am the active node in this turn. ");
 
+      List<PathHighlight> pathHighlights = open.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
       searchState.description.add(new Explanation()
         ..addT("First we look at all nodes which are ")
-        ..addN("marked open", open.map((n) => n.position).toList(), "green")
-        ..addT(". From all these nodes we know a path from the source node to them. ")
-        ..addT("Therefore we also know the distance between them. ")
-        ..addT("We will now take the node of them, which has the shortest path to the source node and make him to the ")
-        ..addN("active node", [nStar.position], "yellow")
+        ..addH("marked open", "green", [new PositionHighlight(open.map((n) => n.position).toSet())])
+        ..addT(". From all these nodes we know a ")
+        ..addH("path", "green", pathHighlights)
+        ..addT(" from the source node to them. ")
+        ..addT("Therefore we also know the ")
+        ..addH("distance", "green", new List.from(pathHighlights)..addAll(open.map((on) => new TextHighlight(getDistance(on).toStringAsPrecision(2), on.position)).toList()))
+        ..addT(" between them. ")
+        ..addT("We will now take the node of them, which has the ")
+        ..addH("shortest path", "green", [new PathHighlight(getPath(nStar).map((n) => n.position).toList(), showEnd: true), new TextHighlight(getDistance(nStar).toStringAsPrecision(2), nStar.position)])
+        ..addT(" to the source node and make him to the ")
+        ..addH("active node", "yellow", [new PositionHighlight(new Set()..add(nStar.position))])
         ..addT(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ")
       );
 
+      Set<Node> updatedNodes = new Set();
+
       if (nStar == target)
       {
-        List<Node> path = [];
-        {
-          Node n = target;
-          while (n != start)
-          {
-            path.add(n);
-            n = parent[n];
-          }
-          path = path.reversed.toList();
-        }
-        searchHistory.setPath(path);
+        searchHistory.setPath(getPath(target));
         break;
       }
       else
@@ -72,7 +94,7 @@ class Dijkstra extends Algorithm
 
         searchState.description.add(new Explanation()
           ..addT("After we have choosen our active node, we will take a look at all of his ")
-          ..addN("neighbour nodes", neighbours.map((n) => n.position).toList(), "blue")
+          ..addH("neighbour nodes", "blue", [new PositionHighlight(neighbours.map((n) => n.position).toSet())])
           ..addT(": ")
         );
 
@@ -80,28 +102,18 @@ class Dijkstra extends Algorithm
         {
           searchState.description.add(new Explanation()
             ..addT("- All neighbour nodes which are ")
-            ..addN("marked closed", neighboursMarkedClosed.map((n) => n.position).toList(), "grey")
+            ..addH("marked closed", "grey", [new PositionHighlight(neighboursMarkedClosed.map((n) => n.position).toSet())])
             ..addT(" are ignored as we have already found an optimal path from the source node to them. ")
           );
-
-          neighboursMarkedClosed.forEach((n)
-          {
-            searchState[n.position].addInfo("Although I am a neighbour of the active node, I am ignored as I am marked as closed. Therefore we can asume, that we already found the best path from the source node to me.");
-          });
         }
 
         if (neighboursMarkedOpen.isNotEmpty)
         {
           searchState.description.add(new Explanation()
             ..addT("- All neighbour nodes which are ")
-            ..addN("marked open", neighboursMarkedOpen.map((n) => n.position).toList(), "green")
+            ..addH("marked open", "green", [new PositionHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
             ..addT(" are checked, if we can have an more optimal path from our source node to them over the active node than the path which we have already found for them. ")
           );
-
-          neighboursMarkedOpen.forEach((n)
-          {
-            searchState[n.position].addInfo("I am already in the open set.");
-          });
 
           var neighboursMarkedOpenBetterPath = neighboursMarkedOpen.where((n) => getDistance(nStar) + nStar.distanceTo(n) < getDistance(n)).toList();
 
@@ -117,12 +129,12 @@ class Dijkstra extends Algorithm
             {
               parent[n] = nStar;
               distance[n] = getDistance(nStar) + nStar.distanceTo(n);
-              searchState.parentUpdated.add(n.position);
+              updatedNodes.add(n);
             });
 
             searchState.description.last
               ..addT("And we also found some better paths for these ")
-              ..addN("nodes", neighboursMarkedOpenBetterPath.map((n) => n.position).toList(), "blue")
+              ..addH("nodes", "blue", [new PositionHighlight(neighboursMarkedOpenBetterPath.map((n) => n.position).toSet())])
               ..addT(". ")
             ;
           }
@@ -132,20 +144,18 @@ class Dijkstra extends Algorithm
         {
           searchState.description.add(new Explanation()
             ..addT("- All neighbour nodes which are ")
-            ..addN("unmarked", neighboursUnmarked.map((n) => n.position).toList(), "blue")
+            ..addH("unmarked", "blue", [new PositionHighlight(neighboursUnmarked.map((n) => n.position).toSet())])
             ..addT(" are marked as open and we set the current best path from the source node to them over our active node. ")
           );
 
-          neighboursUnmarked.forEach((n)
+          neighboursUnmarked.forEach((Node n)
           {
             open.add(n);
-            searchState.markedOpenInTurn.add(n.position);
 
             distance[n] = getDistance(nStar) + nStar.distanceTo(n);
             parent[n] = nStar;
-            searchState.parentUpdated.add(n.position);
 
-            searchState[n.position].addInfo("I am newly marked as open as I am a neighbour of the active node and have not been marked yet. ");
+            updatedNodes.add(n);
           });
 
         }
@@ -154,9 +164,8 @@ class Dijkstra extends Algorithm
       open.remove(nStar);
       closed.add(nStar);
 
-      open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
-      closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
-      parent.forEach((n, p) => searchState[n.position].parent = new Optional.of(p.position));
+      updatedNodes.forEach((un) => searchState.defaultHighlights.add(new PathHighlight([nStar.position, un.position], showEnd: true)));
+      //searchState.defaultHighlights.add(new PositionHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
 
       searchHistory.add(searchState);
     }

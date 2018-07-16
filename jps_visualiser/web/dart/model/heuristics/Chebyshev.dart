@@ -11,6 +11,6 @@ class Chebyshev implements Heuristic
   {
     int dx = (p1.x - p2.x).abs();
     int dy = (p1.y - p2.y).abs();
-    return max(dx, dy);
+    return max(dx, dy).toDouble();
   }
 }

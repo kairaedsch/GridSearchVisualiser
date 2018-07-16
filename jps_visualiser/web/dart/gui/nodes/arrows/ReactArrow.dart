@@ -1,6 +1,6 @@
-import '../../general/Position.dart';
-import '../../general/Settings.dart';
-import '../../general/Size.dart';
+import '../../../general/Position.dart';
+import '../../../general/Settings.dart';
+import '../../../general/Size.dart';
 import 'package:over_react/over_react.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';
@@ -14,21 +14,25 @@ class ReactArrowProps extends UiProps
   Size size;
   Position sourceNode;
   Position targetNode;
-  bool showEnd;
   bool showStart;
+  bool showEnd;
+  double startIntermediate;
+  double endIntermediate;
 }
 
 @Component()
 class ReactArrowComponent extends UiComponent<ReactArrowProps>
 {
   double arrowSize = 0.1;
-  double arrowInset = 0.15;
+  double arrowInset = 0.25;
 
   @override
   getDefaultProps() =>
       (newProps()
-        ..showEnd = false
         ..showStart = false
+        ..showEnd = false
+        ..startIntermediate = 1.0
+        ..endIntermediate = 1.0
       );
 
   @override
@@ -45,8 +49,8 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     Vector2 vBP90 = rotate(vB, 35.0);
     Vector2 vBM90 = rotate(vB, -35.0);
 
-    Vector2 start = startOrg + (v * arrowInset);
-    Vector2 end = endOrg + (vB * arrowInset);
+    Vector2 start = startOrg + (v * arrowInset) * props.startIntermediate;
+    Vector2 end = endOrg + (vB * arrowInset) *  props.endIntermediate;
 
     vBP90 = (vBP90 + vB.normalized()) * arrowSize;
     vBM90 = (vBM90 + vB.normalized()) * arrowSize;
@@ -58,7 +62,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
       (Dom.div()
         ..className = "nodeArrow"
         ..style =
-        {
+        <String, String>{
           "width": "${props.size.width * Settings.nodeSize}px",
           "height": "${props.size.height * Settings.nodeSize}px"
         }

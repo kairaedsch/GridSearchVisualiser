@@ -1,4 +1,4 @@
-import '../../../general/Direction.dart';
+import '../../general/Direction.dart';
 
 class StructureNode
 {
@@ -69,8 +69,8 @@ class StructureNodeBarrier
 
   StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, Direction directionToTransform, bool shouldBecomeBlocked)
       : blocked = new Map<Direction, bool>.fromIterable(barrier.blocked.keys,
-      key: (direction) => direction,
-      value: (direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
+      key: (Direction direction) => direction,
+      value: (Direction direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
 
   bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
 
