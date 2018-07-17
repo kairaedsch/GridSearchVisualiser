@@ -15,12 +15,14 @@
 
   --color-red-light: #f50505;
   --color-red: #CA0404;
-  --color-red-dark: #890303;
+  --color-red-dark: #9b0303;
+  --color-red-darker: #6e0202;
 
   --color-yellow-lighter: #fff48c;
   --color-yellow-light: #ffdd0f;
   --color-yellow: #edc420;
   --color-yellow-dark: #ceab1c;
+  --color-yellow-darker: #937b14;
 
   --color-green-lighter: #54fb61;
   --color-green-light: #4ce258;
@@ -598,16 +600,8 @@ html, body {
   font-weight: 600;
 }
 
-.history .turnOverview .title .explanationPart.styled {
-  padding: 6px 10px;
-}
-
 .history .turnOverview .description .explanationPart {
   line-height: 25px;
-}
-
-.history .turnOverview .description .explanationPart.styled {
-  padding: 3px 8px;
 }
 
 .explanation {
@@ -623,40 +617,63 @@ html, body {
 }
 
 .explanationPart.styled {
-  color: #FFF;
+  --color-highlight: red;
   cursor: help;
+  border-bottom: 2px solid var(--color-highlight);
 }
 
-.explanationPart.unstyled {
-  color: #333;
+.explanationPart.styled:hover {
+  border-bottom-width: 4px;
 }
 
+.highlight .nodeArrow .svg {
+  --color-highlight: red;
+  stroke: var(--color-highlight);
+  fill: var(--color-highlight);
+}
+
+/* blue */
 .explanationPart.blue {
-  background: var(--color-blue);
+  --color-highlight: var(--color-blue-dark);
 }
 
 .grid .node.highlight_blue .parts {
   --color-highlight: var(--color-blue);
 }
 
+.highlight_blue .nodeArrow .svg {
+  --color-highlight: var(--color-blue-darker);
+}
+
+/* red */
 .explanationPart.red {
-  background: var(--color-blue);
+  --color-highlight: var(--color-red-dark);
 }
 
 .grid .node.highlight_red .parts {
-  --color-highlight: var(--color-blue);
+  --color-highlight: var(--color-red);
 }
 
+.highlight_red .nodeArrow .svg {
+  --color-highlight: var(--color-red-darker);
+}
+
+/* yellow */
 .explanationPart.yellow {
-  background: var(--color-yellow);
+  --color-highlight: var(--color-yellow-dark);
 }
 
 .grid .node.highlight_yellow .parts {
   --color-highlight: var(--color-yellow);
 }
 
+.highlight_yellow .nodeArrow .svg {
+  --color-highlight: var(--color-yellow-darker);
+}
+
+/* green */
 .explanationPart.green {
-  background: var(--color-green);
+  --color-highlight: var(--color-green-dark);
 }
 
 .grid .node.highlight_green .parts {
@@ -664,16 +681,20 @@ html, body {
 }
 
 .highlight_green .nodeArrow .svg {
-  stroke: var(--color-green-darker);
-  fill: var(--color-green-darker);
+  --color-highlight: var(--color-green-darker);
 }
 
+/* grey */
 .explanationPart.grey {
-  background: var(--color-grey);
+  --color-highlight: var(--color-grey-dark);
 }
 
 .grid .node.highlight_grey .parts {
   --color-highlight: var(--color-grey);
+}
+
+.highlight_grey .nodeArrow .svg {
+  --color-highlight: var(--color-grey-darker);
 }
 
 .textHighlight {

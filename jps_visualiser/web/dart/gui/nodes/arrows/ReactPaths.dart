@@ -33,7 +33,7 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
     {
       return
         (ReactPath()
-          ..className = "highlight_${highlight.style}"
+          ..className = "highlight highlight_${highlight.style}"
           ..key = highlight.hashCode
           ..size = props.storeGridSettings.size
           ..showStart = highlight.showStart
