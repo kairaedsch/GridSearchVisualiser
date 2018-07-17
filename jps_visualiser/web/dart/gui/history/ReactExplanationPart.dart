@@ -23,8 +23,7 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
     return
       (Dom.div()
         ..className = "explanationPart"
-          " ${explanationPart.style.isPresent ? "styled" : "unstyled"}"
-          " ${explanationPart.style.or("")}"
+          " ${explanationPart.style.isPresent ? "styled highlight_${explanationPart.style.value}" : "unstyled"}"
           ..onMouseEnter = (
                   (_) => props.actionsHistory.highlightsUpdate.call(explanationPart.highlights)
           )

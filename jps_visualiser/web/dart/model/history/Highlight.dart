@@ -1,9 +1,4 @@
-import '../../general/Array2D.dart';
 import '../../general/Position.dart';
-import '../../general/Size.dart';
-import 'Explanation.dart';
-import 'NodeSearchState.dart';
-import 'package:quiver/core.dart';
 
 abstract class Highlight
 {

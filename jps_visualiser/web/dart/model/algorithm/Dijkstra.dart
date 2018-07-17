@@ -144,8 +144,12 @@ class Dijkstra extends Algorithm
               updatedNodes.add(n);
             });
 
+            List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+
             searchState.description.last
-              ..addT("And we also found some better paths for these ")
+              ..addT("And we also found some ")
+              ..addH("better paths", "green", newPathsOfOpen)
+              ..addT(" for these ")
               ..addH("nodes", "blue", [new PositionHighlight(neighboursMarkedOpenBetterPath.map((n) => n.position).toSet())])
               ..addT(". ")
             ;
@@ -183,7 +187,7 @@ class Dijkstra extends Algorithm
       open.remove(nStar);
       closed.add(nStar);
 
-      updatedNodes.forEach((un) => searchState.defaultHighlights.add(new PathHighlight([nStar.position, un.position], showEnd: true)));
+      updatedNodes.forEach((un) => searchState.defaultHighlights.add(new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)));
       //searchState.defaultHighlights.add(new PositionHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
 
       searchHistory.add(searchState);

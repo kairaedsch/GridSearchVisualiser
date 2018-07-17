@@ -159,18 +159,6 @@ html, body {
   border-color: var(--color-green-darker);
 }
 
-/* TODO remove
-.grid .node.markedOpenInTurn {
-  background: var(--color-green-light);
-  border-color: var(--color-green);
-}
-
-/* TODO remove
-.grid .node.markedOpenInTurn:hover, .grid .node.MARKED_OPEN_NODE.markedOpenInTurn.hover {
-  border-color: var(--color-green-dark);
-}
-*/
-
 .grid .node.MARKED_CLOSED_NODE {
   background: var(--color-grey);
   border-color: var(--color-grey-dark);
@@ -186,8 +174,11 @@ html, body {
   overflow: hidden;
 }
 
-.grid .node.highlight .parts {
-  --color-highlight: #FFF;
+.grid .node .positionHighlight {
+  margin: 0 0 -100% 0;
+  width: 100%;
+  height: 100%;
+
   --ring-inner: 40%;
   --ring-white: 5%;
   --ring-blue: 10%;
@@ -201,14 +192,28 @@ html, body {
           var(--color-highlight) var(--ring-1), var(--color-highlight) var(--ring-2),
           #FFF var(--ring-2), #FFF var(--ring-3),
           transparent var(--ring-3), transparent 100%);
-
   animation: highlight 1.5s linear infinite;
 }
 
 @keyframes highlight {
   0%   {opacity: 0.75;}
-  50%  {opacity: 1;}
+  50%  {opacity: 0.999;}
   100% {opacity: 0.75;}
+}
+
+.grid .node .textHighlight {
+  margin: 0 0 -100% 0;
+  width: 100%;
+  height: 100%;
+
+  line-height: 300%;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFF;
+  background: var(--color-highlight);
+  opacity: 0.999;
 }
 
 .grid .node .part {
@@ -322,11 +327,13 @@ html, body {
 .nodeArrow .svg {
   width: 100%;
   height: 100%;
-}
-
-.nodeArrow .svg {
   stroke: #000;
   fill: #000;
+}
+
+.pathHighlight .nodeArrow .svg {
+  stroke: var(--color-highlight-darker);
+  fill: var(--color-highlight-darker);
 }
 
 /*noinspection CssInvalidPropertyValue*/
@@ -617,95 +624,46 @@ html, body {
 }
 
 .explanationPart.styled {
-  --color-highlight: red;
   cursor: help;
-  border-bottom: 2px solid var(--color-highlight);
+  border-bottom: 2px solid var(--color-highlight-dark);
 }
 
 .explanationPart.styled:hover {
   border-bottom-width: 4px;
 }
 
-.highlight .nodeArrow .svg {
-  --color-highlight: red;
-  stroke: var(--color-highlight);
-  fill: var(--color-highlight);
-}
-
-/* blue */
-.explanationPart.blue {
-  --color-highlight: var(--color-blue-dark);
-}
-
-.grid .node.highlight_blue .parts {
-  --color-highlight: var(--color-blue);
-}
-
-.highlight_blue .nodeArrow .svg {
-  --color-highlight: var(--color-blue-darker);
-}
-
-/* red */
-.explanationPart.red {
-  --color-highlight: var(--color-red-dark);
-}
-
-.grid .node.highlight_red .parts {
-  --color-highlight: var(--color-red);
-}
-
-.highlight_red .nodeArrow .svg {
-  --color-highlight: var(--color-red-darker);
-}
-
-/* yellow */
-.explanationPart.yellow {
-  --color-highlight: var(--color-yellow-dark);
-}
-
-.grid .node.highlight_yellow .parts {
-  --color-highlight: var(--color-yellow);
-}
-
-.highlight_yellow .nodeArrow .svg {
-  --color-highlight: var(--color-yellow-darker);
-}
-
-/* green */
-.explanationPart.green {
-  --color-highlight: var(--color-green-dark);
-}
-
-.grid .node.highlight_green .parts {
+.highlight_green {
   --color-highlight: var(--color-green);
+  --color-highlight-dark: var(--color-green-dark);
+  --color-highlight-darker: var(--color-green-darker);
 }
 
-.highlight_green .nodeArrow .svg {
-  --color-highlight: var(--color-green-darker);
+.highlight_red {
+  --color-highlight: var(--color-red);
+  --color-highlight-dark: var(--color-red-dark);
+  --color-highlight-darker: var(--color-red-darker);
 }
 
-/* grey */
-.explanationPart.grey {
-  --color-highlight: var(--color-grey-dark);
+.highlight_blue {
+  --color-highlight: var(--color-blue);
+  --color-highlight-dark: var(--color-blue-dark);
+  --color-highlight-darker: var(--color-blue-darker);
 }
 
-.grid .node.highlight_grey .parts {
+.highlight_yellow {
+  --color-highlight: var(--color-yellow);
+  --color-highlight-dark: var(--color-yellow-dark);
+  --color-highlight-darker: var(--color-yellow-darker);
+}
+
+.highlight_grey {
   --color-highlight: var(--color-grey);
+  --color-highlight-dark: var(--color-grey-dark);
+  --color-highlight-darker: var(--color-grey-darker);
 }
 
-.highlight_grey .nodeArrow .svg {
-  --color-highlight: var(--color-grey-darker);
-}
-
-.textHighlight {
-  margin: -70% 0 0 25%;
-  width: 50%;
-  font-size: 20px;
-
-  font-weight: 600;
-  text-align: center;
-  vertical-align: middle;
-  color: #FFF;
-  background: var(--color-green);
-  opacity: 0.999;
+.highlight_black {
+  --color-highlight: #000;
+  --color-highlight-dark: #000;
+  --color-highlight-darker: #000;
 }

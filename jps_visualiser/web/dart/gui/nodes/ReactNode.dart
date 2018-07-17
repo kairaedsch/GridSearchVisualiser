@@ -66,7 +66,6 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..className = "node"
             " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
             " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
-            " ${props.store.positionHighlight.isPresent ? "highlight highlight_${props.store.positionHighlight.value.style}" : ""}"
             " ${structureNode.type.name}"
             " ${explanationNode.marking.or("")}"
             " ${explanationNode.activeNodeInTurn ? "activeNodeInTurn" : "" }"
@@ -78,10 +77,11 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..onMouseEnter = ((_) => _handleMouseEnter())
         ..onMouseLeave = ((_) => _handleMouseLeave())
       )(
+          _renderTextHighlight(),
+          _renderPositionHighlight(),
           (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
           _renderInner(),
           _renderArrowsToGo(),
-          _renderTextHighlight()
       );
   }
 
@@ -225,5 +225,18 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     )(
         props.store.textHighlight.value.text
     );
+  }
+
+  ReactElement _renderPositionHighlight()
+  {
+    if (props.store.positionHighlight.isEmpty)
+    {
+      return null;
+    }
+
+    return (Dom.div()
+      ..className = "positionHighlight"
+        " highlight_${props.store.positionHighlight.value.style}"
+    )();
   }
 }
