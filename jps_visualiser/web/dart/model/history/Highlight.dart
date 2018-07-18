@@ -13,13 +13,37 @@ abstract class Highlight
   }
 }
 
-class PositionHighlight extends Highlight
+class BoxHighlight extends Highlight
 {
   final Set<Position> positions;
 
-  PositionHighlight(this.positions);
+  BoxHighlight(this.positions);
 
-  PositionHighlight.styled(String style, this.positions)
+  BoxHighlight.styled(String style, this.positions)
+  {
+    this.style = style;
+  }
+}
+
+class CircleHighlight extends Highlight
+{
+  final Set<Position> positions;
+
+  CircleHighlight(this.positions);
+
+  CircleHighlight.styled(String style, this.positions)
+  {
+    this.style = style;
+  }
+}
+
+class DotHighlight extends Highlight
+{
+  final Set<Position> positions;
+
+  DotHighlight(this.positions);
+
+  DotHighlight.styled(String style, this.positions)
   {
     this.style = style;
   }
@@ -51,6 +75,19 @@ class TextHighlight extends Highlight
   TextHighlight(this.text, this.position);
 
   TextHighlight.styled(String style, this.text, this.position)
+  {
+    this.style = style;
+  }
+}
+
+class InfoHighlight extends Highlight
+{
+  final Position position;
+  final String info;
+
+  InfoHighlight(this.info, this.position);
+
+  InfoHighlight.styled(String style, this.info, this.position)
   {
     this.style = style;
   }

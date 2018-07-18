@@ -17,18 +17,20 @@ class StoreHistory extends Store
   ActionsHistory get actions => _actions;
 
   List<Highlight> _highlights;
+  List<Highlight> _customHighlights;
 
   StoreHistory()
   {
     _history = const Optional.absent();
     _active = const Optional.absent();
     _highlights = [];
+    _customHighlights = [];
 
     _actions = new ActionsHistory();
     _actions.historyChanged.listen(_historyChanged);
     _actions.activeChanged.listen(_activeChanged);
-    _actions.highlightsUpdate.listen(_highlightsUpdate);
     _actions.highlightsChanged.listen(_highlightsChanged);
+    _actions.customHighlightsChanged.listen(_customHighlightsChanged);
   }
 
   void _historyChanged(SearchHistory searchHistory)
@@ -36,13 +38,13 @@ class StoreHistory extends Store
     _history = new Optional.of(new History(searchHistory));
 
     Optional<HistoryPart> newActive = const Optional.absent();
-    if (active.isPresent)
+    /*if (active.isPresent)
     {
       newActive = _history.value.parts
           .where((hp) => hp.activeNodeInTurn == active.value.activeNodeInTurn)
           .map((hp) => new Optional.of(hp))
           .firstWhere((hp) => true, orElse: () => const Optional.absent());
-    }
+    }*/
     if (newActive.isEmpty && _history.value.parts.length > 0)
     {
       newActive = new Optional.of(_history.value.parts[0]);
@@ -53,28 +55,31 @@ class StoreHistory extends Store
 
   void _activeChanged(Optional<HistoryPart> newActive)
   {
-    bool defaultHighlights = active.isEmpty || active.value.defaultHighlights == _highlights;
     _active = newActive;
-    if (defaultHighlights || active.isEmpty)
-    {
-      _actions.highlightsUpdate.call([]);
-    }
     trigger();
+
+    _updateHighlights();
   }
 
-  void _highlightsUpdate(List<Highlight> newHighlights)
+  void _customHighlightsChanged(List<Highlight> newCustomHighlights)
+  {
+    _customHighlights = newCustomHighlights;
+    _updateHighlights();
+  }
+
+  void _updateHighlights()
   {
     if (active.isEmpty)
     {
       _actions.highlightsChanged.call([]);
     }
-    else if (newHighlights.isEmpty && active.value.defaultHighlights.isNotEmpty)
+    else if (_customHighlights.isEmpty)
     {
-      _actions.highlightsChanged.call(active.value.defaultHighlights);
+      _actions.highlightsChanged.call(new List.from(active.value.backgroundHighlights)..addAll(active.value.defaultHighlights));
     }
     else
     {
-      _actions.highlightsChanged.call(newHighlights);
+      _actions.highlightsChanged.call(new List.from(active.value.backgroundHighlights)..addAll(_customHighlights));
     }
   }
 
@@ -86,8 +91,8 @@ class StoreHistory extends Store
 
 class ActionsHistory
 {
-  final Action<SearchHistory> historyChanged = new Action<SearchHistory>();
-  final Action<Optional<HistoryPart>> activeChanged = new Action<Optional<HistoryPart>>();
-  final Action<List<Highlight>> highlightsUpdate = new Action<List<Highlight>>();
-  final Action<List<Highlight>> highlightsChanged = new Action<List<Highlight>>();
+  final Action<SearchHistory> historyChanged = new Action();
+  final Action<Optional<HistoryPart>> activeChanged = new Action();
+  final Action<List<Highlight>> highlightsChanged = new Action();
+  final Action<List<Highlight>> customHighlightsChanged = new Action();
 }

@@ -1,8 +1,6 @@
 import '../../general/Position.dart';
 import '../../model/history/Highlight.dart';
-import '../history/HistoryPart.dart';
 import '../history/StoreHistory.dart';
-import 'ExplanationNode.dart';
 import 'StructureNode.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
@@ -11,17 +9,23 @@ class StoreNode extends Store
 {
   final Position position;
 
-  Optional<PositionHighlight> _positionHighlight;
-  Optional<PositionHighlight> get positionHighlight => _positionHighlight;
+  Optional<BoxHighlight> _boxHighlight;
+  Optional<BoxHighlight> get boxHighlight => _boxHighlight;
+
+  Optional<CircleHighlight> _circleHighlight;
+  Optional<CircleHighlight> get circleHighlight => _circleHighlight;
+
+  Optional<DotHighlight> _dotHighlight;
+  Optional<DotHighlight> get dotHighlight => _dotHighlight;
 
   Optional<TextHighlight> _textHighlight;
   Optional<TextHighlight> get textHighlight => _textHighlight;
 
+  Optional<InfoHighlight> _infoHighlight;
+  Optional<InfoHighlight> get infoHighlight => _infoHighlight;
+
   StructureNode _structureNode;
   StructureNode get structureNode => _structureNode;
-
-  ExplanationNode _explanationNode;
-  ExplanationNode get explanationNode => _explanationNode;
 
   ActionsNodeChanged _actions;
   ActionsNodeChanged get actions => _actions;
@@ -29,15 +33,16 @@ class StoreNode extends Store
   StoreNode(this.position, ActionsHistory actionsHistory)
   {
     _structureNode = new StructureNode.normal();
-    _explanationNode = const ExplanationNode.normal();
-    _positionHighlight = const Optional.absent();
+
+    _boxHighlight = const Optional.absent();
+    _circleHighlight = const Optional.absent();
+    _dotHighlight = const Optional.absent();
     _textHighlight = const Optional.absent();
+    _infoHighlight = const Optional.absent();
 
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
-    _actions.explanationNodeChanged.listen(_changeExplanationNode);
 
-    actionsHistory.activeChanged.listen(_historyActiveChanged);
     actionsHistory.highlightsChanged.listen(_historyHighlightsChanged);
   }
 
@@ -47,60 +52,76 @@ class StoreNode extends Store
     trigger();
   }
 
-  void _changeExplanationNode(Optional<ExplanationNode> explanationNode)
-  {
-    if (explanationNode.isPresent)
-    {
-      if (_explanationNode != explanationNode.value)
-      {
-        _explanationNode = explanationNode.value;
-        trigger();
-      }
-    }
-    else if (_explanationNode != const ExplanationNode.normal())
-    {
-      _explanationNode = const ExplanationNode.normal();
-      trigger();
-    }
-  }
-
-  void _historyActiveChanged(Optional<HistoryPart> part)
-  {
-    actions.explanationNodeChanged(part.transform((p) => p.explanationNodes[position]));
-  }
-
   void _historyHighlightsChanged(List<Highlight> highlights)
   {
-    Optional<PositionHighlight> newPositionHighlight = const Optional.absent();
+    Optional<BoxHighlight> newBoxHighlight = const Optional.absent();
+    Optional<CircleHighlight> newCircleHighlight = const Optional.absent();
+    Optional<DotHighlight> newDotHighlight = const Optional.absent();
     Optional<TextHighlight> newTextHighlight = const Optional.absent();
+    Optional<InfoHighlight> newInfoHighlight = const Optional.absent();
 
     highlights.forEach((Highlight highlight)
     {
-      if (highlight is PositionHighlight)
+      if (highlight is BoxHighlight)
       {
         if (highlight.positions.contains(position))
         {
-          newPositionHighlight = new Optional.of(highlight);
+          newBoxHighlight = new Optional.of(highlight);
         }
       }
-      if (highlight is TextHighlight)
+      else if (highlight is CircleHighlight)
+      {
+        if (highlight.positions.contains(position))
+        {
+          newCircleHighlight = new Optional.of(highlight);
+        }
+      }
+      else if (highlight is DotHighlight)
+      {
+        if (highlight.positions.contains(position))
+        {
+          newDotHighlight = new Optional.of(highlight);
+        }
+      }
+      else if (highlight is TextHighlight)
       {
         if (highlight.position == position)
         {
           newTextHighlight = new Optional.of(highlight);
         }
       }
+      else if (highlight is InfoHighlight)
+      {
+        if (highlight.position == position)
+        {
+          newInfoHighlight = new Optional.of(highlight);
+        }
+      }
     });
 
-    if (_positionHighlight != newPositionHighlight)
+    if (_boxHighlight != newBoxHighlight)
     {
-      _positionHighlight = newPositionHighlight;
+      _boxHighlight = newBoxHighlight;
       trigger();
     }
-
+    if (_circleHighlight != newCircleHighlight)
+    {
+      _circleHighlight = newCircleHighlight;
+      trigger();
+    }
+    if (_dotHighlight != newDotHighlight)
+    {
+      _dotHighlight = newDotHighlight;
+      trigger();
+    }
     if (_textHighlight != newTextHighlight)
     {
       _textHighlight = newTextHighlight;
+      trigger();
+    }
+    if (_infoHighlight != newInfoHighlight)
+    {
+      _infoHighlight = newInfoHighlight;
       trigger();
     }
   }
@@ -109,5 +130,4 @@ class StoreNode extends Store
 class ActionsNodeChanged
 {
   final Action<StructureNode> structureNodeChanged = new Action<StructureNode>();
-  final Action<Optional<ExplanationNode>> explanationNodeChanged = new Action<Optional<ExplanationNode>>();
 }

@@ -1,8 +1,6 @@
-import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
-import '../../store/grid/ExplanationNode.dart';
 import '../../store/StoreGridSettings.dart';
 import '../../store/grid/StoreGrid.dart';
 import '../../store/grid/StoreNode.dart';
@@ -59,7 +57,6 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   ReactElement render()
   {
     StructureNode structureNode = props.store.structureNode;
-    ExplanationNode explanationNode = props.store.explanationNode;
 
     return
       (Dom.div()
@@ -67,19 +64,27 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
             " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
             " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
             " ${structureNode.type.name}"
-            " ${explanationNode.marking.or("")}"
-            " ${explanationNode.activeNodeInTurn ? "activeNodeInTurn" : "" }"
             " ${state.mouseIsOver ? "hover" : "noHover"}"
             " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
             " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
+            " ${props.store.boxHighlight.isPresent ? "boxHighlight highlight_${props.store.boxHighlight.value.style}" : ""}"
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseUp = ((_) => _handleMouseUp())
         ..onMouseEnter = ((_) => _handleMouseEnter())
         ..onMouseLeave = ((_) => _handleMouseLeave())
       )(
           _renderTextHighlight(),
-          _renderPositionHighlight(),
-          (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && explanationNode.info.isPresent) ? (ReactPopover())(explanationNode.info.value) : null,
+          _renderCircleHighlight(),
+          _renderDotHighlight(),
+          (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.store.infoHighlight.isPresent)
+              ?
+          (ReactPopover()
+            ..className = "infoHighlight highlight_${props.store.infoHighlight.value.style}"
+          )(
+              props.store.infoHighlight.value.info
+          )
+              :
+          null,
           _renderInner(),
           _renderArrowsToGo(),
       );
@@ -166,19 +171,18 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   ReactElement _renderInner()
   {
     StructureNode structureNode = props.store.structureNode;
-    ExplanationNode explanationNode = props.store.explanationNode;
 
-    if (structureNode.type == StructureNodeType.NORMAL_NODE && !explanationNode.activeNodeInTurn)
+    if (structureNode.type == StructureNodeType.NORMAL_NODE)
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {
-        return (Dom.div()..className = "parts")();
+        return null;
       }
       if (props.storeGridSettings.gridMode == GridMode.ADVANCED)
       {
         if (structureNode.barrier.isNoneBlocked() && !state.mouseIsOver)
         {
-          return (Dom.div()..className = "parts")();
+          return null;
         }
       }
     }
@@ -227,16 +231,29 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     );
   }
 
-  ReactElement _renderPositionHighlight()
+  ReactElement _renderCircleHighlight()
   {
-    if (props.store.positionHighlight.isEmpty)
+    if (props.store.circleHighlight.isEmpty)
     {
       return null;
     }
 
     return (Dom.div()
-      ..className = "positionHighlight"
-        " highlight_${props.store.positionHighlight.value.style}"
+      ..className = "circleHighlight"
+          " highlight_${props.store.circleHighlight.value.style}"
+    )();
+  }
+
+  ReactElement _renderDotHighlight()
+  {
+    if (props.store.dotHighlight.isEmpty)
+    {
+      return null;
+    }
+
+    return (Dom.div()
+      ..className = "dotHighlight"
+        " highlight_${props.store.dotHighlight.value.style}"
     )();
   }
 }

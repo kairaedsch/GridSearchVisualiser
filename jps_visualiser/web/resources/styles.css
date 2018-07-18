@@ -150,22 +150,13 @@ html, body {
   cursor: move !important;
 }
 
-.grid .node.MARKED_OPEN_NODE {
-  background: var(--color-green);
-  border-color: var(--color-green-dark);
+.grid .node.boxHighlight {
+  background: var(--color-highlight);
+  border-color: var(--color-highlight-dark);
 }
 
-.grid .node.MARKED_OPEN_NODE:hover, .grid .node.MARKED_OPEN_NODE.hover {
-  border-color: var(--color-green-darker);
-}
-
-.grid .node.MARKED_CLOSED_NODE {
-  background: var(--color-grey);
-  border-color: var(--color-grey-dark);
-}
-
-.grid .node.MARKED_CLOSED_NODE:hover, .grid .node.MARKED_CLOSED_NODE.hover {
-  border-color: var(--color-grey-darker);
+.grid .node.boxHighlight:hover, .grid .node.boxHighlight.hover {
+  border-color: var(--color-highlight-darker);
 }
 
 .grid .node .parts {
@@ -174,31 +165,58 @@ html, body {
   overflow: hidden;
 }
 
-.grid .node .positionHighlight {
+.grid .node .circleHighlight, .grid .node .dotHighlight {
   margin: 0 0 -100% 0;
   width: 100%;
   height: 100%;
 
-  --ring-inner: 40%;
+  --ring-0-color: transparent;
+  --ring-0-size: 20%;
+  --ring-1-color: transparent;
+  --ring-1-size: 20%;
+  --ring-2-color: transparent;
+  --ring-2-size: 20%;
+  --ring-3-color: transparent;
+  --ring-3-size: 20%;
+  --ring-4-color: transparent;
+
   --ring-white: 5%;
   --ring-blue: 10%;
-  --ring-0: var(--ring-inner);
-  --ring-1: calc(var(--ring-inner) + var(--ring-white));
-  --ring-2: calc(var(--ring-inner) + var(--ring-white) + var(--ring-blue));
-  --ring-3: calc(var(--ring-inner) + var(--ring-white) + var(--ring-blue) + var(--ring-white));
+  --ring-0: var(--ring-0-size);
+  --ring-1: calc(var(--ring-0-size) + var(--ring-1-size));
+  --ring-2: calc(var(--ring-0-size) + var(--ring-1-size) + var(--ring-2-size));
+  --ring-3: calc(var(--ring-0-size) + var(--ring-1-size) + var(--ring-2-size) + var(--ring-3-size));
   background: radial-gradient(
-          transparent, transparent var(--ring-0),
-          #FFF var(--ring-0), #FFF var(--ring-1),
-          var(--color-highlight) var(--ring-1), var(--color-highlight) var(--ring-2),
-          #FFF var(--ring-2), #FFF var(--ring-3),
-          transparent var(--ring-3), transparent 100%);
+          var(--ring-0-color)            0%, var(--ring-0-color) var(--ring-0),
+          var(--ring-1-color) var(--ring-0), var(--ring-1-color) var(--ring-1),
+          var(--ring-2-color) var(--ring-1), var(--ring-2-color) var(--ring-2),
+          var(--ring-3-color) var(--ring-2), var(--ring-3-color) var(--ring-3),
+          var(--ring-4-color) var(--ring-3), var(--ring-4-color)         100%);
   animation: highlight 1.5s linear infinite;
 }
 
-@keyframes highlight {
-  0%   {opacity: 0.75;}
-  50%  {opacity: 0.999;}
-  100% {opacity: 0.75;}
+.grid .node .circleHighlight {
+  --ring-0-color: transparent;
+  --ring-0-size: 40%;
+  --ring-1-color: #FFF;
+  --ring-1-size: 5%;
+  --ring-2-color: var(--color-highlight);
+  --ring-2-size: 10%;
+  --ring-3-color: #FFF;
+  --ring-3-size: 5%;
+  --ring-4-color: transparent;
+}
+
+.grid .node .dotHighlight {
+  --ring-0-color: var(--color-highlight);
+  --ring-0-size: 20%;
+  --ring-1-color: var(--color-highlight-dark);
+  --ring-1-size: 5%;
+  --ring-2-color: transparent;
+  --ring-2-size: 0%;
+  --ring-3-color: transparent;
+  --ring-3-size: 0%;
+  --ring-4-color: transparent;
 }
 
 .grid .node .textHighlight {
@@ -212,8 +230,6 @@ html, body {
   text-align: center;
   vertical-align: middle;
   color: #FFF;
-  background: var(--color-highlight);
-  opacity: 0.999;
 }
 
 .grid .node .part {
@@ -303,16 +319,6 @@ html, body {
 .grid .node.TARGET_NODE .part.inner {
   background: var(--color-red);
   border-color: var(--color-red-light) var(--color-red-dark) var(--color-red-dark) var(--color-red-light);
-}
-
-.grid .node.activeNodeInTurn .part.inner {
-  animation: selectedNodeBlink 1s ease-in-out infinite;
-}
-
-@keyframes selectedNodeBlink {
-  0% {background: var(--color-yellow); border-color: var(--color-yellow-light) var(--color-yellow-dark) var(--color-yellow-dark) var(--color-yellow-light);}
-  50% {background: var(--color-yellow-light); border-color: var(--color-yellow-lighter) var(--color-yellow) var(--color-yellow) var(--color-yellow-lighter);}
-  100% {background: var(--color-yellow); border-color: var(--color-yellow-light) var(--color-yellow-dark) var(--color-yellow-dark) var(--color-yellow-light);}
 }
 
 .nodeArrow {
@@ -554,7 +560,7 @@ html, body {
   display: grid;
   max-height: 30vh;
   min-height: 10vh;
-  overflow-y: auto;
+  overflow-y: scroll;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
   border: solid #DDD;
@@ -565,6 +571,10 @@ html, body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.history .parts.turnOverviewEmpty {
+  max-height: 100vh;
 }
 
 .history .parts .part {
@@ -593,13 +603,13 @@ html, body {
 
 .history .turnOverview {
   flex-grow: 1;
-  overflow-y: auto;
   padding: 5px 8px;
+  overflow-y: scroll;
 }
 
 .history .turnOverview .title {
   text-align: center;
-  padding: 10px 0 20px 0;
+  padding: 10px 0 10px 0;
 }
 
 .history .turnOverview .title .explanationPart {
@@ -613,6 +623,15 @@ html, body {
 
 .explanation {
   padding-bottom: 5px;
+}
+
+.explanation.enumeration {
+  padding-left: 15px;
+
+  background: radial-gradient(#333 0%, #333 50%, transparent 50%, transparent 100%);
+  background-size: 6px 6px;
+  background-position: 3px 9px;
+  background-repeat: no-repeat;
 }
 
 .explanation * {

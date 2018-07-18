@@ -1,14 +1,18 @@
-import '../../general/Array2D.dart';
-import '../../general/Position.dart';
-import '../../general/Size.dart';
 import 'Highlight.dart';
-import 'NodeSearchState.dart';
 import 'package:quiver/core.dart';
 
 class Explanation
 {
+  final Optional<String> style;
+
   List<ExplanationPart> _explanation = [];
   List<ExplanationPart> get explanation => _explanation;
+
+  Explanation()
+      : style = const Optional.absent();
+
+  Explanation.styled(String style)
+      : style = new Optional.of(style);
 
   void addT(String text)
   {

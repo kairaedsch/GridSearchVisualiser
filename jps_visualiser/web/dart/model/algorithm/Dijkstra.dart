@@ -1,7 +1,6 @@
 import '../Grid.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
-import '../history/NodeSearchState.dart';
 import '../history/SearchHistory.dart';
 import '../history/SearchState.dart';
 import '../heuristics/Heuristic.dart';
@@ -50,21 +49,18 @@ class Dijkstra extends Algorithm
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
     {
-      SearchState searchState = new SearchState(turn, grid);
-      open.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_OPEN_NODE);
-      closed.forEach((n) => searchState[n.position].nodeMarking = NodeMarking.MARKED_CLOSED_NODE);
+      SearchState searchState = new SearchState(turn);
       //grid.iterable.forEach((n) => searchState[n.position].addInfo("Current best path is ${getDistance(n)}"));
       searchState.title
         ..addT("Turn $turn")
       ;
 
       Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
-      searchState.activeNodeInTurn = nStar.position;
 
       List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
       searchState.description.add(new Explanation()
         ..addT("First we look at all nodes which are ")
-        ..addH("marked open", "green", [new PositionHighlight(open.map((n) => n.position).toSet())])
+        ..addH("marked open", "green", [new CircleHighlight(open.map((n) => n.position).toSet())])
         ..addT(". From all these nodes we know a ")
         ..addH("path", "green", pathsOfOpen)
         ..addT(" from the source node to them. ")
@@ -74,9 +70,12 @@ class Dijkstra extends Algorithm
         ..addT("We will now take the node of them, which has the ")
         ..addH("shortest path", "green", [new PathHighlight(getPath(nStar).map((n) => n.position).toList(), showEnd: true), new TextHighlight(getDistance(nStar).toStringAsPrecision(2), nStar.position)])
         ..addT(" to the source node and make him to the ")
-        ..addH("active node", "yellow", [new PositionHighlight(new Set()..add(nStar.position))])
+        ..addH("active node", "yellow", [new CircleHighlight(new Set()..add(nStar.position))])
         ..addT(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ")
       );
+
+      searchState.backgroundHighlights.add(new BoxHighlight.styled("green", open.map((n) => n.position).toSet()));
+      searchState.backgroundHighlights.add(new BoxHighlight.styled("grey", closed.map((n) => n.position).toSet()));
 
       Set<Node> updatedNodes = new Set();
 
@@ -94,7 +93,7 @@ class Dijkstra extends Algorithm
 
         searchState.description.add(new Explanation()
           ..addT("After we have choosen our active node, we will take a look at all of his ")
-          ..addH("neighbour nodes", "blue", [new PositionHighlight(neighbours.map((n) => n.position).toSet())])
+          ..addH("neighbour nodes", "blue", [new CircleHighlight(neighbours.map((n) => n.position).toSet())])
           ..addT(": ")
         );
 
@@ -102,9 +101,9 @@ class Dijkstra extends Algorithm
         {
           List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
 
-          searchState.description.add(new Explanation()
-            ..addT("- All neighbour nodes which are ")
-            ..addH("marked closed", "grey", [new PositionHighlight(neighboursMarkedClosed.map((n) => n.position).toSet())])
+          searchState.description.add(new Explanation.styled("enumeration")
+            ..addT("All neighbour nodes which are ")
+            ..addH("marked closed", "grey", [new CircleHighlight(neighboursMarkedClosed.map((n) => n.position).toSet())])
             ..addT(" are ignored as we have already found ")
             ..addH("optimal paths", "grey", pathsOfClosed)
             ..addT(" from the source node to them. ")
@@ -117,13 +116,13 @@ class Dijkstra extends Algorithm
 
           List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar).map((n) => n.position))..add(on.position), showEnd: true)).toList();
 
-          searchState.description.add(new Explanation()
-            ..addT("- All neighbour nodes which are ")
-            ..addH("marked open", "green", [new PositionHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
+          searchState.description.add(new Explanation.styled("enumeration")
+            ..addT("All neighbour nodes which are ")
+            ..addH("marked open", "green", [new CircleHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
             ..addT(" are checked, if we can have an maybe more optimal ")
-            ..addH("new path", "green", maybeNewPathsOfOpen)
+            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).toStringAsPrecision(2), on.position)).toList()))
             ..addT(" from our source node to them over the active node than the ")
-            ..addH("current path", "green", pathsOfOpen)
+            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).toStringAsPrecision(2), on.position)).toList()))
             ..addT(" which we have already found for them. ")
           );
 
@@ -148,9 +147,9 @@ class Dijkstra extends Algorithm
 
             searchState.description.last
               ..addT("And we also found some ")
-              ..addH("better paths", "green", newPathsOfOpen)
+              ..addH("better paths", "blue", newPathsOfOpen)
               ..addT(" for these ")
-              ..addH("nodes", "blue", [new PositionHighlight(neighboursMarkedOpenBetterPath.map((n) => n.position).toSet())])
+              ..addH("nodes", "green", [new CircleHighlight(neighboursMarkedOpenBetterPath.map((n) => n.position).toSet())])
               ..addT(". ")
             ;
           }
@@ -158,9 +157,9 @@ class Dijkstra extends Algorithm
 
         if (neighboursUnmarked.isNotEmpty)
         {
-          searchState.description.add(new Explanation()
-            ..addT("- All neighbour nodes which are ")
-            ..addH("unmarked", "blue", [new PositionHighlight(neighboursUnmarked.map((n) => n.position).toSet())])
+          searchState.description.add(new Explanation.styled("enumeration")
+            ..addT("All neighbour nodes which are ")
+            ..addH("unmarked", "blue", [new CircleHighlight(neighboursUnmarked.map((n) => n.position).toSet())])
             ..addT(" are marked as open ")
           );
 
@@ -188,7 +187,8 @@ class Dijkstra extends Algorithm
       closed.add(nStar);
 
       updatedNodes.forEach((un) => searchState.defaultHighlights.add(new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)));
-      //searchState.defaultHighlights.add(new PositionHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
+      searchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
+      //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
 
       searchHistory.add(searchState);
     }

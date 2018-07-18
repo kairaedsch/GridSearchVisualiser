@@ -25,10 +25,10 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
         ..className = "explanationPart"
           " ${explanationPart.style.isPresent ? "styled highlight_${explanationPart.style.value}" : "unstyled"}"
           ..onMouseEnter = (
-                  (_) => props.actionsHistory.highlightsUpdate.call(explanationPart.highlights)
+                  (_) => props.actionsHistory.customHighlightsChanged.call(explanationPart.highlights)
           )
           ..onMouseLeave = (
-                  (_) => props.actionsHistory.highlightsUpdate.call([])
+                  (_) => props.actionsHistory.customHighlightsChanged.call([])
           )
       )(
           explanationPart.text

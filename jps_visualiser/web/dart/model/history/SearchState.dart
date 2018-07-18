@@ -1,28 +1,14 @@
-import '../../general/Array2D.dart';
-import '../../general/Position.dart';
-import '../../general/Size.dart';
 import 'Explanation.dart';
 import 'Highlight.dart';
-import 'NodeSearchState.dart';
 
-class SearchState implements Size
+class SearchState
 {
-  final Array2D<NodeSearchState> _grid;
   final int turn;
 
   Explanation title = new Explanation();
   List<Explanation> description = [];
-  Position activeNodeInTurn = const Position(-1, -1);
+  List<Highlight> backgroundHighlights = [];
   List<Highlight> defaultHighlights = [];
 
-  SearchState(this.turn, Size size) :
-        _grid = new Array2D(size, (Position pos) => new NodeSearchState());
-
-  NodeSearchState operator [](Position pos) => _grid[pos];
-
-  @override
-  int get width => _grid.width;
-
-  @override
-  int get height => _grid.height;
+  SearchState(this.turn);
 }

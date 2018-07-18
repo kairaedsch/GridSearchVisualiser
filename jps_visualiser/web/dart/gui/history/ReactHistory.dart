@@ -35,7 +35,9 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
         (Dom.div()..className = "title")(
             history.title
         ),
-        (Dom.div()..className = "parts")(
+        (Dom.div()..className = "parts"
+          " ${historyPart.isEmpty ? "turnOverviewEmpty" : ""}"
+        )(
             history.parts.map((p) => _renderPart(p))
         ),
         historyPart.isEmpty
@@ -82,6 +84,7 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
     return
       (Dom.div()
         ..className = "explanation"
+          " ${explanation.style.or("")}"
         ..key = explanation.hashCode
       )(
           explanation.explanation.map((ep)
