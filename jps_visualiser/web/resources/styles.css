@@ -558,8 +558,8 @@ html, body {
 .history .parts {
   padding: 10px;
   display: grid;
+  min-height: 125px;
   max-height: 30vh;
-  min-height: 10vh;
   overflow-y: scroll;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
@@ -603,6 +603,7 @@ html, body {
 
 .history .turnOverview {
   flex-grow: 1;
+  min-height: 50px;
   padding: 5px 8px;
   overflow-y: scroll;
 }
