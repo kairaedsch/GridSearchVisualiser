@@ -106,14 +106,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
   ReactElement _renderArrowToGo(Direction direction)
   {
-    Position neighbourPosition = props.store.position.go(direction);
-    if (!neighbourPosition.legal(props.storeGridSettings.size))
-    {
-      return null;
-    }
-
-    bool leaveAble = props.storeGrid.leaveAble(props.store.position, direction);
-    bool enterAble = props.storeGrid.leaveAble(neighbourPosition, direction.turn(180));
+    bool leaveAble = props.storeGrid.gridBarrierManager.leaveAble(props.store.position, direction);
+    bool enterAble = props.storeGrid.gridBarrierManager.enterAble(props.store.position, direction);
 
     if (!enterAble && !leaveAble)
     {
@@ -124,7 +118,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       (ReactPath()
         ..key = direction
         ..size = props.storeGridSettings.size
-        ..path = [props.store.position, neighbourPosition]
+        ..path = [props.store.position, props.store.position.go(direction)]
         ..showEnd = leaveAble && !(enterAble && leaveAble)
         ..showStart = enterAble && !(enterAble && leaveAble)
       )();
@@ -178,9 +172,9 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       {
         return null;
       }
-      if (props.storeGridSettings.gridMode == GridMode.ADVANCED)
+      else
       {
-        if (structureNode.barrier.isNoneBlocked() && !state.mouseIsOver)
+        if (props.storeGrid.gridBarrierManager.somethingToDisplay(props.store.position) && !state.mouseIsOver)
         {
           return null;
         }

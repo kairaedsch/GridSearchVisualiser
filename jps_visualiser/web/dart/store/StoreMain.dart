@@ -47,7 +47,7 @@ class StoreMain extends Store
     Algorithm algorithm = storeAlgorithmSettings.algorithmType.algorithm;
     Heuristic heuristic = storeAlgorithmSettings.heuristicType.heuristic;
 
-    SearchHistory searchHistory = algorithm.searchP(storeGrid.toGrid(), storeGrid.sourcePosition, storeGrid.targetPosition, heuristic);
+    SearchHistory searchHistory = algorithm.searchP(storeGrid.gridBarrierManager.toGrid(), storeGrid.sourcePosition, storeGrid.targetPosition, heuristic);
 
     storeHistory.actions.historyChanged.call(searchHistory);
   }

@@ -11,6 +11,9 @@ abstract class Highlight
       this.style = defaultStyle;
     }
   }
+
+  @override
+  bool operator ==(dynamic o) => o is Highlight && o.style == style;
 }
 
 class BoxHighlight extends Highlight

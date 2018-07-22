@@ -1,10 +1,9 @@
 @import url('fonts/openSans.css');
 
 :root {
-  --node-size: 68px;
-  --node-parts-size: calc(var(--node-size) - 2px);
-  --node-part-size: calc((var(--node-size) - 2px) / 3);
-  --node-part-size-inner: calc((var(--node-size) - 2px) / 3 - 2px);
+  --node-size: 66px;
+  --node-part-size: calc(var(--node-size) / 3);
+  --node-part-size-inner: calc(var(--node-size) / 3 - 4px);
   --node-part-height: 10px;
   --node-part-shadow: 14px;
 
@@ -100,11 +99,11 @@ html, body {
   animation: nodeChange 0.2s ease-out 1;
 }
 
-.grid.BASIC .node:hover, .node.hover {
+.grid.GRID_MODE_BASIC .node:hover, .node.hover {
   border-color: var(--color-blue-light);
 }
 
-.grid.BASIC .node.totalBlocked {
+.grid.GRID_MODE_BASIC .node.totalBlocked {
   background: var(--color-blue);
   border-color: var(--color-blue-light) var(--color-blue-dark) var(--color-blue-dark) var(--color-blue-light);
   animation-name: nodeChangeBlocked;
@@ -122,15 +121,15 @@ html, body {
   100% {transform: scale(1);}
 }
 
-.grid.BASIC .node.totalBlocked:hover, .grid.BASIC .node.totalBlocked.hover {
+.grid.GRID_MODE_BASIC .node.totalBlocked:hover, .grid.GRID_MODE_BASIC .node.totalBlocked.hover {
   border-color: var(--color-blue-darker);
 }
 
-.grid.BASIC .node {
+.grid.GRID_MODE_BASIC .node {
   cursor: pointer;
 }
 
-.grid.BASIC .node.SOURCE_NODE, .grid.BASIC .node.TARGET_NODE {
+.grid.GRID_MODE_BASIC .node.SOURCE_NODE, .grid.GRID_MODE_BASIC .node.TARGET_NODE {
   cursor: move;
 }
 
@@ -160,15 +159,17 @@ html, body {
 }
 
 .grid .node .parts {
-  width: var(--node-parts-size);
-  height: var(--node-parts-size);
+  width: var(--node-size);
+  height: var(--node-size);
   overflow: hidden;
+  margin: -1px;
 }
 
 .grid .node .circleHighlight, .grid .node .dotHighlight {
-  margin: 0 0 -100% 0;
-  width: 100%;
-  height: 100%;
+  width: var(--node-size);
+  height: var(--node-size);
+  margin: -1px;
+  margin-bottom: calc(-1 * var(--node-size));
 
   --ring-0-color: transparent;
   --ring-0-size: 20%;
@@ -220,9 +221,10 @@ html, body {
 }
 
 .grid .node .textHighlight {
-  margin: 0 0 -100% 0;
-  width: 100%;
-  height: 100%;
+  width: var(--node-size);
+  height: var(--node-size);
+  margin: -1px;
+  margin-bottom: calc(-1 * var(--node-size));
 
   line-height: 300%;
   font-size: 20px;
@@ -238,60 +240,65 @@ html, body {
   float: left;
 }
 
-.grid.ADVANCED .node .part.outer {
+.grid.GRID_MODE_ADVANCED .node .part.outer {
   opacity: 0;
   cursor: pointer;
   background-size: var(--node-part-size-inner);
   background-repeat: no-repeat;
-  background-position: 1px 1px;
+  background-position: 2px 2px;
 }
 
-.grid.ADVANCED .node .part.leaveUnblocked.cardinal {
+.grid.GRID_MODE_ADVANCED .node .part.leaveUnblocked.cardinal {
   background-image: url("images/nodePartNorth.svg");
 }
 
-.grid.ADVANCED .node .part.leaveUnblocked.diagonal {
+.grid.GRID_MODE_ADVANCED .node .part.leaveUnblocked.diagonal {
   background-image: url("images/nodePartNorthEast.svg");
 }
 
-.grid.ADVANCED .node .part.leaveBlocked.cardinal {
+.grid.GRID_MODE_ADVANCED .node .part.leaveBlocked.cardinal {
   background-image: url("images/nodePartNorthBlocked.svg");
 }
 
-.grid.ADVANCED .node .part.leaveBlocked.diagonal {
+.grid.GRID_MODE_ADVANCED .node .part.leaveBlocked.diagonal {
   background-image: url("images/nodePartNorthEastBlocked.svg");
 }
 
-.grid.ADVANCED .node .part.EAST {
+.grid.GRID_MODE_ADVANCED .node .part.EAST {
   transform: rotate(90deg);
 }
 
-.grid.ADVANCED .node .part.SOUTH_EAST {
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH_EAST {
   transform: rotate(90deg);
 }
 
-.grid.ADVANCED .node .part.SOUTH {
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH {
   transform: rotate(180deg);
 }
 
-.grid.ADVANCED .node .part.SOUTH_WEST {
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH_WEST {
   transform: rotate(180deg);
 }
 
-.grid.ADVANCED .node .part.WEST {
+.grid.GRID_MODE_ADVANCED .node .part.WEST {
   transform: rotate(270deg);
 }
 
-.grid.ADVANCED .node .part.NORTH_WEST {
+.grid.GRID_MODE_ADVANCED .node .part.NORTH_WEST {
   transform: rotate(270deg);
 }
 
-.grid.ADVANCED .node.mouseUp .part.outer.unblocked:hover {
+.grid.GRID_MODE_ADVANCED .node.mouseUp .part.outer.enterUnblocked:hover {
   animation: nodeHover 1s linear infinite;
 }
 
-.grid.ADVANCED .node .part.outer.blocked {
+.grid.GRID_MODE_ADVANCED .node .part.outer.enterBlocked {
   opacity: 1;
+}
+
+.grid.GRID_MODE_ADVANCED .node .part.illegal, .grid.DIRECTION_MODE_ONLY_CARDINAL .node .part.diagonal, .grid.DIRECTION_MODE_ONLY_DIAGONAL .node .part.cardinal {
+  opacity: 0 !important;
+  cursor: auto;
 }
 
 @keyframes nodeHover {

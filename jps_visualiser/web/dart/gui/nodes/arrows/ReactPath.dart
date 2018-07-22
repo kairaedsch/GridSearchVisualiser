@@ -1,4 +1,5 @@
 import '../../../general/Position.dart';
+import '../../../general/Settings.dart';
 import '../../../general/Size.dart';
 import 'ReactArrow.dart';
 import 'package:over_react/over_react.dart';
@@ -13,6 +14,7 @@ class ReactPathProps extends UiProps
   List<Position> path;
   bool showEnd;
   bool showStart;
+  bool wrap;
 }
 
 @Component()
@@ -23,6 +25,7 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
       (newProps()
         ..showEnd = false
         ..showStart = false
+        ..wrap = true
       );
 
   @override
@@ -44,15 +47,37 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
             ..showEnd = props.showEnd && end
             ..startIntermediate = start ? 1.0 : 0.0
             ..endIntermediate = end ? 1.0 : 0.0
+            ..wrap = false
           )()
       );
     }
 
-    return
-      (Dom.div()
-        ..className = "path ${props.className}"
-      )(
-          arrows
-      );
+    if (!props.wrap)
+    {
+      return (Dom.g())(arrows);
+    }
+    else
+    {
+      return
+        (Dom.div()
+          ..className = "path ${props.className}"
+        )(
+          (Dom.div()
+            ..className = "nodeArrow"
+            ..style =
+            <String, String>{
+              "width": "${props.size.width * Settings.nodeSize}px",
+              "height": "${props.size.height * Settings.nodeSize}px"
+            }
+          )(
+            (Dom.svg()
+              ..className = "svg"
+              ..viewBox = "-0.5 -0.5 ${props.size.width} ${props.size.height}"
+            )(
+                arrows
+            ),
+          )
+        );
+    }
   }
 }

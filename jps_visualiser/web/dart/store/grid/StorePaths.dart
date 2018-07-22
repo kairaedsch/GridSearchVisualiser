@@ -4,8 +4,8 @@ import 'package:w_flux/w_flux.dart';
 
 class StorePaths extends Store
 {
-  List<Highlight> _highlights;
-  List<Highlight> get highlights => _highlights;
+  List<PathHighlight> _highlights;
+  List<PathHighlight> get highlights => _highlights;
 
   ActionsPathsChanged _actions;
   ActionsPathsChanged get actions => _actions;
@@ -21,7 +21,7 @@ class StorePaths extends Store
 
   void _historyHighlightsChanged(List<Highlight> highlights)
   {
-    _highlights = highlights;
+    _highlights = highlights.where((h) => h is PathHighlight).map((h) => h as PathHighlight).toList();
     trigger();
   }
 }

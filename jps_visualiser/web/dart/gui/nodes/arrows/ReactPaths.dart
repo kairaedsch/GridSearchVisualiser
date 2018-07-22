@@ -1,3 +1,5 @@
+import '../../../general/Settings.dart';
+import '../../../general/Size.dart';
 import '../../../model/history/Highlight.dart';
 import '../../../store/StoreGridSettings.dart';
 import '../../../store/grid/StorePaths.dart';
@@ -19,29 +21,44 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
   @override
   ReactElement render()
   {
+    Size size = props.storeGridSettings.size;
     return
       (Dom.div()
         ..className = "paths"
       )(
-          props.store.highlights.map(_renderPath).toList()
+        (Dom.div()
+        ..className = "path ${props.className}"
+        )(
+          (Dom.div()
+            ..className = "nodeArrow"
+            ..style =
+            <String, String>{
+            "width": "${size.width * Settings.nodeSize}px",
+            "height": "${size.height * Settings.nodeSize}px"
+          }
+          )(
+            (Dom.svg()
+            ..className = "svg"
+            ..viewBox = "-0.5 -0.5 ${size.width} ${size.height}"
+            )(
+                props.store.highlights.map(_renderPath).toList()
+            ),
+          )
+        )
       );
   }
 
-  ReactElement _renderPath(Highlight highlight)
+  ReactElement _renderPath(PathHighlight highlight)
   {
-    if (highlight is PathHighlight)
-    {
-      return
-        (ReactPath()
-          ..className = "pathHighlight highlight_${highlight.style}"
-          ..key = highlight.hashCode
-          ..size = props.storeGridSettings.size
-          ..showStart = highlight.showStart
-          ..showEnd = highlight.showEnd
-          ..path = highlight.path
-        )();
-    }
-
-    return null;
+    return
+      (ReactPath()
+        ..className = "pathHighlight highlight_${highlight.style}"
+        ..key = highlight.hashCode
+        ..size = props.storeGridSettings.size
+        ..showStart = highlight.showStart
+        ..showEnd = highlight.showEnd
+        ..path = highlight.path
+        ..wrap = false
+      )();
   }
 }

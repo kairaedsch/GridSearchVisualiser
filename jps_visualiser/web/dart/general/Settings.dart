@@ -1,4 +1,4 @@
 class Settings
 {
-  static final int nodeSize = 68;
+  static final int nodeSize = 66;
 }

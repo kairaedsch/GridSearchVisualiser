@@ -56,8 +56,9 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
             "part outer"
                 " ${direction.value.name}"
                 " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
-                " ${props.storeGrid.leaveBlockedDirectly(position, direction.value) ? "leaveBlocked" : "leaveUnblocked"}"
-                " ${structureNode.barrier.isBlocked(direction.value) ? "blocked" : "unblocked"}"
+                " ${position.go(direction.value).legal(props.storeGrid) ? "legal" : "illegal"}"
+                " ${props.storeGrid.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
+                " ${props.storeGrid.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
         )
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseEnter = ((_) => _handleMouseEnter())

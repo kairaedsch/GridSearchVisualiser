@@ -7,14 +7,17 @@ import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
 import '../history/StoreHistory.dart';
+import 'GridBarrierManager.dart';
 import 'package:w_flux/w_flux.dart';
 
 class StoreGrid extends Store implements Size
 {
   StoreGridSettings _storeGridSettings;
+  GridBarrierManager _gridBarrierManager;
+  GridBarrierManager get gridBarrierManager => _gridBarrierManager;
 
   Array2D<StoreNode> _storeNodes;
-  Array2D<StoreNode> get storeNodes => _storeNodes;
+
   StoreNode operator [](Position pos) => _storeNodes[pos];
 
   @override
@@ -47,6 +50,8 @@ class StoreGrid extends Store implements Size
     StoreNode targetStoreNode = _storeNodes[new Position(10, 5)];
     targetStoreNode.actions.structureNodeChanged.call(targetStoreNode.structureNode.clone(type: StructureNodeType.TARGET_NODE));
 
+    _gridBarrierManager = new GridBarrierManager(_storeGridSettings, (Position p) => _storeNodes[p].structureNode.barrier);
+
     _storeGridSettings.actions.gridModeChanged.listen(_gridSettingsGridModeChanged);
 
     _actions = new ActionsGridChanged();
@@ -55,77 +60,6 @@ class StoreGrid extends Store implements Size
   void _gridSettingsGridModeChanged(GridMode newGridMode)
   {
     trigger();
-  }
-
-  Grid toGrid()
-  {
-    return new Grid(_storeNodes, (Position pos) => new Node(pos, (direction) => leaveAble(pos, direction)));
-  }
-
-  bool leaveAble(Position position, Direction direction)
-  {
-    DirectionMode directionMode = _storeGridSettings.directionMode;
-    CrossCornerMode crossCornerMode = _storeGridSettings.crossCornerMode;
-    GridMode gridMode = _storeGridSettings.gridMode;
-
-    bool isDirectlyBlocked;
-    if (gridMode == GridMode.BASIC)
-    {
-      isDirectlyBlocked = leaveBlockedDirectly(position, direction) || enterBlockedDirectly(position, direction);
-    }
-    else
-    {
-      isDirectlyBlocked = leaveBlockedDirectly(position, direction);
-    }
-
-    if (isDirectlyBlocked)
-    {
-      return false;
-    }
-
-    if (directionMode == DirectionMode.ONLY_CARDINAL)
-    {
-      if (direction.isDiagonal)
-      {
-        return false;
-      }
-    }
-    else if (directionMode == DirectionMode.ONLY_DIAGONAL)
-    {
-      if (direction.isCardinal)
-      {
-        return false;
-      }
-    }
-
-    if (direction.isDiagonal && crossCornerMode == CrossCornerMode.DENY)
-    {
-      bool isCornerBlocked = leaveBlockedDirectly(position, direction)
-          || enterBlockedDirectly(position, direction)
-          || leaveBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90))
-          || enterBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90));
-
-      if (isCornerBlocked)
-      {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  bool leaveBlockedDirectly(Position position, Direction direction)
-  {
-    GridMode gridMode = _storeGridSettings.gridMode;
-    Position targetPosition = position.go(direction);
-    return !targetPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[targetPosition].structureNode.barrier.isAnyBlocked() : _storeNodes[targetPosition].structureNode.barrier.isBlocked(direction.turn(180)));
-  }
-
-  bool enterBlockedDirectly(Position position, Direction direction)
-  {
-    GridMode gridMode = _storeGridSettings.gridMode;
-    Position startPosition = position.go(direction);
-    return !startPosition.legal(_storeNodes) || !position.legal(_storeNodes) || (gridMode == GridMode.BASIC ? _storeNodes[position].structureNode.barrier.isAnyBlocked() : _storeNodes[position].structureNode.barrier.isBlocked(direction));
   }
 }
 

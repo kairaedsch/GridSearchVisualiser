@@ -38,13 +38,13 @@ class StoreHistory extends Store
     _history = new Optional.of(new History(searchHistory));
 
     Optional<HistoryPart> newActive = const Optional.absent();
-    /*if (active.isPresent)
+    if (active.isPresent)
     {
       newActive = _history.value.parts
-          .where((hp) => hp.activeNodeInTurn == active.value.activeNodeInTurn)
+          .where((hp) => hp.turn == active.value.turn)
           .map((hp) => new Optional.of(hp))
           .firstWhere((hp) => true, orElse: () => const Optional.absent());
-    }*/
+    }
     if (newActive.isEmpty && _history.value.parts.length > 0)
     {
       newActive = new Optional.of(_history.value.parts[0]);

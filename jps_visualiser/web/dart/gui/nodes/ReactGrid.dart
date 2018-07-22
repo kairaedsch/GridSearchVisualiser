@@ -49,35 +49,34 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   @override
   ReactElement render()
   {
-    Array2D<StoreNode> storeNodes = props.store.storeNodes;
-
     return
       (Dom.div()
         ..className = "grid"
-            " ${props.storeGridSettings.gridMode.name}"
+            " GRID_MODE_${props.storeGridSettings.gridMode.name}"
+            " DIRECTION_MODE_${props.storeGridSettings.directionMode.name}"
+            " CROSS_CORNER_${props.storeGridSettings.crossCornerMode.name}"
+            " WAY_MODE_${props.storeGridSettings.wayMode.name}"
         ..style =
         <String, String>{
-          "width": "${Settings.nodeSize * storeNodes.width}px",
-          "height": "${Settings.nodeSize * storeNodes.height}px"
+          "width": "${Settings.nodeSize * props.store.width}px",
+          "height": "${Settings.nodeSize * props.store.height}px"
         }
       )(
           (Dom.div()
             ..className = "nodes")(
-              new List<ReactElement>.generate(storeNodes.height, _renderRow)
+              new List<ReactElement>.generate(props.store.height, _renderRow)
           )
       );
   }
 
   ReactElement _renderRow(int y)
   {
-    Array2D<StoreNode> storeNodes = props.store.storeNodes;
-
     return
       (Dom.div()
         ..className = "row"
         ..key = y
       )(
-          new List<ReactElement>.generate(storeNodes.width, (x) => _renderNode(new Position(x, y)))
+          new List<ReactElement>.generate(props.store.width, (x) => _renderNode(new Position(x, y)))
       );
   }
 
@@ -114,7 +113,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   void updateMouseModeFromNodePart(StoreNode storeNode, {Direction direction})
   {
-    if (props.storeGridSettings.gridMode == GridMode.ADVANCED && _mouseMode.isEmpty)
+    if (props.storeGridSettings.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
     {
       if (storeNode.structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
       {

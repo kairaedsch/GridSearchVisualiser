@@ -28,4 +28,10 @@ class Direction
 
   static const List<Direction> values = const <Direction>[
     NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST];
+
+  static const List<Direction> cardinals = const <Direction>[
+    NORTH, EAST, SOUTH, WEST];
+
+  static const List<Direction> diagonals = const <Direction>[
+    NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST];
 }

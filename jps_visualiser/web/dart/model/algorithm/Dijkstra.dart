@@ -46,11 +46,34 @@ class Dijkstra extends Algorithm
       ..add(start);
     Set<Node> closed = new Set();
 
+    SearchState searchState = new SearchState(0);
+    searchState.title
+      ..addT("Setup")
+    ;
+    searchState.description.add(new Explanation()
+      ..addT("For the setup we: ")
+    );
+    searchState.description.add(new Explanation.styled("enumeration")
+      ..addT("Set all nodes unmarked.")
+    );
+    searchState.description.add(new Explanation.styled("enumeration")
+      ..addT("Set the distance from our ")
+      ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
+      ..addT(" to our ")
+      ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
+      ..addT(" to 0.0.")
+    );
+    searchState.description.add(new Explanation.styled("enumeration")
+      ..addT("Mark our ")
+      ..addH("start node open", "green", [new BoxHighlight.styled("green", new Set()..add(start.position))])
+      ..addT(".")
+    );
+    searchHistory.add(searchState);
+
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
     {
       SearchState searchState = new SearchState(turn);
-      //grid.iterable.forEach((n) => searchState[n.position].addInfo("Current best path is ${getDistance(n)}"));
       searchState.title
         ..addT("Turn $turn")
       ;

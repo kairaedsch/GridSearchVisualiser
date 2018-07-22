@@ -38,6 +38,15 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 ..selectListener = ((newValue) => props.store.actions.directionModeChanged.call(newValue as DirectionMode))
               )()
           ),
+          props.store.gridMode != GridMode.BASIC ?
+          (Dom.div()..className = "config")(
+              (Dom.div()..className = "title")("Oneways:"),
+              (ReactDropDown()
+                ..value = props.store.wayMode
+                ..values = WayMode.values
+                ..selectListener = ((newValue) => props.store.actions.wayModeChanged.call(newValue as WayMode))
+              )()
+          ) : null,
           props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Cross Corners:"),
