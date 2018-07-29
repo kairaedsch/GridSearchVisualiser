@@ -44,10 +44,10 @@ class StoreMain extends Store
 
   void _runAlgorithm()
   {
-    Algorithm algorithm = storeAlgorithmSettings.algorithmType.algorithm;
     Heuristic heuristic = storeAlgorithmSettings.heuristicType.heuristic;
+    Algorithm algorithm = storeAlgorithmSettings.algorithmType.algorithmFactory(storeGrid.gridBarrierManager.toGrid(), storeGrid.sourcePosition, storeGrid.targetPosition, heuristic);
 
-    SearchHistory searchHistory = algorithm.searchP(storeGrid.gridBarrierManager.toGrid(), storeGrid.sourcePosition, storeGrid.targetPosition, heuristic);
+    SearchHistory searchHistory = algorithm.search();
 
     storeHistory.actions.historyChanged.call(searchHistory);
   }

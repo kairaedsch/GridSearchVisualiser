@@ -7,17 +7,16 @@ import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'BasicSearchAlgorithm.dart';
 
-class Dijkstra extends BasicSearchAlgorithm
+class AStar extends BasicSearchAlgorithm
 {
-   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new Dijkstra(grid, startPosition, targetPosition, heuristic);
+   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new AStar(grid, startPosition, targetPosition, heuristic);
 
-   Dijkstra(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
-       : super("Dijkstra", grid, startPosition, targetPosition, heuristic);
+   AStar(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super("AStar", grid, startPosition, targetPosition, heuristic);
 
    @override
    Node findNextActiveNode()
    {
-      Node nStar = open.reduce((n1, n2) => getDistance(n1) <= getDistance(n2) ? n1 : n2);
+      Node nStar = open.reduce((n1, n2) => (getDistance(n1) + heuristic.calculateApproximateDistance(n1, target)) <= (getDistance(n2) + heuristic.calculateApproximateDistance(n2, target)) ? n1 : n2);
 
       List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
       currentSearchState.description.add(new Explanation()

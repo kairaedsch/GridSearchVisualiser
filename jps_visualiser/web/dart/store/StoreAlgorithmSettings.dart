@@ -1,4 +1,5 @@
 import '../general/gui/DropDownElement.dart';
+import '../model/algorithm/AStar.dart';
 import '../model/algorithm/Algorithm.dart';
 import '../model/algorithm/Dijkstra.dart';
 import '../model/heuristics/Chebyshev.dart';
@@ -49,20 +50,20 @@ class ActionsAlgorithmSettingsChanged {
 
 class AlgorithmType implements DropDownElement
 {
-  static const AlgorithmType DIJKSTRA = const AlgorithmType(const Dijkstra(), "DIJKSTRA", "Dijkstra");
-  static const AlgorithmType A_STAR = const AlgorithmType(const Dijkstra(), "A_STAR", "A*");
-  static const AlgorithmType JPS = const AlgorithmType(const Dijkstra(), "JPS", "JPS");
+  static AlgorithmType DIJKSTRA = new AlgorithmType(Dijkstra.factory, "DIJKSTRA", "Dijkstra");
+  static AlgorithmType A_STAR = new AlgorithmType(AStar.factory, "A_STAR", "A*");
+  static AlgorithmType JPS = new AlgorithmType(Dijkstra.factory, "JPS", "JPS");
 
   final String name;
   final String dropDownName;
-  final Algorithm algorithm;
+  final AlgorithmFactory algorithmFactory;
 
   @override
   String toString() => name;
 
-  const AlgorithmType(this.algorithm, this.name, this.dropDownName);
+  const AlgorithmType(this.algorithmFactory, this.name, this.dropDownName);
 
-  static const List<AlgorithmType> values = const <AlgorithmType>[
+  static List<AlgorithmType> values = <AlgorithmType>[
     DIJKSTRA, A_STAR, JPS];
 }
 
