@@ -344,9 +344,13 @@ html, body {
   fill: #000;
 }
 
-.pathHighlight .nodeArrow .svg {
+g.pathHighlight {
   stroke: var(--color-highlight-darker);
   fill: var(--color-highlight-darker);
+}
+
+g.dotted {
+  stroke-dasharray: 0.05, 0.2;
 }
 
 /*noinspection CssInvalidPropertyValue*/

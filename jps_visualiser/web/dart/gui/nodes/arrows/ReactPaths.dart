@@ -27,7 +27,7 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
         ..className = "paths"
       )(
         (Dom.div()
-        ..className = "path ${props.className}"
+        ..className = "path"
         )(
           (Dom.div()
             ..className = "nodeArrow"

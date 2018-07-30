@@ -24,7 +24,7 @@ class EditBarrierMouseMode extends MouseMode
 
     if (reactGrid.props.storeGridSettings.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
     {
-      bool maybeNewEasyFillModus = gridBarrierManager.enterAbleInAnyDirection(position);
+      bool maybeNewEasyFillModus = !structureNode.barrier.isAnyBlocked();
       bool easyFillModus = getAndUpdateEasyFillModus(maybeNewEasyFillModus);
       if (maybeNewEasyFillModus == easyFillModus)
       {

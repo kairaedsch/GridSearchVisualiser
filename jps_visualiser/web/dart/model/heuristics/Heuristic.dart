@@ -3,12 +3,24 @@ import '../Grid.dart';
 
 abstract class Heuristic
 {
-  const Heuristic();
+  final String _name;
 
-  double calculateApproximateDistance(Node n1, Node n2)
+  const Heuristic(this._name);
+
+  double calc(Node n1, Node n2)
   {
-    return calculateApproximateDistanceP(n1.position, n2.position);
+    return calcP(n1.position, n2.position);
   }
 
-  double calculateApproximateDistanceP(Position p1, Position p2);
+  double calcP(Position p1, Position p2);
+
+  List<Position> getPath(Node source, Node target)
+  {
+    return getPathP(source.position, target.position);
+  }
+
+  List<Position> getPathP(Position source, Position target);
+
+  @override
+  String toString() => _name;
 }

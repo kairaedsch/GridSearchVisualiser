@@ -54,13 +54,13 @@ class ReactPathComponent extends UiComponent<ReactPathProps>
 
     if (!props.wrap)
     {
-      return (Dom.g())(arrows);
+      return (Dom.g()..className = props.className)(arrows);
     }
     else
     {
       return
         (Dom.div()
-          ..className = "path ${props.className}"
+          ..className = "path"
         )(
           (Dom.div()
             ..className = "nodeArrow"
