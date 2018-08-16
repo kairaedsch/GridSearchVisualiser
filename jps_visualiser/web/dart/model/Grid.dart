@@ -1,5 +1,6 @@
 import '../general/Array2D.dart';
 import '../general/Direction.dart';
+import '../general/Distance.dart';
 import '../general/Position.dart';
 import '../general/Size.dart';
 
@@ -48,8 +49,8 @@ class Node
     return _leaveAble[direction];
   }
 
-  double distanceTo(Node n)
+  Distance distanceTo(Node n)
   {
-    return (n.position - position).length();
+    return new Distance.calc(n.position, position);
   }
 }

@@ -5,6 +5,8 @@ import 'dart:math';
 
 class Distance
 {
+  static Distance INFINITY = new Distance(pow(2, 53) as int, pow(2, 53) as int);
+
   int _cardinal;
   int _diagonal;
 
@@ -18,25 +20,28 @@ class Distance
     _cardinal = max(dx, dy) - _diagonal;
   }
 
-  bool operator <(Object other)
+  Distance operator -(Distance other) => new Distance(_cardinal - other._cardinal, _diagonal - other._diagonal);
+
+  Distance operator +(Distance other) => new Distance(_cardinal + other._cardinal, _diagonal + other._diagonal);
+
+  Distance operator *(int scale) => new Distance(_cardinal * scale, _diagonal * scale);
+
+  bool operator <(Distance other)
   {
-    if (other is Distance)
+    if (other._cardinal != _cardinal || other._diagonal != _diagonal)
     {
-      if (other._cardinal != _cardinal || other._diagonal != _diagonal)
-      {
-        return _length() < other._length();
-      }
-      else
-      {
-        return false;
-      }
+      return length() < other.length();
     }
     else
     {
-      assert(false, "other is no Distance: $other");
       return false;
     }
   }
 
-  double _length() => _cardinal + _diagonal * sqrt(2);
+  double length() => _cardinal + _diagonal * sqrt(2);
+
+  @override
+  int get hashCode =>
+      _cardinal.hashCode ^
+      _diagonal.hashCode;
 }

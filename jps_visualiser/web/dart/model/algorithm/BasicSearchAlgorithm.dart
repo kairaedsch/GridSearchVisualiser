@@ -1,3 +1,4 @@
+import '../../general/Distance.dart';
 import '../../general/Position.dart';
 import '../Grid.dart';
 import '../history/Explanation.dart';
@@ -14,7 +15,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   SearchHistory searchHistory;
   SearchState currentSearchState;
 
-  Map<Node, double> distance;
+  Map<Node, Distance> distance;
   Map<Node, Node> parent;
 
   Set<Node> open;
@@ -23,7 +24,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   BasicSearchAlgorithm(this.name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super(grid, startPosition, targetPosition, heuristic)
   {
     searchHistory = new SearchHistory();
-    distance = new Map<Node, double>();
+    distance = new Map<Node, Distance>();
     parent = new Map<Node, Node>();
     open = new Set();
     closed = new Set();
@@ -31,9 +32,9 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
   Node findNextActiveNode();
 
-  double getDistance(Node n)
+  Distance getDistance(Node n)
   {
-    return distance.containsKey(n) ? distance[n] : double.INFINITY;
+    return distance.containsKey(n) ? distance[n] : Distance.INFINITY;
   }
 
   List<Node> getPath(Node n)
@@ -61,7 +62,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   {
     SearchState searchState = new SearchState(0);
 
-    distance[start] = 0.0;
+    distance[start] = new Distance(0, 0);
     open.add(start);
     searchState.title
       ..addT("Setup")
@@ -142,9 +143,9 @@ abstract class BasicSearchAlgorithm extends Algorithm
             ..addT("All neighbour nodes which are ")
             ..addH("marked open", "green", [new CircleHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
             ..addT(" are checked, if we can have an maybe more optimal ")
-            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).toStringAsPrecision(2), on.position)).toList()))
+            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(2), on.position)).toList()))
             ..addT(" from our source node to them over the active node than the ")
-            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).toStringAsPrecision(2), on.position)).toList()))
+            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).length().toStringAsPrecision(2), on.position)).toList()))
             ..addT(" which we have already found for them. ")
           );
 
