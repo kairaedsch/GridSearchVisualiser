@@ -8,6 +8,6 @@ class History
   final String title;
 
   History(SearchHistory searchHistory)
-      : parts = searchHistory.history.map((SearchState searchState) => new HistoryPart(searchState)).toList(growable: false),
+      : parts = searchHistory.history.map((SearchState searchState) => new HistoryPart(searchState, searchHistory.getTurnType(searchState))).toList(growable: false),
         title = searchHistory.title;
 }

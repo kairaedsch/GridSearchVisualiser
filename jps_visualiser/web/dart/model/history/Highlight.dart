@@ -11,9 +11,6 @@ abstract class Highlight
       this.style = defaultStyle;
     }
   }
-
-  @override
-  bool operator ==(dynamic o) => o is Highlight && o.style == style;
 }
 
 class BoxHighlight extends Highlight
@@ -26,6 +23,19 @@ class BoxHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is BoxHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              positions == other.positions;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      positions.hashCode;
 }
 
 class CircleHighlight extends Highlight
@@ -38,6 +48,19 @@ class CircleHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is CircleHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              positions == other.positions;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      positions.hashCode;
 }
 
 class DotHighlight extends Highlight
@@ -50,6 +73,19 @@ class DotHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is DotHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              positions == other.positions;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      positions.hashCode;
 }
 
 class PathHighlight extends Highlight
@@ -68,6 +104,23 @@ class PathHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is PathHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              path == other.path &&
+              showEnd == other.showEnd &&
+              showStart == other.showStart;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      path.hashCode ^
+      showEnd.hashCode ^
+      showStart.hashCode;
 }
 
 class TextHighlight extends Highlight
@@ -81,6 +134,21 @@ class TextHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is TextHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              position == other.position &&
+              text == other.text;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      position.hashCode ^
+      text.hashCode;
 }
 
 class InfoHighlight extends Highlight
@@ -94,4 +162,19 @@ class InfoHighlight extends Highlight
   {
     this.style = style;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is InfoHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              position == other.position &&
+              info == other.info;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      position.hashCode ^
+      info.hashCode;
 }

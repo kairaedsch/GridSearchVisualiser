@@ -23,6 +23,11 @@ class Explanation
   {
     _explanation.add(new ExplanationPart.Highlight(text, style, highlights));
   }
+
+  int getTypeId()
+  {
+    return _explanation.map((e) => e.getTypeId()).reduce((t1, t2) => t1 ^ t2);
+  }
 }
 
 class ExplanationPart
@@ -39,5 +44,10 @@ class ExplanationPart
       : style = new Optional.of(style)
   {
     highlights.forEach((h) => h.setDefaultStyle(style));
+  }
+
+  int getTypeId()
+  {
+    return text.hashCode;
   }
 }

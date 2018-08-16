@@ -8,7 +8,7 @@ import '../../store/grid/StructureNode.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
-import 'arrows/ReactPath.dart';
+import 'arrows/ReactArrow.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/src/store.dart';
@@ -115,7 +115,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     }
 
     return
-      (ReactPath()
+      (ReactArrow()
         ..key = direction
         ..size = props.storeGridSettings.size
         ..path = [props.store.position, props.store.position.go(direction)]

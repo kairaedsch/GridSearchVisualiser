@@ -226,7 +226,7 @@ html, body {
   margin: -1px;
   margin-bottom: calc(-1 * var(--node-size));
 
-  line-height: 300%;
+  line-height: 325%;
   font-size: 20px;
   font-weight: 600;
   text-align: center;
@@ -350,12 +350,13 @@ g.pathHighlight {
 }
 
 g.dotted {
-  stroke-dasharray: 0.05, 0.2;
+  stroke-dasharray: 0.1, 0.1;
 }
 
 /*noinspection CssInvalidPropertyValue*/
 .nodeArrow .svg .line {
   stroke-width: 0.025;
+  fill: none;
 }
 
 .nodeArrow .svg .end {
@@ -594,8 +595,65 @@ g.dotted {
   width: 50px;
   border: 1px solid transparent;
 
+  --typeColorR: 255;
+  --typeColorG: 15;
+  --typeColorB: 0;
+
+  --typeColorRX: calc(var(--typeColorR) * 0.75);
+  --typeColorGX: calc(var(--typeColorG) * 0.75);
+  --typeColorBX: calc(var(--typeColorB) * 0.75);
+  --typeColor: rgb(var(--typeColorRX), var(--typeColorGX), var(--typeColorBX));
+  color: var(--typeColor);
   text-align: center;
   cursor: pointer;
+}
+
+.history .parts .part.turnType_0 {
+  --typeColorR: 255;
+  --typeColorG: 15;
+  --typeColorB: 0;
+}
+
+.history .parts .part.turnType_1 {
+  --typeColorR: 255;
+  --typeColorG: 0;
+  --typeColorB: 134;
+}
+
+.history .parts .part.turnType_2 {
+  --typeColorR: 142;
+  --typeColorG: 0;
+  --typeColorB: 255;
+}
+
+.history .parts .part.turnType_3 {
+  --typeColorR: 0;
+  --typeColorG: 87;
+  --typeColorB: 255;
+}
+
+.history .parts .part.turnType_4 {
+  --typeColorR: 0;
+  --typeColorG: 255;
+  --typeColorB: 250;
+}
+
+.history .parts .part.turnType_5 {
+  --typeColorR: 0;
+  --typeColorG: 255;
+  --typeColorB: 67;
+}
+
+.history .parts .part.turnType_6 {
+  --typeColorR: 129;
+  --typeColorG: 255;
+  --typeColorB: 0;
+}
+
+.history .parts .part.turnType_7 {
+  --typeColorR: 255;
+  --typeColorG: 218;
+  --typeColorB: 0;
 }
 
 .history .parts .part:hover {
@@ -611,7 +669,6 @@ g.dotted {
   background: var(--color-blue);
   border-color: var(--color-blue-dark);
 }
-
 .history .turnOverview {
   flex-grow: 1;
   min-height: 50px;

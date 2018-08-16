@@ -3,7 +3,7 @@ import '../../../general/Size.dart';
 import '../../../model/history/Highlight.dart';
 import '../../../store/StoreGridSettings.dart';
 import '../../../store/grid/StorePaths.dart';
-import '../arrows/ReactPath.dart';
+import '../arrows/ReactArrow.dart';
 import 'package:over_react/over_react.dart';
 
 @Factory()
@@ -51,7 +51,7 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
   ReactElement _renderPath(PathHighlight highlight)
   {
     return
-      (ReactPath()
+      (ReactArrow()
         ..className = "pathHighlight highlight_${highlight.style}"
         ..key = highlight.hashCode
         ..size = props.storeGridSettings.size

@@ -3,6 +3,7 @@ import '../model/history/SearchHistory.dart';
 import '../model/algorithm/Algorithm.dart';
 import '../model/heuristics/Heuristic.dart';
 import 'StoreAlgorithmSettings.dart';
+import 'dart:html';
 import 'grid/StorePaths.dart';
 import 'grid/StoreGrid.dart';
 import 'StoreGridSettings.dart';

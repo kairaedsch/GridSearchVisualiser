@@ -11,7 +11,7 @@ class AStar extends BasicSearchAlgorithm
 {
    static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new AStar(grid, startPosition, targetPosition, heuristic);
 
-   AStar(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super("AStar", grid, startPosition, targetPosition, heuristic);
+   AStar(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super("A*", grid, startPosition, targetPosition, heuristic);
 
    @override
    Node findNextActiveNode()

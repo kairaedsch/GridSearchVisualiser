@@ -1,5 +1,6 @@
 import '../Grid.dart';
 import 'SearchState.dart';
+import 'dart:collection';
 import 'package:quiver/core.dart';
 
 class SearchHistory
@@ -26,5 +27,22 @@ class SearchHistory
   void add(SearchState searchState)
   {
     _history.add(searchState);
+  }
+
+  int getTurnType(SearchState searchState)
+  {
+    int targetTypeId = searchState.getTypeId();
+    Set<int> foundTargetIds = new HashSet();
+    for (SearchState state in _history)
+    {
+      int typeId = state.getTypeId();
+      if (targetTypeId == typeId)
+      {
+        return foundTargetIds.length;
+      }
+      foundTargetIds.add(typeId);
+    }
+    assert(false, "Did not found searchstate in history: ${searchState.turn}");
+    return 0;
   }
 }

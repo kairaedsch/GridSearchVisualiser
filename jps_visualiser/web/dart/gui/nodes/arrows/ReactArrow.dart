@@ -12,8 +12,7 @@ UiFactory<ReactArrowProps> ReactArrow;
 class ReactArrowProps extends UiProps
 {
   Size size;
-  Position sourceNode;
-  Position targetNode;
+  List<Position> path;
   bool showStart;
   bool showEnd;
   double startIntermediate;
@@ -40,19 +39,18 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
   @override
   dynamic render()
   {
-    Vector2 startOrg = new Vector2(props.sourceNode.x + 0.0, props.sourceNode.y + 0.0);
-    Vector2 endOrg = new Vector2(props.targetNode.x + 0.0, props.targetNode.y + 0.0);
+    Vector2 startOrg = new Vector2(props.path.first.x + 0.0, props.path.first.y + 0.0);
+    Vector2 startEndOrg = new Vector2(props.path[1].x + 0.0, props.path[1].y + 0.0);
+    Vector2 endOrg = new Vector2(props.path.last.x + 0.0, props.path.last.y + 0.0);
+    Vector2 endStartOrg = new Vector2(props.path[props.path.length - 2].x + 0.0, props.path[props.path.length - 2].y + 0.0);
 
-    Vector2 v = (endOrg - startOrg).normalized();
+    Vector2 v = (startEndOrg - startOrg).normalized();
     Vector2 vP90 = rotate(v, 35.0);
     Vector2 vM90 = rotate(v, -35.0);
 
-    Vector2 vB = v * -1.0;
+    Vector2 vB = (endStartOrg - endOrg).normalized();
     Vector2 vBP90 = rotate(vB, 35.0);
     Vector2 vBM90 = rotate(vB, -35.0);
-
-    Vector2 start = startOrg + (v * arrowInset) * props.startIntermediate;
-    Vector2 end = endOrg + (vB * arrowInset) *  props.endIntermediate;
 
     vBP90 = (vBP90 + vB.normalized()) * arrowSize;
     vBM90 = (vBM90 + vB.normalized()) * arrowSize;
@@ -60,12 +58,18 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     vP90 = (vP90 + v.normalized()) * arrowSize;
     vM90 = (vM90 + v.normalized()) * arrowSize;
 
+    Vector2 start = startOrg + (v * arrowInset) * props.startIntermediate;
+    Vector2 end = endOrg + (vB * arrowInset) *  props.endIntermediate;
+
+    List<Position> intermediatePath = props.path.sublist(1)..removeLast();
+
     List<ReactElement> svgs =
     [
-      (Dom.polygon()
+      (Dom.polyline()
         ..key = "line"
         ..points = ""
             " ${start.x},${start.y}"
+            " ${intermediatePath.map((p) => "${p.x},${p.y}").join(" ")}"
             " ${end.x},${end.y}"
         ..className = "line"
       )(),
@@ -97,7 +101,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
 
     if (!props.wrap)
     {
-      return (Dom.g())(svgs);
+      return (Dom.g()..className = props.className)(svgs);
     }
     else
     {

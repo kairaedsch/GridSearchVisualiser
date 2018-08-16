@@ -67,6 +67,7 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
         ..key = part.turn
         ..className = "part"
             " ${selected ? "selected" : ""}"
+            " turnType_${part.turnType}"
         ..onClick = ((_) => props.store.actions.activeChanged.call(selected ? const Optional.absent() : new Optional.of(part)))
       )(part.turn);
   }
