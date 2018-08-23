@@ -37,8 +37,13 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
       );
 
   @override
-  dynamic render()
+  ReactElement render()
   {
+    if (props.path.length < 2)
+    {
+      return null;
+    }
+
     Vector2 startOrg = new Vector2(props.path.first.x + 0.0, props.path.first.y + 0.0);
     Vector2 startEndOrg = new Vector2(props.path[1].x + 0.0, props.path[1].y + 0.0);
     Vector2 endOrg = new Vector2(props.path.last.x + 0.0, props.path.last.y + 0.0);

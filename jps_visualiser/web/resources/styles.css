@@ -353,6 +353,16 @@ g.dotted {
   stroke-dasharray: 0.1, 0.1;
 }
 
+g.blinking {
+  stroke-dasharray: 0.1, 0.1;
+  animation: gBlinking 1s infinite linear;
+}
+
+@keyframes gBlinking {
+  0%   {stroke-dashoffset: 0;}
+  100% {stroke-dashoffset: -1;}
+}
+
 /*noinspection CssInvalidPropertyValue*/
 .nodeArrow .svg .line {
   stroke-width: 0.025;

@@ -12,9 +12,6 @@ abstract class BasicSearchAlgorithm extends Algorithm
 {
   final String name;
 
-  SearchHistory searchHistory;
-  SearchState currentSearchState;
-
   Map<Node, Distance> distance;
   Map<Node, Node> parent;
 
@@ -23,7 +20,6 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
   BasicSearchAlgorithm(this.name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super(grid, startPosition, targetPosition, heuristic)
   {
-    searchHistory = new SearchHistory();
     distance = new Map<Node, Distance>();
     parent = new Map<Node, Node>();
     open = new Set();
@@ -31,6 +27,8 @@ abstract class BasicSearchAlgorithm extends Algorithm
   }
 
   Node findNextActiveNode();
+
+  Iterable<Node> findNeighbourNodes(Node node);
 
   Distance getDistance(Node n)
   {
@@ -58,39 +56,39 @@ abstract class BasicSearchAlgorithm extends Algorithm
   }
 
   @override
-  SearchHistory searchInner()
+  void runInner()
   {
-    SearchState searchState = new SearchState(0);
+    addSearchState(0);
 
     distance[start] = new Distance(0, 0);
     open.add(start);
-    searchState.title
+    currentSearchState.title
       ..addT("Setup")
     ;
-    searchState.description.add(new Explanation()
+    currentSearchState.description.add(new Explanation()
       ..addT("For the setup we: ")
     );
-    searchState.description.add(new Explanation.styled("enumeration")
+    currentSearchState.description.add(new Explanation.styled("enumeration")
       ..addT("Set all nodes unmarked.")
     );
-    searchState.description.add(new Explanation.styled("enumeration")
+    currentSearchState.description.add(new Explanation.styled("enumeration")
       ..addT("Set the distance from our ")
       ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
       ..addT(" to our ")
       ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
       ..addT(" to 0.0.")
     );
-    searchState.description.add(new Explanation.styled("enumeration")
+    currentSearchState.description.add(new Explanation.styled("enumeration")
       ..addT("Mark our ")
       ..addH("start node open", "green", [new BoxHighlight.styled("green", new Set()..add(start.position))])
       ..addT(".")
     );
-    searchHistory.add(searchState);
+    searchHistory.add(currentSearchState);
 
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
     {
-      currentSearchState = new SearchState(turn);
+      addSearchState(turn);
       currentSearchState.title
         ..addT("Turn $turn")
       ;
@@ -105,20 +103,28 @@ abstract class BasicSearchAlgorithm extends Algorithm
       if (nStar == target)
       {
         searchHistory.setPath(getPath(target));
+
+        currentSearchState.description.add(new Explanation()
+          ..addT("As our active node is our ")
+          ..addH("target node", "red", [new CircleHighlight(new Set()..add(target.position))])
+          ..addT(", the algorithm can finish and we have found an ")
+          ..addH("optimal path", "blue", [new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true)])
+          ..addT(" from the ")
+          ..addH("source node", "green", [new CircleHighlight(new Set()..add(start.position))])
+          ..addT(" to the ")
+          ..addH("target node", "red", [new CircleHighlight(new Set()..add(target.position))])
+          ..addT(".")
+        );
+
+        currentSearchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
         break;
       }
       else
       {
-        var neighbours = grid.neighbours(nStar);
+        var neighbours = findNeighbourNodes(nStar);
         var neighboursMarkedClosed = neighbours.where((n) => closed.contains(n)).toList();
         var neighboursMarkedOpen = neighbours.where((n) => open.contains(n)).toList();
         var neighboursUnmarked = neighbours.where((n) => !closed.contains(n) && !open.contains(n)).toList();
-
-        currentSearchState.description.add(new Explanation()
-          ..addT("After we have choosen our active node, we will take a look at all of his ")
-          ..addH("neighbour nodes", "blue", [new CircleHighlight(neighbours.map((n) => n.position).toSet())])
-          ..addT(": ")
-        );
 
         if (neighboursMarkedClosed.isNotEmpty)
         {
@@ -212,12 +218,8 @@ abstract class BasicSearchAlgorithm extends Algorithm
       updatedNodes.forEach((un) => currentSearchState.defaultHighlights.add(new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)));
       currentSearchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
       //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
-
-      searchHistory.add(currentSearchState);
     }
 
     searchHistory.title = "Searched with $name in $turn turns";
-
-    return searchHistory;
   }
 }

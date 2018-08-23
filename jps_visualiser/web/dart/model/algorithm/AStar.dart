@@ -6,12 +6,13 @@ import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'BasicSearchAlgorithm.dart';
+import 'Dijkstra.dart';
 
-class AStar extends BasicSearchAlgorithm
+class AStar extends Dijkstra
 {
-   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new AStar(grid, startPosition, targetPosition, heuristic);
+   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new AStar("A*", grid, startPosition, targetPosition, heuristic);
 
-   AStar(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super("A*", grid, startPosition, targetPosition, heuristic);
+   AStar(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super(name, grid, startPosition, targetPosition, heuristic);
 
    @override
    Node findNextActiveNode()

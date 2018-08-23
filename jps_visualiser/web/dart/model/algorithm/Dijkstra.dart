@@ -2,17 +2,16 @@ import '../../general/Position.dart';
 import '../Grid.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
-import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'BasicSearchAlgorithm.dart';
 
 class Dijkstra extends BasicSearchAlgorithm
 {
-   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new Dijkstra(grid, startPosition, targetPosition, heuristic);
+   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new Dijkstra("Dijkstra", grid, startPosition, targetPosition, heuristic);
 
-   Dijkstra(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
-       : super("Dijkstra", grid, startPosition, targetPosition, heuristic);
+   Dijkstra(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
+       : super(name, grid, startPosition, targetPosition, heuristic);
 
    @override
    Node findNextActiveNode()
@@ -37,5 +36,19 @@ class Dijkstra extends BasicSearchAlgorithm
       );
 
       return nStar;
+   }
+
+   @override
+   Iterable<Node> findNeighbourNodes(Node node)
+   {
+      var neighbours = grid.neighbours(node);
+
+      currentSearchState.description.add(new Explanation()
+         ..addT("After we have choosen our active node, we will take a look at all of his ")
+         ..addH("neighbour nodes", "blue", [new CircleHighlight(neighbours.map((n) => n.position).toSet())])
+         ..addT(": ")
+      );
+
+      return neighbours;
    }
 }
