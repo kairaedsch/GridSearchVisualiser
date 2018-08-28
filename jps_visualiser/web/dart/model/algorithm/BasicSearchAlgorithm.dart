@@ -58,7 +58,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   @override
   void runInner()
   {
-    addSearchState(0);
+    addSearchState();
 
     distance[start] = new Distance(0, 0);
     open.add(start);
@@ -88,7 +88,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
     {
-      addSearchState(turn);
+      addSearchState();
       currentSearchState.title
         ..addT("Turn $turn")
       ;

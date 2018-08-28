@@ -8,7 +8,10 @@ class Distance
   static Distance INFINITY = new Distance(pow(2, 53) as int, pow(2, 53) as int);
 
   int _cardinal;
+  int get cardinal => _cardinal;
+
   int _diagonal;
+  int get diagonal => _diagonal;
 
   Distance(this._cardinal, this._diagonal);
 

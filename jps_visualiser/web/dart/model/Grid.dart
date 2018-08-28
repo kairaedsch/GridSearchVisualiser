@@ -4,16 +4,17 @@ import '../general/Distance.dart';
 import '../general/Position.dart';
 import '../general/Size.dart';
 
-class Grid implements Size
+class Grid extends Size
 {
   final Array2D<Node> _grid;
 
   Grid(Size size, Node producer(Position pos))
-      : _grid = new Array2D<Node>(size, producer);
+      : _grid = new Array2D<Node>(size, producer),
+        super.clone(size);
 
   bool leaveAble(Position pos, Direction direction)
   {
-    return _grid[pos].leaveAble(direction);
+    return pos.legal(this) && _grid[pos].leaveAble(direction);
   }
 
   Iterable<Node> neighbours(Node node)

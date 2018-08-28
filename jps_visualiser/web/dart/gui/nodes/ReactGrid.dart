@@ -58,13 +58,13 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
             " WAY_MODE_${props.storeGridSettings.wayMode.name}"
         ..style =
         <String, String>{
-          "width": "${Settings.nodeSize * props.store.width}px",
-          "height": "${Settings.nodeSize * props.store.height}px"
+          "width": "${Settings.nodeSize * props.store.size.width}px",
+          "height": "${Settings.nodeSize * props.store.size.height}px"
         }
       )(
           (Dom.div()
             ..className = "nodes")(
-              new List<ReactElement>.generate(props.store.height, _renderRow)
+              new List<ReactElement>.generate(props.store.size.height, _renderRow)
           )
       );
   }
@@ -76,7 +76,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
         ..className = "row"
         ..key = y
       )(
-          new List<ReactElement>.generate(props.store.width, (x) => _renderNode(new Position(x, y)))
+          new List<ReactElement>.generate(props.store.size.width, (x) => _renderNode(new Position(x, y)))
       );
   }
 

@@ -14,6 +14,6 @@ class SearchState
 
   int getTypeId()
   {
-    return description.map((e) => e.getTypeId()).reduce((t1, t2) => t1 ^ t2);
+    return description.isEmpty ? 0 : description.map((e) => e.getTypeId()).reduce((t1, t2) => t1 ^ t2);
   }
 }

@@ -10,7 +10,7 @@ import '../history/StoreHistory.dart';
 import 'GridBarrierManager.dart';
 import 'package:w_flux/w_flux.dart';
 
-class StoreGrid extends Store implements Size
+class StoreGrid extends Store
 {
   StoreGridSettings _storeGridSettings;
   GridBarrierManager _gridBarrierManager;
@@ -20,11 +20,7 @@ class StoreGrid extends Store implements Size
 
   StoreNode operator [](Position pos) => _storeNodes[pos];
 
-  @override
-  int get width => _storeNodes.width;
-
-  @override
-  int get height => _storeNodes.height;
+  final Size size;
 
   ActionsGridChanged _actions;
   ActionsGridChanged get actions => _actions;
@@ -42,6 +38,7 @@ class StoreGrid extends Store implements Size
           .position;
 
   StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory)
+    : size = _storeGridSettings.size
   {
     _storeNodes = new Array2D<StoreNode>(_storeGridSettings.size, (Position pos) => new StoreNode(pos, actionsHistory));
     StoreNode sourceStoreNode = _storeNodes[new Position(5, 5)];

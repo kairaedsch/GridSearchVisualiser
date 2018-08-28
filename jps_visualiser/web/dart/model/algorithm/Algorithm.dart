@@ -19,6 +19,8 @@ abstract class Algorithm
    SearchState _currentSearchState;
    SearchState get currentSearchState => _currentSearchState;
 
+   int nextTurn = 0;
+
    Algorithm(this.grid, Position startPosition, Position targetPosition, this.heuristic)
        : start = grid[startPosition],
          target = grid[targetPosition],
@@ -27,10 +29,11 @@ abstract class Algorithm
       searched = false;
    }
 
-   void addSearchState(int turn)
+   void addSearchState()
    {
-     _currentSearchState = new SearchState(turn);
+     _currentSearchState = new SearchState(nextTurn);
      searchHistory.add(_currentSearchState);
+     nextTurn++;
    }
 
    void run()

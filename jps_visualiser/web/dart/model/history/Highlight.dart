@@ -1,3 +1,4 @@
+import '../../general/Direction.dart';
 import '../../general/Position.dart';
 
 abstract class Highlight
@@ -148,6 +149,37 @@ class TextHighlight extends Highlight
   int get hashCode =>
       style.hashCode ^
       position.hashCode ^
+      text.hashCode;
+}
+
+class DirectionTextHighlight extends Highlight
+{
+  final Position position;
+  final Direction direction;
+  final String text;
+
+  DirectionTextHighlight(this.text, this.position, this.direction);
+
+  DirectionTextHighlight.styled(String style, this.text, this.position, this.direction)
+  {
+    this.style = style;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is DirectionTextHighlight &&
+              runtimeType == other.runtimeType &&
+              style == other.style &&
+              position == other.position &&
+              direction == other.direction &&
+              text == other.text;
+
+  @override
+  int get hashCode =>
+      style.hashCode ^
+      position.hashCode ^
+      direction.hashCode ^
       text.hashCode;
 }
 
