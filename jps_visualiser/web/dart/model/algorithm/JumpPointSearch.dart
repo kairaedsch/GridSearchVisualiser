@@ -31,59 +31,49 @@ class JumpPointSearch extends AStar
   @override
   Iterable<Node> findNeighbourNodes(Node node)
   {
-    Iterable<Direction> relevantDirections;
+    Set<Direction> relevantDirections;
     if (node == start)
     {
-      relevantDirections = Direction.values;
+      relevantDirections = new Set.from(Direction.values);
     }
     else
     {
       Direction lastDirection = parent[node].position.lastDirectionTo(node.position);
-      relevantDirections = lastDirection.expand(lastDirection.isCardinal ? 2 : 1);
+      var lastDirectionData = _data[node.position.go(lastDirection.turn(180))][lastDirection];
+      relevantDirections = new Set.from(lastDirectionData.jumpDirections)..add(lastDirection);
     }
 
-    var neighbours = relevantDirections.map((relevantDirection)
+    List<Node> neighbours = [];
+
+    Direction directionToTarget = node.position.firstDirectionTo(target.position);
+    var directionToTargetData = _data[node.position][directionToTarget];
+    var distanceToTarget = new Distance.calc(node.position, target.position);
+    if (directionToTarget.isCardinal)
+    {
+      if (distanceToTarget.cardinal <= directionToTargetData.distance)
+      {
+        neighbours.add(target);
+        relevantDirections.remove(directionToTarget);
+      }
+    }
+    else
+    {
+      if (distanceToTarget.diagonal <= directionToTargetData.distance)
+      {
+        neighbours.add(grid[node.position.goMulti(directionToTarget, distanceToTarget.diagonal)]);
+        relevantDirections.remove(directionToTarget);
+      }
+    }
+
+    for (Direction relevantDirection in relevantDirections)
     {
       var directionData = _data[node.position][relevantDirection];
 
-      if (directionData.isJumpPointAhead || directionData.distance > 0)
+      if (directionData.isJumpPointAhead)
       {
-        Direction firstDirection = node.position.firstDirectionTo(target.position);
-        if (firstDirection == relevantDirection)
-        {
-          var distanceToTarget = new Distance.calc(node.position, target.position);
-          if (relevantDirection.isCardinal)
-          {
-            if (distanceToTarget.diagonal == 0)
-            {
-              if (distanceToTarget.cardinal <= directionData.distance)
-              {
-                return target;
-              }
-            }
-          }
-          else
-          {
-            if (distanceToTarget.diagonal != 0)
-            {
-              if (distanceToTarget.diagonal <= directionData.distance)
-              {
-                return grid[node.position.goMulti(relevantDirection, distanceToTarget.diagonal)];
-              }
-            }
-          }
-        }
-
-        if (directionData.isJumpPointAhead)
-        {
-          return grid[node.position.goMulti(relevantDirection, directionData.distance)];
-        }
-        else
-        {
-          return null;
-        }
+        neighbours.add(grid[node.position.goMulti(relevantDirection, directionData.distance)]);
       }
-    }).where((n) => n != null).toList();
+    }
 
     currentSearchState.description.add(new Explanation()
       ..addT("This is not JPS. Please implement it. After we have choosen our active node, we will take a look at all of his ")
