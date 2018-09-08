@@ -8,6 +8,7 @@ import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
 import 'JumpPointSearchDataGenerator.dart';
+import 'package:quiver/core.dart';
 
 class JumpPointSearch extends AStar
 {
@@ -31,43 +32,48 @@ class JumpPointSearch extends AStar
   @override
   Iterable<Node> findNeighbourNodes(Node node)
   {
+    Optional<Direction> lastDirection;
     Set<Direction> relevantDirections;
     if (node == start)
     {
+      lastDirection = new Optional.absent();
       relevantDirections = new Set.from(Direction.values);
     }
     else
     {
-      Direction lastDirection = parent[node].position.lastDirectionTo(node.position);
-      var lastDirectionData = _data[node.position.go(lastDirection.turn(180))][lastDirection];
-      relevantDirections = new Set.from(lastDirectionData.jumpDirections)..add(lastDirection);
+      lastDirection = new Optional.of(parent[node].position.lastDirectionTo(node.position));
+      var directionAdviser = _data[node.position].directionAdvisers[lastDirection.value];
+      relevantDirections = new Set.from(directionAdviser.jumpDirections)..add(lastDirection.value);
     }
 
     List<Node> neighbours = [];
 
     Direction directionToTarget = node.position.firstDirectionTo(target.position);
-    var directionToTargetData = _data[node.position][directionToTarget];
-    var distanceToTarget = new Distance.calc(node.position, target.position);
-    if (directionToTarget.isCardinal)
+    if (lastDirection.isEmpty || directionToTarget != lastDirection.value)
     {
-      if (distanceToTarget.cardinal <= directionToTargetData.distance)
+      var directionToTargetData = _data[node.position].signposts[directionToTarget];
+      var distanceToTarget = new Distance.calc(node.position, target.position);
+      if (directionToTarget.isCardinal)
       {
-        neighbours.add(target);
-        relevantDirections.remove(directionToTarget);
+        if (distanceToTarget.cardinal <= directionToTargetData.distance)
+        {
+          neighbours.add(target);
+          relevantDirections.remove(directionToTarget);
+        }
       }
-    }
-    else
-    {
-      if (distanceToTarget.diagonal <= directionToTargetData.distance)
+      else
       {
-        neighbours.add(grid[node.position.goMulti(directionToTarget, distanceToTarget.diagonal)]);
-        relevantDirections.remove(directionToTarget);
+        if (distanceToTarget.diagonal <= directionToTargetData.distance)
+        {
+          neighbours.add(grid[node.position.goMulti(directionToTarget, distanceToTarget.diagonal)]);
+          relevantDirections.remove(directionToTarget);
+        }
       }
     }
 
     for (Direction relevantDirection in relevantDirections)
     {
-      var directionData = _data[node.position][relevantDirection];
+      var directionData = _data[node.position].signposts[relevantDirection];
 
       if (directionData.isJumpPointAhead)
       {

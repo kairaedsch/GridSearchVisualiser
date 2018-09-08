@@ -4,7 +4,6 @@ import '../../general/Position.dart';
 import '../../general/Size.dart';
 import '../Grid.dart';
 import '../heuristics/Heuristic.dart';
-import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import 'Algorithm.dart';
 
@@ -23,6 +22,54 @@ class JumpPointSearchDataGenerator extends Algorithm
   {
     _computeAllCardinal();
     _computeAllDiagonal();
+
+    addSearchState();
+
+    PathHighlight pathHighlightGenerator(Position origin, Position position, Direction direction)
+    {
+      var signpost = data[position].signposts[direction];
+
+      List<Position> path = new List<Position>.generate(signpost.distance + 1, (d) => position.goMulti(direction, d));
+
+      return new PathHighlight.styled(signpost.isWallAhead ? "red" : "green", path, showEnd: true, origin: origin);
+    }
+
+    List<PathHighlight> pathHighlightsGenerator(Position origin, Position position, Iterable<Direction> jumpDirections, int depth)
+    {
+      var highlights = jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(origin, position, directionInJumpTarget)).toList();
+
+      if (depth > 1)
+      {
+        highlights.addAll(jumpDirections.expand((direction)
+        {
+          Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
+
+          var directionsInJumpTarget = data[jumpTarget].directionAdvisers[direction].jumpDirections;
+
+          return pathHighlightsGenerator(origin, jumpTarget, directionsInJumpTarget, depth - 1);
+        }));
+      }
+
+      return highlights;
+    }
+
+    List<PathHighlight> paths = grid.positions().expand((position)
+    {
+      return pathHighlightsGenerator(position, position, Direction.values, 8);
+
+      Iterable<PathHighlight> directJumps = Direction.values.map((direction) => pathHighlightGenerator(position, position, direction));
+      Iterable<PathHighlight> indirectJumps = Direction.values.expand((direction)
+      {
+        Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
+
+        return data[jumpTarget].directionAdvisers[direction].jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(position, jumpTarget, directionInJumpTarget));
+      });
+      return directJumps.toList()..addAll(indirectJumps);
+    }).toList();
+
+    currentSearchState.backgroundHighlights.addAll(paths);
+
+    currentSearchState.title..addT("Finished");
 
     searchHistory.title = "Generated JPS Data";
   }
@@ -55,26 +102,6 @@ class JumpPointSearchDataGenerator extends Algorithm
     {
       for (int x = startX; (countDirectionX == CountDirection.COUNT_UP) ? x < grid.width : x >= 0; x += deltaX)
       {
-        addSearchState();
-
-        List<PathHighlight> paths = grid.positions()
-            .expand((position) =>
-            Direction.values.map((direction)
-            {
-              var dataPointDirection = data[position][direction];
-
-              if (!dataPointDirection.generated || dataPointDirection.isWallAhead)
-              {
-                return null;
-              }
-
-              List<Position> path = new List<Position>.generate(dataPointDirection.distance + 1, (d) => position.goMulti(direction, d));
-
-              return new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : "green", path, showEnd: true);
-            })).toList();
-
-        currentSearchState.backgroundHighlights.addAll(paths);
-
         recomputeBox(new Position(x, y), direction);
       }
     }
@@ -82,27 +109,23 @@ class JumpPointSearchDataGenerator extends Algorithm
 
   void recomputeBox(Position position, Direction direction)
   {
+    Position prePosition = position.go(direction);
+
+    /*
     currentSearchState.title
       ..addT("Turn $position $direction")
     ;
-
-    Position prePosition = position.go(direction);
 
     currentSearchState.description.add(new Explanation()
       ..addT("We will now calculate whats in the $direction of the node at ")
       ..addH("$position", "yellow", [new CircleHighlight(new Set()..add(position))])
       ..addT(". We therefore have to look at the neighbour node which lays in that direction as we have already calculated its data int that direction.")..addT(" from the ")
     );
-
+    */
     if (!grid.leaveAble(position, direction))
     {
-      currentSearchState.description.last
-        ..addT("But all these nodes already have an good path. ")
-      ;
-
-      data[position][direction].type = JumpPointSearchDataPointDirectionType.WALL;
-      data[position][direction].jumpDirections = new Set();
-      data[position][direction].distance = 0;
+      data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.WALL;
+      data[position].signposts[direction].distance = 0;
     }
     else
     {
@@ -117,19 +140,19 @@ class JumpPointSearchDataGenerator extends Algorithm
       }
       if (jumpDirectionsAhead.length > 0)
       {
-        data[position][direction].type = JumpPointSearchDataPointDirectionType.JUMP_POINT;
-        data[position][direction].jumpDirections = jumpDirectionsAhead;
-        data[position][direction].distance = 1;
+        data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.JUMP_POINT;
+        data[prePosition].directionAdvisers[direction].jumpDirections = jumpDirectionsAhead;
+        data[position].signposts[direction].distance = 1;
       }
       else
       {
-        var preJump = data[prePosition][direction];
-        data[position][direction].type = preJump.type;
-        data[position][direction].jumpDirections = preJump.jumpDirections;
-        data[position][direction].distance = preJump.distance + 1;
+        var preJump = data[prePosition].signposts[direction];
+
+        data[position].signposts[direction].type = preJump.type;
+        data[position].signposts[direction].distance = preJump.distance + 1;
       }
     }
-    data[position][direction].generated = true;
+    data[position].signposts[direction].generated = true;
   }
 
   Set<Direction> _cardinalJumpDirections(Position position, Direction direction)
@@ -211,7 +234,7 @@ class JumpPointSearchDataGenerator extends Algorithm
 
       if (grid.leaveAble(position, direction45))
       {
-        bool jumpPointAhead = data[position][direction45].isJumpPointAhead;
+        bool jumpPointAhead = data[position].signposts[direction45].isJumpPointAhead;
         if (jumpPointAhead)
         {
           jumpDirections.add(direction45);
@@ -242,7 +265,7 @@ class JumpPointSearchDataGenerator extends Algorithm
           //bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction_45) || !grid.leaveAble(wpBefore.go(direction_45), direction90);
           if (side == 1 || canNotGoDiagonalBefore1)
           {
-            bool jumpPointAhead = data[position][direction135].isJumpPointAhead;
+            bool jumpPointAhead = data[position].signposts[direction135].isJumpPointAhead;
             if (jumpPointAhead)
             {
               jumpDirections.add(direction135);
@@ -263,24 +286,28 @@ class JumpPointSearchData extends Array2D<JumpPointSearchDataPoint>
 
 class JumpPointSearchDataPoint
 {
-  final Map<Direction, JumpPointSearchDataPointDirection> directions;
+  final Map<Direction, JumpPointSearchDataSignpost> signposts;
+  final Map<Direction, JumpPointSearchDataDirectionAdviser> directionAdvisers;
 
   JumpPointSearchDataPoint()
-      : directions = new Map.fromIterables(Direction.values, Direction.values.map((_) => new JumpPointSearchDataPointDirection()));
-
-  JumpPointSearchDataPointDirection operator [](Direction direction) => directions[direction];
+      : signposts = new Map.fromIterables(Direction.values, Direction.values.map((_) => new JumpPointSearchDataSignpost())),
+        directionAdvisers = new Map.fromIterables(Direction.values, Direction.values.map((_) => new JumpPointSearchDataDirectionAdviser()));
 }
 
-class JumpPointSearchDataPointDirection
+class JumpPointSearchDataSignpost
 {
   bool generated = false;
-  Set<Direction> jumpDirections = new Set();
   JumpPointSearchDataPointDirectionType type = JumpPointSearchDataPointDirectionType.WALL;
   int distance = 0;
 
   bool get isWallAhead => type == JumpPointSearchDataPointDirectionType.WALL;
 
   bool get isJumpPointAhead => type == JumpPointSearchDataPointDirectionType.JUMP_POINT;
+}
+
+class JumpPointSearchDataDirectionAdviser
+{
+  Set<Direction> jumpDirections = new Set();
 }
 
 enum JumpPointSearchDataPointDirectionType

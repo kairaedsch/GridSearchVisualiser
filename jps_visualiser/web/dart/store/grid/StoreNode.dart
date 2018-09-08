@@ -24,6 +24,9 @@ class StoreNode extends Store
   Optional<InfoHighlight> _infoHighlight;
   Optional<InfoHighlight> get infoHighlight => _infoHighlight;
 
+  List<PathHighlight> _pathHighlights;
+  List<PathHighlight> get pathHighlights => _pathHighlights;
+
   StructureNode _structureNode;
   StructureNode get structureNode => _structureNode;
 
@@ -39,6 +42,7 @@ class StoreNode extends Store
     _dotHighlight = const Optional.absent();
     _textHighlight = const Optional.absent();
     _infoHighlight = const Optional.absent();
+    _pathHighlights = [];
 
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
@@ -59,6 +63,7 @@ class StoreNode extends Store
     Optional<DotHighlight> newDotHighlight = const Optional.absent();
     Optional<TextHighlight> newTextHighlight = const Optional.absent();
     Optional<InfoHighlight> newInfoHighlight = const Optional.absent();
+    List<PathHighlight> newPathHighlights = [];
 
     highlights.forEach((Highlight highlight)
     {
@@ -97,6 +102,13 @@ class StoreNode extends Store
           newInfoHighlight = new Optional.of(highlight);
         }
       }
+      else if (highlight is PathHighlight)
+      {
+        if (highlight.origin.isNotEmpty && highlight.origin.value == position)
+        {
+          newPathHighlights.add(highlight);
+        }
+      }
     });
 
     if (_boxHighlight != newBoxHighlight)
@@ -122,6 +134,11 @@ class StoreNode extends Store
     if (_infoHighlight != newInfoHighlight)
     {
       _infoHighlight = newInfoHighlight;
+      trigger();
+    }
+    if (_pathHighlights != newPathHighlights && (_pathHighlights.isNotEmpty || newPathHighlights.isNotEmpty))
+    {
+      _pathHighlights = newPathHighlights;
       trigger();
     }
   }

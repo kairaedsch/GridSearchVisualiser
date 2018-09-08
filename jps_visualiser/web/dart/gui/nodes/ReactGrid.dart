@@ -1,4 +1,3 @@
-import '../../general/Array2D.dart';
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Settings.dart';
@@ -10,7 +9,6 @@ import 'EditBarrierMouseMode.dart';
 import 'EditNodeTypeMouseMode.dart';
 import 'MouseMode.dart';
 import 'ReactNode.dart';
-import 'arrows/ReactArrow.dart';
 import 'dart:async';
 import 'dart:html';
 import 'package:over_react/over_react.dart';

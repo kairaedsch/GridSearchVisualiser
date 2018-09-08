@@ -21,7 +21,7 @@ class StorePaths extends Store
 
   void _historyHighlightsChanged(List<Highlight> highlights)
   {
-    _highlights = highlights.where((h) => h is PathHighlight).map((h) => h as PathHighlight).toList();
+    _highlights = highlights.where((h) => h is PathHighlight && h.origin.isEmpty).map((h) => h as PathHighlight).toList();
     trigger();
   }
 }

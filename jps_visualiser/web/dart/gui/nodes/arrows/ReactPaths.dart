@@ -41,24 +41,24 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
             ..className = "svg"
             ..viewBox = "-0.5 -0.5 ${size.width} ${size.height}"
             )(
-                props.store.highlights.map(_renderPath).toList()
+                props.store.highlights.map((highlight) => renderPathHighlight(highlight, props.storeGridSettings.size, false)).toList()
             ),
           )
         )
       );
   }
 
-  ReactElement _renderPath(PathHighlight highlight)
+  static ReactElement renderPathHighlight(PathHighlight highlight, Size size, bool wrap)
   {
     return
       (ReactArrow()
         ..className = "pathHighlight highlight_${highlight.style}"
         ..key = highlight.hashCode
-        ..size = props.storeGridSettings.size
+        ..size = size
         ..showStart = highlight.showStart
         ..showEnd = highlight.showEnd
         ..path = highlight.path
-        ..wrap = false
+        ..wrap = wrap
       )();
   }
 }

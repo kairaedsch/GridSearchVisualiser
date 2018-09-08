@@ -9,6 +9,7 @@ import '../../general/gui/ReactPopover.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'arrows/ReactArrow.dart';
+import 'arrows/ReactPaths.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/src/store.dart';
@@ -87,41 +88,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
           null,
           _renderInner(),
           _renderArrowsToGo(),
+          _renderPathHighlights()
       );
-  }
-
-  ReactElement _renderArrowsToGo()
-  {
-    if (!state.mouseIsOver)
-    {
-      return null;
-    }
-
-    return
-      (Dom.div()
-        ..className = "arrowsToGo")(
-          Direction.values.map(_renderArrowToGo).toList()
-      );
-  }
-
-  ReactElement _renderArrowToGo(Direction direction)
-  {
-    bool leaveAble = props.storeGrid.gridBarrierManager.leaveAble(props.store.position, direction);
-    bool enterAble = props.storeGrid.gridBarrierManager.enterAble(props.store.position, direction);
-
-    if (!enterAble && !leaveAble)
-    {
-      return null;
-    }
-
-    return
-      (ReactArrow()
-        ..key = direction
-        ..size = props.storeGridSettings.size
-        ..path = [props.store.position, props.store.position.go(direction)]
-        ..showEnd = leaveAble && !(enterAble && leaveAble)
-        ..showStart = enterAble && !(enterAble && leaveAble)
-      )();
   }
 
   void _handleMouseDown()
@@ -208,6 +176,54 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
         ..grid = props.grid
         ..storeGrid = props.storeGrid
       )();
+  }
+
+  ReactElement _renderArrowsToGo()
+  {
+    if (!state.mouseIsOver)
+    {
+      return null;
+    }
+
+    return
+      (Dom.div()
+        ..className = "arrowsToGo")(
+          Direction.values.map(_renderArrowToGo).toList()
+      );
+  }
+
+  ReactElement _renderArrowToGo(Direction direction)
+  {
+    bool leaveAble = props.storeGrid.gridBarrierManager.leaveAble(props.store.position, direction);
+    bool enterAble = props.storeGrid.gridBarrierManager.enterAble(props.store.position, direction);
+
+    if (!enterAble && !leaveAble)
+    {
+      return null;
+    }
+
+    return
+      (ReactArrow()
+        ..key = direction
+        ..size = props.storeGridSettings.size
+        ..path = [props.store.position, props.store.position.go(direction)]
+        ..showEnd = leaveAble && !(enterAble && leaveAble)
+        ..showStart = enterAble && !(enterAble && leaveAble)
+      )();
+  }
+
+  ReactElement _renderPathHighlights()
+  {
+    if (!state.mouseIsOver)
+    {
+      return null;
+    }
+
+    return
+      (Dom.div()
+        ..className = "pathHighlights")(
+          props.store.pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.storeGridSettings.size, true)).toList()
+      );
   }
 
   ReactElement _renderTextHighlight()

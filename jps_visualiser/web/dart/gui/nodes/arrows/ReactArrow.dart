@@ -123,7 +123,7 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
             ..className = "svg"
             ..viewBox = "-0.5 -0.5 ${props.size.width} ${props.size.height}"
           )(
-              svgs
+            (Dom.g()..className = props.className)(svgs)
           ),
         );
     }
