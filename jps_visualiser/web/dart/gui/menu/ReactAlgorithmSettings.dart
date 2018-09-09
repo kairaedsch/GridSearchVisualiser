@@ -24,7 +24,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
   {
     return
       (Dom.div()..className = "menu")(
-        (Dom.div()..className = "title")("Algorithm settings"),
+        (Dom.div()..className = "title")("Algorithm"),
         (Dom.div()..className = "configs")(
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Algorithm:"),

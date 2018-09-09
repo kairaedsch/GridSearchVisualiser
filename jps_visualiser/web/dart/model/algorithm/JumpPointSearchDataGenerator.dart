@@ -53,19 +53,7 @@ class JumpPointSearchDataGenerator extends Algorithm
       return highlights;
     }
 
-    List<PathHighlight> paths = grid.positions().expand((position)
-    {
-      return pathHighlightsGenerator(position, position, Direction.values, 8);
-
-      Iterable<PathHighlight> directJumps = Direction.values.map((direction) => pathHighlightGenerator(position, position, direction));
-      Iterable<PathHighlight> indirectJumps = Direction.values.expand((direction)
-      {
-        Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
-
-        return data[jumpTarget].directionAdvisers[direction].jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(position, jumpTarget, directionInJumpTarget));
-      });
-      return directJumps.toList()..addAll(indirectJumps);
-    }).toList();
+    List<PathHighlight> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
 
     currentSearchState.backgroundHighlights.addAll(paths);
 

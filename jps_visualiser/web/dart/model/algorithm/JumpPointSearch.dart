@@ -49,7 +49,7 @@ class JumpPointSearch extends AStar
     List<Node> neighbours = [];
 
     Direction directionToTarget = node.position.firstDirectionTo(target.position);
-    if (lastDirection.isEmpty || directionToTarget != lastDirection.value)
+    if (lastDirection.isEmpty || directionToTarget != lastDirection.value.turn(180))
     {
       var directionToTargetData = _data[node.position].signposts[directionToTarget];
       var distanceToTarget = new Distance.calc(node.position, target.position);

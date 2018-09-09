@@ -1,4 +1,3 @@
-import '../../general/Bool.dart';
 import '../../store/StoreGridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
 import 'package:over_react/over_react.dart';
@@ -9,7 +8,7 @@ UiFactory<ReactGridSettingsProps> ReactGridSettings;
 @Props()
 class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, StoreGridSettings>
 {
-
+  Function downloadGrid;
 }
 
 @Component()
@@ -20,7 +19,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
   {
     return
       (Dom.div()..className = "menu")(
-        (Dom.div()..className = "title")("Grid settings"),
+        (Dom.div()..className = "title")("Grid"),
         (Dom.div()..className = "configs")(
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Mode:"),
@@ -56,6 +55,12 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue as CrossCornerMode))
               )()
           ) : null,
+          (Dom.div()..className = "config")(
+            (Dom.div()
+              ..className = "button"
+              ..onClick = ((_) => props.downloadGrid())
+            )("download"),
+          ),
         )
     );
   }

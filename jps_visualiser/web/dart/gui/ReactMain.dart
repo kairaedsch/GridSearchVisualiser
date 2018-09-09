@@ -52,6 +52,7 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
             (ReactGridSettings()
               ..store = storeGridSettings
               ..actions = storeGridSettings.actions
+              ..downloadGrid = storeGrid.downloadGrid
             )()
         ),
         (Dom.div()..className = "algorithmSettingsContainer")(

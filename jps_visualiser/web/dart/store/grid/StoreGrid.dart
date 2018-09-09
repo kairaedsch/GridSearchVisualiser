@@ -8,7 +8,9 @@ import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
 import '../history/StoreHistory.dart';
 import 'GridBarrierManager.dart';
+import 'dart:html';
 import 'package:w_flux/w_flux.dart';
+import 'dart:convert';
 
 class StoreGrid extends Store
 {
@@ -57,6 +59,27 @@ class StoreGrid extends Store
   void _gridSettingsGridModeChanged(GridMode newGridMode)
   {
     trigger();
+  }
+
+  void downloadGrid()
+  {
+    dynamic data = null; //new List<List<bool>>.from(_storeNodes.iterable, (StoreNode n) => n.position.toString(), value: (StoreNode n) => Direction.values.map((Direction d) => n.structureNode.barrier.isBlocked(d)).toList());
+    var dataJson = JSON.encode(data);
+    var blob = new Blob(<dynamic>[dataJson], 'application/json', 'native');
+    String url = Url.createObjectUrlFromBlob(blob);
+    AnchorElement link = new AnchorElement();
+    link.href = url;
+    link.download = "grid.json";
+    link.click();
+  }
+
+  void loadGrid(String dataJson)
+  {
+    Map<String, List<bool>> data = JSON.decode(dataJson) as Map<String, List<bool>>;
+    data.forEach((position, data)
+    {
+      if ()
+    });
   }
 }
 
