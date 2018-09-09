@@ -78,7 +78,7 @@ class StoreGrid extends Store
     Map<String, List<bool>> data = JSON.decode(dataJson) as Map<String, List<bool>>;
     data.forEach((position, data)
     {
-      if ()
+
     });
   }
 }
