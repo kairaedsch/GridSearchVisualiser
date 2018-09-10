@@ -44,7 +44,7 @@ class JumpPointSearchDataGenerator extends Algorithm
         {
           Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
 
-          var directionsInJumpTarget = data[jumpTarget].directionAdvisers[direction].jumpDirections;
+          var directionsInJumpTarget = [direction]..addAll(data[jumpTarget].directionAdvisers[direction].jumpDirections);
 
           return pathHighlightsGenerator(origin, jumpTarget, directionsInJumpTarget, depth - 1);
         }));
