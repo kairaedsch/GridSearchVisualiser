@@ -1,5 +1,6 @@
 import '../../store/StoreGridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
+import 'dart:html';
 import 'package:over_react/over_react.dart';
 
 @Factory()
@@ -9,6 +10,7 @@ UiFactory<ReactGridSettingsProps> ReactGridSettings;
 class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, StoreGridSettings>
 {
   Function downloadGrid;
+  Function loadGrid;
 }
 
 @Component()
@@ -60,6 +62,31 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
               ..className = "button"
               ..onClick = ((_) => props.downloadGrid())
             )("download"),
+          ),
+          (Dom.div()..className = "config")(
+            (Dom.label()
+              ..className = "button"
+              ..htmlFor = "upload"
+            )("upload"),
+            (Dom.input()
+              ..id = "upload"
+              ..type = "file"
+              ..style =
+              <String, String>{
+                "display": "none",
+              }
+              ..onChange = (event)
+              {
+                File file = event.target.files[0] as File;
+                FileReader reader = new FileReader();
+                reader.onLoadEnd.listen((fileEvent)
+                {
+                  props.loadGrid(reader.result);
+                }, onError: (dynamic error) => window.alert("Could not read Grid: ${reader.error.code}"));
+                reader.readAsText(file);
+                event.target.value = null;
+              }
+            )(),
           ),
         )
     );

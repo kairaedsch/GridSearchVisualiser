@@ -63,7 +63,15 @@ class StoreGrid extends Store
 
   void downloadGrid()
   {
-    dynamic data = null; //new List<List<bool>>.from(_storeNodes.iterable, (StoreNode n) => n.position.toString(), value: (StoreNode n) => Direction.values.map((Direction d) => n.structureNode.barrier.isBlocked(d)).toList());
+    dynamic data = new Map<String, Map<String, bool>>.fromIterable(
+        _storeNodes.iterable,
+        key: (StoreNode n) => n.position.toString(),
+        value: (StoreNode n) =>
+        new Map<String, bool>.fromIterable(
+            Direction.values,
+            key: (Direction d) => d.toString(),
+            value: (Direction d) => n.structureNode.barrier.isBlocked(d)));
+
     var dataJson = JSON.encode(data);
     var blob = new Blob(<dynamic>[dataJson], 'application/json', 'native');
     String url = Url.createObjectUrlFromBlob(blob);
@@ -75,11 +83,19 @@ class StoreGrid extends Store
 
   void loadGrid(String dataJson)
   {
-    Map<String, List<bool>> data = JSON.decode(dataJson) as Map<String, List<bool>>;
-    data.forEach((position, data)
+    var data = JSON.decode(dataJson) as Map<String, Map<String, bool>>;
+    for (StoreNode storeNode in _storeNodes.iterable)
     {
+      Map<String, bool> barrierData = data[storeNode.position.toString()];
 
-    });
+      var barrier = new Map<Direction, bool>.fromIterable(
+          Direction.values,
+          key: (Direction d) => d,
+          value: (Direction d) => barrierData[d.toString()]);
+
+      StructureNode newStructureNode = storeNode.structureNode.clone(barrier: new StructureNodeBarrier(barrier));
+      storeNode.actions.structureNodeChanged.call(newStructureNode);
+    }
   }
 }
 
