@@ -7,14 +7,16 @@ import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
-import 'JumpPointSearchDataGenerator.dart';
+import 'JumpPointSearchJumpPoints.dart';
+import 'JumpPointSearchPlusDataGenerator.dart';
 import 'package:quiver/core.dart';
+import 'package:tuple/tuple.dart';
 
 class JumpPointSearch extends AStar
 {
   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearch("JPS", grid, startPosition, targetPosition, heuristic);
 
-  JumpPointSearchData _data;
+  Map<Tuple2<Position, Direction>, JumpPointSearchDirectionAdviser> _directionAdvisers;
 
   JumpPointSearch(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
       : super(name, grid, startPosition, targetPosition, heuristic);
@@ -22,9 +24,7 @@ class JumpPointSearch extends AStar
   @override
   void runInner()
   {
-    var dataGenerator = new JumpPointSearchDataGenerator(grid, start.position, target.position, heuristic);
-    dataGenerator.run();
-    _data = dataGenerator.data;
+    _directionAdvisers = new Map();
 
     super.runInner();
   }
@@ -32,52 +32,27 @@ class JumpPointSearch extends AStar
   @override
   Iterable<Node> findNeighbourNodes(Node node)
   {
-    Optional<Direction> lastDirection;
-    Set<Direction> relevantDirections;
+    Iterable<Direction> relevantDirections;
     if (node == start)
     {
-      lastDirection = new Optional.absent();
       relevantDirections = new Set.from(Direction.values);
     }
     else
     {
-      lastDirection = new Optional.of(parent[node].position.lastDirectionTo(node.position));
-      var directionAdviser = _data[node.position].directionAdvisers[lastDirection.value];
+      var lastDirection = new Optional.of(parent[node].position.lastDirectionTo(node.position));
+      var directionAdviser = _directionAdvisers[new Tuple2(node.position, lastDirection.value)];
       relevantDirections = new Set.from(directionAdviser.jumpDirections)..add(lastDirection.value);
     }
 
     List<Node> neighbours = [];
 
-    Direction directionToTarget = node.position.firstDirectionTo(target.position);
-    if (lastDirection.isEmpty || directionToTarget != lastDirection.value.turn(180))
+    for (Direction direction in relevantDirections)
     {
-      var directionToTargetData = _data[node.position].signposts[directionToTarget];
-      var distanceToTarget = new Distance.calc(node.position, target.position);
-      if (directionToTarget.isCardinal)
-      {
-        if (distanceToTarget.cardinal <= directionToTargetData.distance)
-        {
-          neighbours.add(target);
-          relevantDirections.remove(directionToTarget);
-        }
-      }
-      else
-      {
-        if (distanceToTarget.diagonal <= directionToTargetData.distance)
-        {
-          neighbours.add(grid[node.position.goMulti(directionToTarget, distanceToTarget.diagonal)]);
-          relevantDirections.remove(directionToTarget);
-        }
-      }
-    }
+      var jumpPoint = getNextJumpPoint(node.position, direction, false);
 
-    for (Direction relevantDirection in relevantDirections)
-    {
-      var directionData = _data[node.position].signposts[relevantDirection];
-
-      if (directionData.isJumpPointAhead)
+      if (jumpPoint.isNotEmpty)
       {
-        neighbours.add(grid[node.position.goMulti(relevantDirection, directionData.distance)]);
+        neighbours.add(grid[jumpPoint.value]);
       }
     }
 
@@ -89,4 +64,43 @@ class JumpPointSearch extends AStar
 
     return neighbours;
   }
+
+  Optional<Position> getNextJumpPoint(Position position, Direction direction, bool justTest)
+  {
+    if (!grid.leaveAble(position, direction))
+    {
+      return const Optional.absent();
+    }
+    else
+    {
+      Set<Direction> jumpDirections;
+      var positionAfter = position.go(direction);
+      if (positionAfter == target.position)
+      {
+        return new Optional.of(positionAfter);
+      }
+      if (direction.isCardinal)
+      {
+        jumpDirections = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, positionAfter, direction);
+      }
+      else
+      {
+        jumpDirections = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction, true).isNotEmpty);
+      }
+      if (jumpDirections.length > 0)
+      {
+        if(!justTest) _directionAdvisers[new Tuple2(positionAfter, direction)] = new JumpPointSearchDirectionAdviser()..jumpDirections = jumpDirections;
+        return new Optional.of(positionAfter);
+      }
+      else
+      {
+        return getNextJumpPoint(positionAfter, direction, justTest);
+      }
+    }
+  }
+}
+
+class JumpPointSearchDirectionAdviser
+{
+  Set<Direction> jumpDirections = new Set();
 }

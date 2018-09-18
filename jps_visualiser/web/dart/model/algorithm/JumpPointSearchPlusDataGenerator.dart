@@ -6,14 +6,15 @@ import '../Grid.dart';
 import '../heuristics/Heuristic.dart';
 import '../history/Highlight.dart';
 import 'Algorithm.dart';
+import 'JumpPointSearchJumpPoints.dart';
 
-class JumpPointSearchDataGenerator extends Algorithm
+class JumpPointSearchPlusDataGenerator extends Algorithm
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearchDataGenerator(grid, startPosition, targetPosition, heuristic);
+  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic);
 
   final JumpPointSearchData data;
 
-  JumpPointSearchDataGenerator(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
+  JumpPointSearchPlusDataGenerator(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
       : data = new JumpPointSearchData(grid),
         super(grid, startPosition, targetPosition, heuristic);
 
@@ -59,7 +60,7 @@ class JumpPointSearchDataGenerator extends Algorithm
 
     currentSearchState.title..addT("Finished");
 
-    searchHistory.title = "Generated JPS Data";
+    searchHistory.title = "Generated JPS+ Data";
   }
 
   void _computeAllCardinal()
@@ -120,11 +121,11 @@ class JumpPointSearchDataGenerator extends Algorithm
       Set<Direction> jumpDirectionsAhead;
       if (direction.isCardinal)
       {
-        jumpDirectionsAhead = _cardinalJumpDirections(prePosition, direction);
+        jumpDirectionsAhead = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, prePosition, direction);
       }
       else
       {
-        jumpDirectionsAhead = _diagonalJumpDirections(prePosition, direction);
+        jumpDirectionsAhead = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead);
       }
       if (jumpDirectionsAhead.length > 0)
       {
@@ -141,129 +142,6 @@ class JumpPointSearchDataGenerator extends Algorithm
       }
     }
     data[position].signposts[direction].generated = true;
-  }
-
-  Set<Direction> _cardinalJumpDirections(Position position, Direction direction)
-  {
-    Direction direction180 = direction.turn(180);
-    Position wpBefore = position.go(direction180);
-
-    if (!grid.leaveAble(wpBefore, direction))
-    {
-      return new Set();
-    }
-
-    Set<Direction> jumpDirections = new Set();
-
-    for (int side in [1, -1])
-    {
-      Direction direction45 = direction.turn(45 * side);
-      Direction direction90 = direction.turn(90 * side);
-      Direction direction135 = direction.turn(135 * side);
-
-      if (grid.leaveAble(position, direction45))
-      {
-        bool canNotGoDiagonalBefore = !grid.leaveAble(wpBefore, direction45) || !grid.leaveAble(wpBefore.go(direction45), direction);
-        if (canNotGoDiagonalBefore)
-        {
-          jumpDirections.add(direction45);
-        }
-      }
-
-      if (grid.leaveAble(position, direction90))
-      {
-        bool canNotGoDiagonalBefore = !grid.leaveAble(wpBefore, direction45);
-        if (canNotGoDiagonalBefore)
-        {
-          bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction90) || !grid.leaveAble(wpBefore.go(direction90), direction);
-          if (side == 1 || canNotGoCardinalBefore)
-          {
-            jumpDirections.add(direction90);
-          }
-        }
-      }
-
-      if (grid.leaveAble(position, direction135))
-      {
-        bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction90);
-        if (canNotGoCardinalBefore)
-        {
-          bool canNotGoDiagonalBefore1 = !grid.leaveAble(wpBefore, direction180) || !grid.leaveAble(wpBefore.go(direction180),  direction45);
-          bool canNotGoDiagonalBefore2 = !grid.leaveAble(wpBefore, direction45) || !grid.leaveAble(wpBefore.go(direction45),  direction180);
-          bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction135) || !grid.leaveAble(wpBefore.go(direction135),  direction);
-          if (canNotGoDiagonalBefore1 && canNotGoDiagonalBefore2 && canNotGoDiagonalBefore3)
-          {
-            jumpDirections.add(direction135);
-          }
-        }
-      }
-    }
-
-    return jumpDirections;
-  }
-
-  Set<Direction> _diagonalJumpDirections(Position position, Direction direction)
-  {
-    Direction direction180 = direction.turn(180);
-    Position wpBefore = position.go(direction180);
-
-    if (!grid.leaveAble(wpBefore, direction))
-    {
-      return new Set();
-    }
-
-    Set<Direction> jumpDirections = new Set();
-
-    for (int side in [1, -1])
-    {
-      Direction direction45 = direction.turn(45 * side);
-      Direction direction90 = direction.turn(90 * side);
-      Direction direction135 = direction.turn(135 * side);
-
-      if (grid.leaveAble(position, direction45))
-      {
-        bool jumpPointAhead = data[position].signposts[direction45].isJumpPointAhead;
-        if (jumpPointAhead)
-        {
-          jumpDirections.add(direction45);
-        }
-      }
-
-      if (grid.leaveAble(position, direction90))
-      {
-        bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction45) || !grid.leaveAble(wpBefore.go(direction45), direction45);
-        if (canNotGoCardinalBefore)
-        {
-          bool canNotGoDiagonalBefore = !grid.leaveAble(wpBefore, direction90) || !grid.leaveAble(wpBefore.go(direction90), direction);
-          if (side == 1 || canNotGoDiagonalBefore)
-          {
-            jumpDirections.add(direction90);
-          }
-        }
-      }
-
-      if (grid.leaveAble(position, direction135))
-      {
-        bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction45);
-        if (canNotGoCardinalBefore)
-        {
-          Direction direction_45 = direction.turn(45 * side * -1);
-          bool canNotGoDiagonalBefore1 = !grid.leaveAble(wpBefore, direction90) || !grid.leaveAble(wpBefore.go(direction90),  direction_45);
-          //bool canNotGoDiagonalBefore2 = !grid.leaveAble(wpBefore, direction135) || !grid.leaveAble(wpBefore.go(direction135), direction);
-          //bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction_45) || !grid.leaveAble(wpBefore.go(direction_45), direction90);
-          if (side == 1 || canNotGoDiagonalBefore1)
-          {
-            bool jumpPointAhead = data[position].signposts[direction135].isJumpPointAhead;
-            if (jumpPointAhead)
-            {
-              jumpDirections.add(direction135);
-            }
-          }
-        }
-      }
-    }
-
-    return jumpDirections;
   }
 }
 

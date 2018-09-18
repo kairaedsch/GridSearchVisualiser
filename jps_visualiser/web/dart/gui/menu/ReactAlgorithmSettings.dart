@@ -34,7 +34,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
                 ..selectListener = ((newValue) => props.store.actions.algorithmTypeChanged.call(newValue as AlgorithmType))
               )()
           ),
-          (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.JPS_DATA) ?
+          (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.JPSP_DATA) ?
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Heuristic:"),
               (ReactDropDown()

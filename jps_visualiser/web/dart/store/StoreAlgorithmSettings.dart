@@ -3,7 +3,8 @@ import '../model/algorithm/AStar.dart';
 import '../model/algorithm/Algorithm.dart';
 import '../model/algorithm/Dijkstra.dart';
 import '../model/algorithm/JumpPointSearch.dart';
-import '../model/algorithm/JumpPointSearchDataGenerator.dart';
+import '../model/algorithm/JumpPointSearchPlus.dart';
+import '../model/algorithm/JumpPointSearchPlusDataGenerator.dart';
 import '../model/heuristics/Chebyshev.dart';
 import '../model/heuristics/Euclidean.dart';
 import '../model/heuristics/Heuristic.dart';
@@ -55,7 +56,8 @@ class AlgorithmType implements DropDownElement
   static AlgorithmType DIJKSTRA = new AlgorithmType(Dijkstra.factory, "DIJKSTRA", "Dijkstra");
   static AlgorithmType A_STAR = new AlgorithmType(AStar.factory, "A_STAR", "A*");
   static AlgorithmType JPS = new AlgorithmType(JumpPointSearch.factory, "JPS", "JPS");
-  static AlgorithmType JPS_DATA = new AlgorithmType(JumpPointSearchDataGenerator.factory, "JPS Data", "JPS Data");
+  static AlgorithmType JPSP = new AlgorithmType(JumpPointSearchPlus.factory, "JPS+", "JPS+");
+  static AlgorithmType JPSP_DATA = new AlgorithmType(JumpPointSearchPlusDataGenerator.factory, "JPS+ Data", "JPS+ Data");
 
   final String name;
   final String dropDownName;
@@ -67,7 +69,7 @@ class AlgorithmType implements DropDownElement
   const AlgorithmType(this.algorithmFactory, this.name, this.dropDownName);
 
   static List<AlgorithmType> values = <AlgorithmType>[
-    DIJKSTRA, A_STAR, JPS, JPS_DATA];
+    DIJKSTRA, A_STAR, JPS, JPSP, JPSP_DATA];
 }
 
 class HeuristicType implements DropDownElement
