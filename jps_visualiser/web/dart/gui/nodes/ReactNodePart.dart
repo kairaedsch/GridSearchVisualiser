@@ -43,27 +43,40 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
     Optional<Direction> direction = props.direction;
     StructureNode structureNode = props.storeNode.structureNode;
     Position position = props.storeNode.position;
+    var directionTextHighlight = props.storeNode.directionTextHighlight;
 
     return
       (Dom.div()
         ..className =
-        direction.isEmpty ?
+        direction.isEmpty
+            ?
         (
             "part inner"
         )
             :
         (
             "part outer"
-                " ${direction.value.name}"
-                " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
-                " ${position.go(direction.value).legal(props.storeGrid.size) ? "legal" : "illegal"}"
-                " ${props.storeGrid.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
-                " ${props.storeGrid.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
+            " ${direction.value.name}"
+            " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
+            " ${position.go(direction.value).legal(props.storeGrid.size) ? "legal" : "illegal"}"
+            " ${props.storeGrid.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
+            " ${props.storeGrid.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
         )
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseEnter = ((_) => _handleMouseEnter())
         ..onMouseLeave = ((_) => _handleMouseLeave())
-      )();
+      )(
+          direction.isNotEmpty && directionTextHighlight.where((d) => d.direction == direction.value).isNotEmpty
+              ?
+          (Dom.div()
+            ..className = "directionTextHighlight"
+                " highlight_${directionTextHighlight.where((d) => d.direction == direction.value).first.style}"
+          )(
+              directionTextHighlight.where((d) => d.direction == direction.value).first.text
+          )
+              :
+          null
+      );
   }
 
   void _handleMouseDown() {

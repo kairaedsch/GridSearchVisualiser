@@ -24,41 +24,83 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     _computeAllCardinal();
     _computeAllDiagonal();
 
-    addSearchState();
-
-    PathHighlight pathHighlightGenerator(Position origin, Position position, Direction direction)
     {
-      var signpost = data[position].signposts[direction];
+      addSearchState();
+      currentSearchState.title..addT("Interaktive arrows");
 
-      List<Position> path = new List<Position>.generate(signpost.distance + 1, (d) => position.goMulti(direction, d));
-
-      return new PathHighlight.styled(signpost.isWallAhead ? "red" : "green", path, showEnd: true, origin: origin);
-    }
-
-    List<PathHighlight> pathHighlightsGenerator(Position origin, Position position, Iterable<Direction> jumpDirections, int depth)
-    {
-      var highlights = jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(origin, position, directionInJumpTarget)).toList();
-
-      if (depth > 1)
+      PathHighlight pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
-        highlights.addAll(jumpDirections.expand((direction)
-        {
-          Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
+        var signpost = data[position].signposts[direction];
 
-          var directionsInJumpTarget = [direction]..addAll(data[jumpTarget].directionAdvisers[direction].jumpDirections);
+        List<Position> path = new List<Position>.generate(signpost.distance + 1, (d) => position.goMulti(direction, d));
 
-          return pathHighlightsGenerator(origin, jumpTarget, directionsInJumpTarget, depth - 1);
-        }));
+        return new PathHighlight.styled(signpost.isWallAhead ? "red" : "green", path, showEnd: true, origin: origin);
       }
 
-      return highlights;
+      List<PathHighlight> pathHighlightsGenerator(Position origin, Position position, Iterable<Direction> jumpDirections, int depth)
+      {
+        var highlights = jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(origin, position, directionInJumpTarget)).toList();
+
+        if (depth > 1)
+        {
+          highlights.addAll(jumpDirections.expand((direction)
+          {
+            Position jumpTarget = position.goMulti(direction, data[position].signposts[direction].distance);
+
+            var directionsInJumpTarget = [direction]..addAll(data[jumpTarget].directionAdvisers[direction].jumpDirections);
+
+            return pathHighlightsGenerator(origin, jumpTarget, directionsInJumpTarget, depth - 1);
+          }));
+        }
+
+        return highlights;
+      }
+
+      List<PathHighlight> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
+
+      currentSearchState.backgroundHighlights.addAll(paths);
     }
 
-    List<PathHighlight> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
+    {
+      addSearchState();
+      currentSearchState.title..addT("Static arrows");
 
-    currentSearchState.backgroundHighlights.addAll(paths);
+      List<PathHighlight> paths = grid
+          .positions()
+          .expand((position) =>
+          Direction.values.map((direction)
+          {
+            var dataPointDirection = data[position].signposts[direction];
 
-    currentSearchState.title..addT("Finished");
+            if (dataPointDirection.isWallAhead)
+            {
+              return null;
+            }
+
+            List<Position> path = new List<Position>.generate(dataPointDirection.distance + 1, (d) => position.goMulti(direction, d));
+
+            return new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), path, showEnd: true);
+          })).toList();
+
+      currentSearchState.backgroundHighlights.addAll(paths);
+    }
+
+    {
+      addSearchState();
+      currentSearchState.title..addT("Static numbers");
+
+      List<DirectionTextHighlight> texts = grid
+          .positions()
+          .expand((position) =>
+          Direction.values.map((direction)
+          {
+            var dataPointDirection = data[position].signposts[direction];
+
+            return new DirectionTextHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), "${dataPointDirection.distance}", position, direction);
+          })).toList();
+
+      currentSearchState.backgroundHighlights.addAll(texts);
+    }
 
     searchHistory.title = "Generated JPS+ Data";
   }
@@ -137,8 +179,16 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       {
         var preJump = data[prePosition].signposts[direction];
 
-        data[position].signposts[direction].type = preJump.type;
-        data[position].signposts[direction].distance = preJump.distance + 1;
+        /*if (preJump.distance >= 3 && (position.x % 3 == 0 || position.y % 3 == 0) && direction.isDiagonal)
+        {
+          data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
+          data[position].signposts[direction].distance = 1;
+        }
+        else*/
+        {
+          data[position].signposts[direction].type = preJump.type;
+          data[position].signposts[direction].distance = preJump.distance + 1;
+        }
       }
     }
     data[position].signposts[direction].generated = true;
@@ -168,7 +218,9 @@ class JumpPointSearchDataSignpost
 
   bool get isWallAhead => type == JumpPointSearchDataPointDirectionType.WALL;
 
-  bool get isJumpPointAhead => type == JumpPointSearchDataPointDirectionType.JUMP_POINT;
+  bool get isJumpPointAhead => type == JumpPointSearchDataPointDirectionType.JUMP_POINT || type == JumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
+
+  bool get isIntermediateJumpPointAhead => type == JumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
 }
 
 class JumpPointSearchDataDirectionAdviser
@@ -178,7 +230,7 @@ class JumpPointSearchDataDirectionAdviser
 
 enum JumpPointSearchDataPointDirectionType
 {
-  WALL, JUMP_POINT
+  WALL, JUMP_POINT, INTERMEDIATE_JUMP_POINT
 }
 
 enum CountDirection

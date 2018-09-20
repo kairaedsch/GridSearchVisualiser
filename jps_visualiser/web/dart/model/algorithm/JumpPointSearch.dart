@@ -48,12 +48,9 @@ class JumpPointSearch extends AStar
 
     for (Direction direction in relevantDirections)
     {
-      var jumpPoint = getNextJumpPoint(node.position, direction, false);
+      var jumpPoint = getNextJumpPoint(node.position, direction);
 
-      if (jumpPoint.isNotEmpty)
-      {
-        neighbours.add(grid[jumpPoint.value]);
-      }
+      jumpPoint.ifPresent((p) => neighbours.add(grid[p]));
     }
 
     currentSearchState.description.add(new Explanation()
@@ -65,7 +62,7 @@ class JumpPointSearch extends AStar
     return neighbours;
   }
 
-  Optional<Position> getNextJumpPoint(Position position, Direction direction, bool justTest)
+  Optional<Position> getNextJumpPoint(Position position, Direction direction)
   {
     if (!grid.leaveAble(position, direction))
     {
@@ -85,16 +82,16 @@ class JumpPointSearch extends AStar
       }
       else
       {
-        jumpDirections = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction, true).isNotEmpty);
+        jumpDirections = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
       }
       if (jumpDirections.length > 0)
       {
-        if(!justTest) _directionAdvisers[new Tuple2(positionAfter, direction)] = new JumpPointSearchDirectionAdviser()..jumpDirections = jumpDirections;
+        _directionAdvisers[new Tuple2(positionAfter, direction)] = new JumpPointSearchDirectionAdviser()..jumpDirections = jumpDirections;
         return new Optional.of(positionAfter);
       }
       else
       {
-        return getNextJumpPoint(positionAfter, direction, justTest);
+        return getNextJumpPoint(positionAfter, direction);
       }
     }
   }

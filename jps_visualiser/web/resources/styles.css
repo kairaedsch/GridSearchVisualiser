@@ -328,6 +328,15 @@ html, body {
   border-color: var(--color-red-light) var(--color-red-dark) var(--color-red-dark) var(--color-red-light);
 }
 
+.grid .node .part .directionTextHighlight {
+  position: absolute;
+  width: var(--node-part-size);
+  height: var(--node-part-size);
+
+  color: var(--color-highlight);
+  text-align: center;
+}
+
 .nodeArrow {
   position: absolute;
   width: 100vh;

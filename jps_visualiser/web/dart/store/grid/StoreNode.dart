@@ -27,6 +27,9 @@ class StoreNode extends Store
   List<PathHighlight> _pathHighlights;
   List<PathHighlight> get pathHighlights => _pathHighlights;
 
+  List<DirectionTextHighlight> _directionTextHighlight;
+  List<DirectionTextHighlight> get directionTextHighlight => _directionTextHighlight;
+
   StructureNode _structureNode;
   StructureNode get structureNode => _structureNode;
 
@@ -43,6 +46,7 @@ class StoreNode extends Store
     _textHighlight = const Optional.absent();
     _infoHighlight = const Optional.absent();
     _pathHighlights = [];
+    _directionTextHighlight = [];
 
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
@@ -64,6 +68,7 @@ class StoreNode extends Store
     Optional<TextHighlight> newTextHighlight = const Optional.absent();
     Optional<InfoHighlight> newInfoHighlight = const Optional.absent();
     List<PathHighlight> newPathHighlights = [];
+    List<DirectionTextHighlight> newDirectionTextHighlight = [];
 
     highlights.forEach((Highlight highlight)
     {
@@ -109,6 +114,13 @@ class StoreNode extends Store
           newPathHighlights.add(highlight);
         }
       }
+      else if (highlight is DirectionTextHighlight)
+      {
+        if (highlight.position == position)
+        {
+          newDirectionTextHighlight.add(highlight);
+        }
+      }
     });
 
     if (_boxHighlight != newBoxHighlight)
@@ -139,6 +151,11 @@ class StoreNode extends Store
     if (_pathHighlights != newPathHighlights && (_pathHighlights.isNotEmpty || newPathHighlights.isNotEmpty))
     {
       _pathHighlights = newPathHighlights;
+      trigger();
+    }
+    if (_directionTextHighlight != newDirectionTextHighlight && (_directionTextHighlight.isNotEmpty || newDirectionTextHighlight.isNotEmpty))
+    {
+      _directionTextHighlight = newDirectionTextHighlight;
       trigger();
     }
   }

@@ -73,11 +73,19 @@ class JumpPointSearchPlus extends AStar
 
     for (Direction relevantDirection in relevantDirections)
     {
-      var directionData = _data[node.position].signposts[relevantDirection];
+      JumpPointSearchDataSignpost directionData;
+      Position position = node.position;
+
+      do
+      {
+        directionData = _data[position].signposts[relevantDirection];
+        position = position.goMulti(relevantDirection, directionData.distance);
+      }
+      while (directionData.isIntermediateJumpPointAhead);
 
       if (directionData.isJumpPointAhead)
       {
-        neighbours.add(grid[node.position.goMulti(relevantDirection, directionData.distance)]);
+        neighbours.add(grid[position]);
       }
     }
 
