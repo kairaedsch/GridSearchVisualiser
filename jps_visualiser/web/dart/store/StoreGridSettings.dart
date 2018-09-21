@@ -71,18 +71,18 @@ class StoreGridSettings extends Store
 
   void save(Save save)
   {
-    save.writeData(0, _gridMode);
-    save.writeData(1, _directionMode);
-    save.writeData(2, _crossCornerMode);
-    save.writeData(3, _wayMode);
+    save.writeEnum(5, _gridMode);
+    save.writeEnum(6, _directionMode);
+    save.writeEnum(7, _crossCornerMode);
+    save.writeEnum(8, _wayMode);
   }
 
   void load(Save save)
   {
-    _gridMode = save.readData(0, GridMode.values);
-    _directionMode = save.readData(1, DirectionMode.values);
-    _crossCornerMode = save.readData(2, CrossCornerMode.values);
-    _wayMode = save.readData(3, WayMode.values);
+    _gridMode = save.readEnum(5, GridMode.values);
+    _directionMode = save.readEnum(6, DirectionMode.values);
+    _crossCornerMode = save.readEnum(7, CrossCornerMode.values);
+    _wayMode = save.readEnum(8, WayMode.values);
     trigger();
   }
 }

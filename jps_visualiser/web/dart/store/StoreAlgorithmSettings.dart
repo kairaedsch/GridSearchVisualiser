@@ -48,14 +48,14 @@ class StoreAlgorithmSettings extends Store
 
   void save(Save save)
   {
-    save.writeData(10, _algorithmType);
-    save.writeData(11, _heuristicType);
+    save.writeEnum(10, _algorithmType);
+    save.writeEnum(11, _heuristicType);
   }
 
   void load(Save save)
   {
-    _algorithmType = save.readData(10, AlgorithmType.values);
-    _heuristicType = save.readData(10, HeuristicType.values);
+    _algorithmType = save.readEnum(10, AlgorithmType.values);
+    _heuristicType = save.readEnum(11, HeuristicType.values);
     trigger();
   }
 }

@@ -57,19 +57,19 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue as CrossCornerMode))
               )()
           ) : null,
-          (Dom.div()..className = "config")(
+          (Dom.div()..className = "config icon")(
             (Dom.div()
-              ..className = "button"
+              ..className = "button icon save"
               ..onClick = ((_) => props.download())
-            )("download"),
+            )(" "),
           ),
-          (Dom.div()..className = "config")(
+          (Dom.div()..className = "config icon")(
             (Dom.label()
-              ..className = "button"
-              ..htmlFor = "upload"
-            )("upload"),
+              ..className = "button icon load"
+              ..htmlFor = "load"
+            )(" "),
             (Dom.input()
-              ..id = "upload"
+              ..id = "load"
               ..type = "file"
               ..style =
               <String, String>{

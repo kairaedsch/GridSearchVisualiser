@@ -528,6 +528,10 @@ g.blinking {
   display: flex;
 }
 
+.config.icon {
+    flex-basis: initial;
+}
+
 .config:last-child {
   padding-right: 0;
 }
@@ -549,6 +553,7 @@ g.blinking {
 .button {
   padding: 5px 8px 5px 30px;
   font-size: 14px;
+  height: 29px;
 
   border-radius: 3px;
   cursor: pointer;
@@ -563,6 +568,18 @@ g.blinking {
 
 .button:hover {
   background-color: var(--color-blue-dark);
+}
+
+.button.icon {
+  padding-left: 24px;
+}
+
+.button.icon.save {
+    background-image: url("images/cloud-download.svg");
+}
+
+.button.icon.load {
+    background-image: url("images/cloud-upload.svg");
 }
 
 .historyContainer {

@@ -75,6 +75,12 @@ class StoreGrid extends Store
       }
       save.writeBarrier(position, const Optional.absent(), _storeGridSettings.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
     }
+    save.writeSource(sourcePosition);
+    save.writeTarget(targetPosition);
+    save.writeInt(0, sourcePosition.x);
+    save.writeInt(1, sourcePosition.y);
+    save.writeInt(2, targetPosition.x);
+    save.writeInt(3, targetPosition.y);
   }
 
   void load(Save save)
@@ -91,6 +97,20 @@ class StoreGrid extends Store
       StructureNode newStructureNode = storeNode.structureNode.clone(barrier: new StructureNodeBarrier(barrier));
       storeNode.actions.structureNodeChanged.call(newStructureNode);
     }
+
+    _storeNodes[sourcePosition].actions.structureNodeChanged.call(_storeNodes[sourcePosition].structureNode.clone(type: StructureNodeType.NORMAL_NODE));
+    _storeNodes[targetPosition].actions.structureNodeChanged.call(_storeNodes[targetPosition].structureNode.clone(type: StructureNodeType.NORMAL_NODE));
+
+
+    int sourceX = save.readInt(0);
+    int sourceY = save.readInt(1);
+    int targetX = save.readInt(2);
+    int targetY = save.readInt(3);
+    StoreNode sourceStoreNode = _storeNodes[new Position(sourceX, sourceY)];
+    StoreNode targetStoreNode = _storeNodes[new Position(targetX, targetY)];
+
+    sourceStoreNode.actions.structureNodeChanged.call(sourceStoreNode.structureNode.clone(type: StructureNodeType.SOURCE_NODE));
+    targetStoreNode.actions.structureNodeChanged.call(targetStoreNode.structureNode.clone(type: StructureNodeType.TARGET_NODE));
   }
 }
 

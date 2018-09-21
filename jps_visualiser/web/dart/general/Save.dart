@@ -7,12 +7,14 @@ import 'package:vector_math/vector_math.dart';
 
 class Save
 {
-  static int scaleWithOutGrid = 45;
+  static int scaleWithOutGrid = 27;
   static int scale = scaleWithOutGrid + 1;
   static int footer = 1;
   static List<int> colorBlocked = [0, 149, 255, 1];
   static List<int> colorUnblocked = [255, 255, 255, 1];
   static List<int> colorGrid = [200, 200, 200, 1];
+  static List<int> colorSource = [47, 193, 60, 1];
+  static List<int> colorTarget = [202, 4, 4, 1];
 
   CanvasElement canvas;
   CanvasRenderingContext2D context;
@@ -43,34 +45,44 @@ class Save
     return canvas.toDataUrl("image/png", 100);
   }
 
+  void writeEnum(int pos, SaveData saveData)
+  {
+    writeInt(pos, saveData.saveDataValues.indexOf(saveData) * 10);
+  }
+
+  T readEnum<T>(int pos, List<T> saveEnum)
+  {
+    int index = (readInt(pos) / 10.0).round().toInt();
+    return saveEnum[index];
+  }
+
+  void writeInt(int x, int value)
+  {
+    List<int> color = [value, 255, 255, 1];
+    context.setFillColorRgb(color[0], color[1], color[2], color[3]);
+    context.fillRect(x, originalSize.height * scale,1, 1);
+  }
+
+  int readInt(int x)
+  {
+    ImageData imageData = context.getImageData(x, originalSize.height * scale, 1, 1);
+
+    return imageData.data[0];
+  }
+
   void writeBarrier(Position position, Optional<Direction> direction, bool blocked)
   {
     _writeBarrier(position, direction, blocked ? colorBlocked : colorUnblocked);
   }
 
-  void writeData(int pos, SaveData saveData)
+  void writeTarget(Position position)
   {
-    _writePixel(pos, [saveData.saveDataValues.indexOf(saveData) * 10, 0, 0, 1]);
+    _writeBarrier(position, new Optional.absent(), colorTarget);
   }
 
-  bool readBarrier(Position position, Direction direction)
+  void writeSource(Position position)
   {
-    List<List<int>> colors = [colorBlocked, colorUnblocked];
-    List<int> color = _readBarrier(position, direction, colors);
-    if (color == colorBlocked)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-  T readData<T>(int pos, List<T> saveDataValues)
-  {
-    int index = (_readPixel(pos) / 10.0).round().toInt();
-    return saveDataValues[index];
+    _writeBarrier(position, new Optional.absent(), colorSource);
   }
 
   void _writeBarrier(Position position, Optional<Direction> direction, List<int> color)
@@ -103,10 +115,18 @@ class Save
     context.fillRect(recPosTopLeft.x, recPosTopLeft.y, scaleWithOutGrid / 3.0, scaleWithOutGrid / 3.0);
   }
 
-  void _writePixel(int x, List<int> color)
+  bool readBarrier(Position position, Direction direction)
   {
-    context.setFillColorRgb(color[0], color[1], color[2], color[3]);
-    context.fillRect(x, originalSize.height * scale,1, 1);
+    List<List<int>> colors = [colorBlocked, colorUnblocked];
+    List<int> color = _readBarrier(position, direction, colors);
+    if (color == colorBlocked)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   List<int> _readBarrier(Position position, Direction direction, List<List<int>> colorToFind)
@@ -127,13 +147,6 @@ class Save
       }
     }
     return pixel;
-  }
-
-  int _readPixel(int x)
-  {
-    ImageData imageData = context.getImageData(x, originalSize.height * scale, 1, 1);
-
-    return imageData.data[0];
   }
 }
 
