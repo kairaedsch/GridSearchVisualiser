@@ -1,4 +1,6 @@
+import '../general/Save.dart';
 import '../store/grid/StorePaths.dart';
+import 'dart:html';
 import 'package:over_react/over_react.dart';
 
 import '../store/StoreAlgorithmSettings.dart';
@@ -52,8 +54,8 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
             (ReactGridSettings()
               ..store = storeGridSettings
               ..actions = storeGridSettings.actions
-              ..downloadGrid = storeGrid.downloadGrid
-              ..loadGrid = storeGrid.loadGrid
+              ..download = _download
+              ..load = _load
             )()
         ),
         (Dom.div()..className = "algorithmSettingsContainer")(
@@ -71,5 +73,34 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
         )
       )
     );
+  }
+
+  void _download()
+  {
+    StoreGrid storeGrid = props.store.storeGrid;
+    StoreGridSettings storeGridSettings = props.store.storeGridSettings;
+    StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
+    Save save = new Save(storeGridSettings.size);
+    storeGrid.save(save);
+    storeGridSettings.save(save);
+    storeAlgorithmSettings.save(save);
+
+    AnchorElement link = new AnchorElement();
+    link.href = save.downloadLink();
+    link.download = "grid.png";
+    link.click();
+  }
+
+  void _load(String dataJson)
+  {
+    StoreGrid storeGrid = props.store.storeGrid;
+    StoreGridSettings storeGridSettings = props.store.storeGridSettings;
+    StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
+
+    new Save.load(storeGridSettings.size, dataJson, (save) {
+      storeGrid.load(save);
+      storeGridSettings.load(save);
+      storeAlgorithmSettings.load(save);
+    });
   }
 }

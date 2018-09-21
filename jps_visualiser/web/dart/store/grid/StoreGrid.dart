@@ -3,12 +3,14 @@ import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Size.dart';
 import '../../model/Grid.dart';
+import '../../general/Save.dart';
 import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
 import '../history/StoreHistory.dart';
 import 'GridBarrierManager.dart';
 import 'dart:html';
+import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
 import 'dart:convert';
 
@@ -61,37 +63,30 @@ class StoreGrid extends Store
     trigger();
   }
 
-  void downloadGrid()
+  void save(Save save)
   {
-    dynamic data = new Map<String, Map<String, bool>>.fromIterable(
-        _storeNodes.iterable,
-        key: (StoreNode n) => n.position.toString(),
-        value: (StoreNode n) =>
-        new Map<String, bool>.fromIterable(
-            Direction.values,
-            key: (Direction d) => d.toString(),
-            value: (Direction d) => n.structureNode.barrier.isBlocked(d)));
-
-    var dataJson = JSON.encode(data);
-    var blob = new Blob(<dynamic>[dataJson], 'application/json', 'native');
-    String url = Url.createObjectUrlFromBlob(blob);
-    AnchorElement link = new AnchorElement();
-    link.href = url;
-    link.download = "grid.json";
-    link.click();
-  }
-
-  void loadGrid(String dataJson)
-  {
-    var data = JSON.decode(dataJson) as Map<String, Map<String, bool>>;
     for (StoreNode storeNode in _storeNodes.iterable)
     {
-      Map<String, bool> barrierData = data[storeNode.position.toString()];
+      Position position = storeNode.position;
+      var barrier = storeNode.structureNode.barrier;
+      for (Direction direction in Direction.values)
+      {
+        save.writeBarrier(position, new Optional.of(direction), barrier.isBlocked(direction));
+      }
+      save.writeBarrier(position, const Optional.absent(), _storeGridSettings.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
+    }
+  }
+
+  void load(Save save)
+  {
+    for (StoreNode storeNode in _storeNodes.iterable)
+    {
+      Position position = storeNode.position;
 
       var barrier = new Map<Direction, bool>.fromIterable(
           Direction.values,
           key: (Direction d) => d,
-          value: (Direction d) => barrierData[d.toString()]);
+          value: (Direction d) => save.readBarrier(position, d));
 
       StructureNode newStructureNode = storeNode.structureNode.clone(barrier: new StructureNodeBarrier(barrier));
       storeNode.actions.structureNodeChanged.call(newStructureNode);

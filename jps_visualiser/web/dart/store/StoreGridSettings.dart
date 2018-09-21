@@ -1,3 +1,4 @@
+import '../general/Save.dart';
 import '../general/Size.dart';
 import '../general/gui/DropDownElement.dart';
 import 'package:w_flux/w_flux.dart';
@@ -67,6 +68,23 @@ class StoreGridSettings extends Store
     _wayMode = newWayMode;
     trigger();
   }
+
+  void save(Save save)
+  {
+    save.writeData(0, _gridMode);
+    save.writeData(1, _directionMode);
+    save.writeData(2, _crossCornerMode);
+    save.writeData(3, _wayMode);
+  }
+
+  void load(Save save)
+  {
+    _gridMode = save.readData(0, GridMode.values);
+    _directionMode = save.readData(1, DirectionMode.values);
+    _crossCornerMode = save.readData(2, CrossCornerMode.values);
+    _wayMode = save.readData(3, WayMode.values);
+    trigger();
+  }
 }
 
 class ActionsGridSettingsChanged
@@ -78,7 +96,7 @@ class ActionsGridSettingsChanged
   final Action<WayMode> wayModeChanged = new Action<WayMode>();
 }
 
-class GridMode implements DropDownElement
+class GridMode implements DropDownElement, SaveData<GridMode>
 {
   static const GridMode BASIC = const GridMode("BASIC", "Basic");
   static const GridMode ADVANCED = const GridMode("ADVANCED", "Advanced");
@@ -93,9 +111,12 @@ class GridMode implements DropDownElement
 
   static const List<GridMode> values = const <GridMode>[
     BASIC, ADVANCED];
+
+  @override
+  List<GridMode> get saveDataValues => values;
 }
 
-class DirectionMode implements DropDownElement
+class DirectionMode implements DropDownElement, SaveData<DirectionMode>
 {
   static const DirectionMode ALL = const DirectionMode("ALL", "All");
   static const DirectionMode ONLY_CARDINAL = const DirectionMode("ONLY_CARDINAL", "Only cardinal");
@@ -110,9 +131,12 @@ class DirectionMode implements DropDownElement
   const DirectionMode(this.name, this.dropDownName);
 
   static const List<DirectionMode> values = const <DirectionMode>[ALL, ONLY_CARDINAL, ONLY_DIAGONAL];
+
+  @override
+  List<DirectionMode> get saveDataValues => values;
 }
 
-class WayMode implements DropDownElement
+class WayMode implements DropDownElement, SaveData<WayMode>
 {
   static const WayMode ONE_DIRECTIONAL = const WayMode("ONE_DIRECTIONAL", "Allow");
   static const WayMode BI_DIRECTIONAL = const WayMode("BI_DIRECTIONAL", "Deny");
@@ -126,9 +150,12 @@ class WayMode implements DropDownElement
   const WayMode(this.name, this.dropDownName);
 
   static const List<WayMode> values = const <WayMode>[ONE_DIRECTIONAL, BI_DIRECTIONAL];
+
+  @override
+  List<WayMode> get saveDataValues => values;
 }
 
-class CrossCornerMode implements DropDownElement
+class CrossCornerMode implements DropDownElement, SaveData<CrossCornerMode>
 {
   static const CrossCornerMode ALLOW = const CrossCornerMode("ALLOW", "Allow");
   static const CrossCornerMode DENY = const CrossCornerMode("DENY", "Deny");
@@ -142,4 +169,7 @@ class CrossCornerMode implements DropDownElement
   const CrossCornerMode(this.name, this.dropDownName);
 
   static const List<CrossCornerMode> values = const <CrossCornerMode>[ALLOW, DENY];
+
+  @override
+  List<CrossCornerMode> get saveDataValues => values;
 }

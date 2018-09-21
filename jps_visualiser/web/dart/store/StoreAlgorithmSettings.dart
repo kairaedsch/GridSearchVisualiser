@@ -1,3 +1,4 @@
+import '../general/Save.dart';
 import '../general/gui/DropDownElement.dart';
 import '../model/algorithm/AStar.dart';
 import '../model/algorithm/Algorithm.dart';
@@ -44,6 +45,19 @@ class StoreAlgorithmSettings extends Store
     _heuristicType = newHeuristicType;
     trigger();
   }
+
+  void save(Save save)
+  {
+    save.writeData(10, _algorithmType);
+    save.writeData(11, _heuristicType);
+  }
+
+  void load(Save save)
+  {
+    _algorithmType = save.readData(10, AlgorithmType.values);
+    _heuristicType = save.readData(10, HeuristicType.values);
+    trigger();
+  }
 }
 
 class ActionsAlgorithmSettingsChanged {
@@ -51,7 +65,7 @@ class ActionsAlgorithmSettingsChanged {
   final Action<HeuristicType> heuristicTypeChanged = new Action<HeuristicType>();
 }
 
-class AlgorithmType implements DropDownElement
+class AlgorithmType implements DropDownElement, SaveData<AlgorithmType>
 {
   static AlgorithmType DIJKSTRA = new AlgorithmType(Dijkstra.factory, "DIJKSTRA", "Dijkstra");
   static AlgorithmType A_STAR = new AlgorithmType(AStar.factory, "A_STAR", "A*");
@@ -70,9 +84,12 @@ class AlgorithmType implements DropDownElement
 
   static List<AlgorithmType> values = <AlgorithmType>[
     DIJKSTRA, A_STAR, JPS, JPSP, JPSP_DATA];
+
+  @override
+  List<AlgorithmType> get saveDataValues => values;
 }
 
-class HeuristicType implements DropDownElement
+class HeuristicType implements DropDownElement, SaveData<HeuristicType>
 {
   static const HeuristicType MANHATTEN = const HeuristicType(const Manhattan(), "MANHATTEN", "Manhattan");
   static const HeuristicType EUCLIDEAN = const HeuristicType(const Euclidean(), "EUCLIDEAN", "Euclidean");
@@ -90,4 +107,7 @@ class HeuristicType implements DropDownElement
 
   static const List<HeuristicType> values = const <HeuristicType>[
     MANHATTEN, EUCLIDEAN, OCTILE, CHEBYSHEV];
+
+  @override
+  List<HeuristicType> get saveDataValues => values;
 }

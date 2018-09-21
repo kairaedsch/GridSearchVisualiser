@@ -38,8 +38,8 @@ class JumpPointSearchJumpPoints
 
       if (grid.leaveAble(position, direction90))
       {
-        bool canNotGoDiagonalBefore = !grid.leaveAble(wpBefore, direction45);
-        if (canNotGoDiagonalBefore)
+        bool canNotGoShorterDiagonalBefore = !grid.leaveAble(wpBefore, direction45);
+        if (canNotGoShorterDiagonalBefore)
         {
           bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction90) || !grid.leaveAble(wpBefore.go(direction90), direction);
           if (side == 1 || canNotGoCardinalBefore)
@@ -51,15 +51,18 @@ class JumpPointSearchJumpPoints
 
       if (grid.leaveAble(position, direction135))
       {
-        bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction90);
-        if (canNotGoCardinalBefore)
+        bool canNotGoShorterCardinalBefore = !grid.leaveAble(wpBefore, direction90);
+        if (canNotGoShorterCardinalBefore)
         {
-          bool canNotGoDiagonalBefore1 = !grid.leaveAble(wpBefore, direction180) || !grid.leaveAble(wpBefore.go(direction180),  direction45);
-          bool canNotGoDiagonalBefore2 = !grid.leaveAble(wpBefore, direction45) || !grid.leaveAble(wpBefore.go(direction45),  direction180);
-          bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction135) || !grid.leaveAble(wpBefore.go(direction135),  direction);
-          if (canNotGoDiagonalBefore1 && canNotGoDiagonalBefore2 && canNotGoDiagonalBefore3)
+          bool canNotGoDiagonalBefore1 = !grid.leaveAble(wpBefore, direction45) || !grid.leaveAble(wpBefore.go(direction45),  direction180);
+          bool canNotGoDiagonalBefore2 = !grid.leaveAble(wpBefore, direction135) || !grid.leaveAble(wpBefore.go(direction135),  direction);
+          if (canNotGoDiagonalBefore1 && canNotGoDiagonalBefore2)
           {
-            jumpDirections.add(direction135);
+            bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction180) || !grid.leaveAble(wpBefore.go(direction180),  direction45);
+            if (side == 1 || canNotGoCardinalBefore)
+            {
+              jumpDirections.add(direction135);
+            }
           }
         }
       }

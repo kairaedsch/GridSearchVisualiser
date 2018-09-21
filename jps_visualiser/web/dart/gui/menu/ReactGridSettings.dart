@@ -9,8 +9,8 @@ UiFactory<ReactGridSettingsProps> ReactGridSettings;
 @Props()
 class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, StoreGridSettings>
 {
-  Function downloadGrid;
-  Function loadGrid;
+  Function download;
+  Function load;
 }
 
 @Component()
@@ -60,7 +60,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           (Dom.div()..className = "config")(
             (Dom.div()
               ..className = "button"
-              ..onClick = ((_) => props.downloadGrid())
+              ..onClick = ((_) => props.download())
             )("download"),
           ),
           (Dom.div()..className = "config")(
@@ -81,9 +81,9 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 FileReader reader = new FileReader();
                 reader.onLoadEnd.listen((fileEvent)
                 {
-                  props.loadGrid(reader.result);
+                  props.load(reader.result);
                 }, onError: (dynamic error) => window.alert("Could not read Grid: ${reader.error.code}"));
-                reader.readAsText(file);
+                reader.readAsDataUrl(file);
                 event.target.value = null;
               }
             )(),
