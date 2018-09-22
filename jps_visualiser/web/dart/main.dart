@@ -10,7 +10,7 @@ void main() {
   // Initialize React
   over_react.setClientConfiguration();
 
-  StoreMain storeMain = new StoreMain(new Size(16, 15));
+  StoreMain storeMain = new StoreMain();
   react_dom.render(
       (ReactMain()
           ..store = storeMain

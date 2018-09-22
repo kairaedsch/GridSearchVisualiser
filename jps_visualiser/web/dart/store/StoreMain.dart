@@ -31,10 +31,10 @@ class StoreMain extends Store
   ActionsMain _actions;
   ActionsMain get actions => _actions;
 
-  StoreMain(Size size)
+  StoreMain()
   {
     _storeHistory = new StoreHistory();
-    _storeGridSettings = new StoreGridSettings(size);
+    _storeGridSettings = new StoreGridSettings();
     _storeAlgorithmSettings = new StoreAlgorithmSettings();
     _storeGrid = new StoreGrid(_storeGridSettings, _storeHistory.actions);
     _storePaths = new StorePaths(_storeHistory.actions);

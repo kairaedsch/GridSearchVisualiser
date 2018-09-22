@@ -2,10 +2,10 @@ import 'Position.dart';
 
 class Size
 {
-  final int _width;
+  int _width;
   int get width => _width;
 
-  final int _height;
+  int _height;
   int get height => _height;
 
   Size(this._width, this._height);
@@ -13,6 +13,12 @@ class Size
   Size.clone(Size size)
       : _width = size.width,
         _height = size.height;
+
+  void resize(Size newSize)
+  {
+    _width = newSize.width;
+    _height = newSize.height;
+  }
 
   Iterable<Position> positions()
   {

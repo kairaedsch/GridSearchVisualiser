@@ -11,9 +11,6 @@ class StoreGridSettings extends Store
   GridMode _gridMode;
   GridMode get gridMode => _gridMode;
 
-  Size _size;
-  Size get size => _size;
-
   DirectionMode _directionMode;
   DirectionMode get directionMode => _directionMode;
 
@@ -23,9 +20,8 @@ class StoreGridSettings extends Store
   WayMode _wayMode;
   WayMode get wayMode => _wayMode;
 
-  StoreGridSettings(Size size)
+  StoreGridSettings()
   {
-    _size = size;
     _gridMode = GridMode.BASIC;
     _directionMode = DirectionMode.ALL;
     _crossCornerMode = CrossCornerMode.ALLOW;
@@ -33,7 +29,6 @@ class StoreGridSettings extends Store
 
     _actions = new ActionsGridSettingsChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);
-    _actions.sizeChanged.listen(_sizeChanged);
     _actions.directionModeChanged.listen(_directionModeChanged);
     _actions.crossCornerModeChanged.listen(_crossCornerModeChanged);
     _actions.wayModeChanged.listen(_wayModeChanged);
@@ -42,12 +37,6 @@ class StoreGridSettings extends Store
   void _gridModeChanged(GridMode newGridMode)
   {
     _gridMode = newGridMode;
-    trigger();
-  }
-
-  void _sizeChanged(Size newSize)
-  {
-    _size = newSize;
     trigger();
   }
 

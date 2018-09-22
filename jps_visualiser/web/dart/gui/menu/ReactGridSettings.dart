@@ -11,6 +11,8 @@ class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, Sto
 {
   Function download;
   Function load;
+  Function smallerGrid;
+  Function biggerGrid;
 }
 
 @Component()
@@ -57,6 +59,18 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
                 ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue as CrossCornerMode))
               )()
           ) : null,
+          (Dom.div()..className = "config icon")(
+            (Dom.div()
+              ..className = "button icon minus"
+              ..onClick = ((_) => props.smallerGrid())
+            )(" "),
+          ),
+          (Dom.div()..className = "config icon")(
+            (Dom.div()
+              ..className = "button icon plus"
+              ..onClick = ((_) => props.biggerGrid())
+            )(" "),
+          ),
           (Dom.div()..className = "config icon")(
             (Dom.div()
               ..className = "button icon save"

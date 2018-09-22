@@ -1,6 +1,7 @@
 import '../../../general/Size.dart';
 import '../../../model/history/Highlight.dart';
 import '../../../store/StoreGridSettings.dart';
+import '../../../store/grid/StoreGrid.dart';
 import '../../../store/grid/StorePaths.dart';
 import '../arrows/ReactArrow.dart';
 import 'package:over_react/over_react.dart';
@@ -11,7 +12,7 @@ UiFactory<ReactPathsProps> ReactPaths;
 @Props()
 class ReactPathsProps extends FluxUiProps<ActionsPathsChanged, StorePaths>
 {
-  StoreGridSettings storeGridSettings;
+  StoreGrid storeGrid;
 }
 
 @Component()
@@ -20,7 +21,7 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
   @override
   ReactElement render()
   {
-    Size size = props.storeGridSettings.size;
+    Size size = props.storeGrid.size;
     return
       (Dom.div()
         ..className = "paths"
@@ -35,7 +36,7 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
             ..className = "svg"
             ..viewBox = "-0.5 -0.5 ${size.width} ${size.height}"
             )(
-                props.store.highlights.map((highlight) => renderPathHighlight(highlight, props.storeGridSettings.size, false)).toList()
+                props.store.highlights.map((highlight) => renderPathHighlight(highlight, props.storeGrid.size, false)).toList()
             ),
           )
         )

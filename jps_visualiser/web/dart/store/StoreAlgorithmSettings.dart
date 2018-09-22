@@ -26,7 +26,7 @@ class StoreAlgorithmSettings extends Store
 
   StoreAlgorithmSettings()
   {
-    _algorithmType = AlgorithmType.DIJKSTRA;
+    _algorithmType = AlgorithmType.JPSP;
     _heuristicType = HeuristicType.OCTILE;
 
     _actions = new ActionsAlgorithmSettingsChanged();

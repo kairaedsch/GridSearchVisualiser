@@ -48,7 +48,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     StoreGrid storeGrid = props.storeGrid;
     List<StoreNode> neighbours = Direction.values
         .map((d) => position.go(d))
-        .where((Position position) => position.legal(props.storeGridSettings.size))
+        .where((Position position) => position.legal(props.storeGrid.size))
         .map((Position position) => storeGrid[position]).toList();
     neighbours.add(props.store);
     return neighbours;
@@ -205,7 +205,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return
       (ReactArrow()
         ..key = direction
-        ..size = props.storeGridSettings.size
+        ..size = props.storeGrid.size
         ..path = [props.store.position, props.store.position.go(direction)]
         ..showEnd = leaveAble && !(enterAble && leaveAble)
         ..showStart = enterAble && !(enterAble && leaveAble)
@@ -222,7 +222,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return
       (Dom.div()
         ..className = "pathHighlights")(
-          props.store.pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.storeGridSettings.size, true)).toList()
+          props.store.pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.storeGrid.size, true)).toList()
       );
   }
 

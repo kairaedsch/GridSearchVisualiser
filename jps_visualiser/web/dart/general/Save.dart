@@ -9,40 +9,41 @@ class Save
 {
   static int scaleWithOutGrid = 27;
   static int scale = scaleWithOutGrid + 1;
-  static int footer = 1;
+  static int header = 1;
   static List<int> colorBlocked = [0, 149, 255, 1];
   static List<int> colorUnblocked = [255, 255, 255, 1];
   static List<int> colorGrid = [200, 200, 200, 1];
   static List<int> colorSource = [47, 193, 60, 1];
   static List<int> colorTarget = [202, 4, 4, 1];
 
-  CanvasElement canvas;
-  CanvasRenderingContext2D context;
-  Size originalSize;
+  CanvasElement _canvas;
+  CanvasRenderingContext2D _context;
+  Size _gridSize;
+  Size get gridSize => _gridSize;
 
-  Save(this.originalSize)
+  Save(this._gridSize)
   {
-    canvas = new CanvasElement(width: originalSize.width * scale, height: originalSize.height * scale + footer);
-    context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    context.setFillColorRgb(colorGrid[0], colorGrid[1], colorGrid[2], colorGrid[3]);
-    context.fillRect(0, 0, originalSize.width * scale, originalSize.height * scale);
+    _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
+    _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
+    _context.setFillColorRgb(colorGrid[0], colorGrid[1], colorGrid[2], colorGrid[3]);
+    _context.fillRect(0, 0, gridSize.width * scale, gridSize.height * scale);
   }
 
-  Save.load(this.originalSize, String imageSrc, void callback(Save save))
+  Save.load(String imageSrc, void callback(Save save))
   {
-    canvas = new CanvasElement(width: originalSize.width * scale, height: originalSize.height * scale + footer);
-    context = canvas.getContext('2d') as CanvasRenderingContext2D;
-
     ImageElement image = new ImageElement(src: imageSrc);
     image.onLoad.listen((e) {
-      context.drawImage(image, 0, 0);
+      _gridSize = new Size((image.width / scale).round(), ((image.height - header) / scale).round());
+          _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
+      _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
+      _context.drawImage(image, 0, 0);
       callback(this);
     });
   }
 
   String downloadLink()
   {
-    return canvas.toDataUrl("image/png", 100);
+    return _canvas.toDataUrl("image/png", 100);
   }
 
   void writeEnum(int pos, SaveData saveData)
@@ -59,13 +60,13 @@ class Save
   void writeInt(int x, int value)
   {
     List<int> color = [value, 255, 255, 1];
-    context.setFillColorRgb(color[0], color[1], color[2], color[3]);
-    context.fillRect(x, originalSize.height * scale,1, 1);
+    _context.setFillColorRgb(color[0], color[1], color[2], color[3]);
+    _context.fillRect(x, 0, 1, 1);
   }
 
   int readInt(int x)
   {
-    ImageData imageData = context.getImageData(x, originalSize.height * scale, 1, 1);
+    ImageData imageData = _context.getImageData(x, 0, 1, 1);
 
     return imageData.data[0];
   }
@@ -111,8 +112,8 @@ class Save
 
     Vector2 recPosTopLeft = pos.clone()..add(dir);
 
-    context.setFillColorRgb(color[0], color[1], color[2], color[3]);
-    context.fillRect(recPosTopLeft.x, recPosTopLeft.y, scaleWithOutGrid / 3.0, scaleWithOutGrid / 3.0);
+    _context.setFillColorRgb(color[0], color[1], color[2], color[3]);
+    _context.fillRect(recPosTopLeft.x, header + recPosTopLeft.y, scaleWithOutGrid / 3.0, scaleWithOutGrid / 3.0);
   }
 
   bool readBarrier(Position position, Direction direction)
@@ -136,7 +137,7 @@ class Save
 
     Vector2 recPosMiddlePix = pos.clone()..add(dir);
 
-    ImageData imageData = context.getImageData(recPosMiddlePix.x, recPosMiddlePix.y, 1, 1);
+    ImageData imageData = _context.getImageData(recPosMiddlePix.x, header + recPosMiddlePix.y, 1, 1);
 
     var pixel = imageData.data;
     for(List<int> color in colorToFind)

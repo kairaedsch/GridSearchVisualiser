@@ -44,7 +44,7 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
           ..actions = storeGrid.actions
         )(),
         (ReactPaths()
-          ..storeGridSettings = storeGridSettings
+          ..storeGrid = storeGrid
           ..store = storePaths
           ..actions = storePaths.actions
         )()
@@ -54,6 +54,8 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
             (ReactGridSettings()
               ..store = storeGridSettings
               ..actions = storeGridSettings.actions
+              ..smallerGrid = storeGrid.smaller
+              ..biggerGrid = storeGrid.bigger
               ..download = _download
               ..load = _load
             )()
@@ -80,7 +82,7 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
     StoreGrid storeGrid = props.store.storeGrid;
     StoreGridSettings storeGridSettings = props.store.storeGridSettings;
     StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
-    Save save = new Save(storeGridSettings.size);
+    Save save = new Save(storeGrid.size);
     storeGrid.save(save);
     storeGridSettings.save(save);
     storeAlgorithmSettings.save(save);
@@ -91,13 +93,13 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
     link.click();
   }
 
-  void _load(String dataJson)
+  void _load(String imageData)
   {
     StoreGrid storeGrid = props.store.storeGrid;
     StoreGridSettings storeGridSettings = props.store.storeGridSettings;
     StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
 
-    new Save.load(storeGridSettings.size, dataJson, (save) {
+    new Save.load(imageData, (save) {
       storeGrid.load(save);
       storeGridSettings.load(save);
       storeAlgorithmSettings.load(save);

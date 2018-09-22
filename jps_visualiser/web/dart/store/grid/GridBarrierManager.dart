@@ -7,16 +7,18 @@ import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
 import '../history/StoreHistory.dart';
+import 'StoreGrid.dart';
 import 'package:w_flux/w_flux.dart';
 
 typedef BarrierProvider = StructureNodeBarrier Function(Position position);
 
 class GridBarrierManager
 {
+  final StoreGrid _storeGrid;
   final StoreGridSettings _storeGridSettings;
   final BarrierProvider _barrierProvider;
 
-  GridBarrierManager(this._storeGridSettings, this._barrierProvider);
+  GridBarrierManager(this._storeGrid, this._storeGridSettings, this._barrierProvider);
 
   StructureNodeBarrier getTotal(bool shouldBecomeBlocked)
   {
@@ -35,7 +37,7 @@ class GridBarrierManager
     if (wayMode == WayMode.BI_DIRECTIONAL)
     {
       Position otherPosition = position.go(direction);
-      if (otherPosition.legal(_storeGridSettings.size))
+      if (otherPosition.legal(_storeGrid.size))
       {
         transforms[otherPosition] = _barrierProvider(otherPosition).transformTo(direction.turn(180), shouldBecomeBlocked);
       }
@@ -44,17 +46,17 @@ class GridBarrierManager
     if (crossCornerMode == CrossCornerMode.DENY && direction.isDiagonal)
     {
       Position positionPlus45 = position.go(direction.turn(45));
-      if (positionPlus45.legal(_storeGridSettings.size))
+      if (positionPlus45.legal(_storeGrid.size))
       {
         transforms[positionPlus45] = _barrierProvider(positionPlus45).transformTo(direction.turn(-90), shouldBecomeBlocked);
       }
       Position positionMinus45 = position.go(direction.turn(-45));
-      if (positionMinus45.legal(_storeGridSettings.size))
+      if (positionMinus45.legal(_storeGrid.size))
       {
         transforms[positionMinus45] = _barrierProvider(positionMinus45).transformTo(direction.turn(90), shouldBecomeBlocked);
       }
       Position positionPlus0 = position.go(direction.turn(0));
-      if (positionPlus0.legal(_storeGridSettings.size))
+      if (positionPlus0.legal(_storeGrid.size))
       {
         transforms[positionPlus0] = _barrierProvider(positionPlus0).transformTo(direction.turn(180), shouldBecomeBlocked);
       }
@@ -86,7 +88,7 @@ class GridBarrierManager
 
   Grid toGrid()
   {
-    return new Grid(_storeGridSettings.size, (Position pos) => new Node(pos, (direction) => leaveAble(pos, direction)));
+    return new Grid(_storeGrid.size, (Position pos) => new Node(pos, (direction) => leaveAble(pos, direction)));
   }
 
   bool leaveAndEnterAble(Position position, Direction direction)
@@ -111,7 +113,7 @@ class GridBarrierManager
     CrossCornerMode crossCornerMode = _storeGridSettings.crossCornerMode;
     WayMode wayMode = _storeGridSettings.wayMode;
 
-    if (!position.legal(_storeGridSettings.size))
+    if (!position.legal(_storeGrid.size))
     {
       return false;
     }
@@ -173,8 +175,8 @@ class GridBarrierManager
   {
     GridMode gridMode = _storeGridSettings.gridMode;
     Position targetPosition = position.go(direction);
-    return !targetPosition.legal(_storeGridSettings.size)
-        || !position.legal(_storeGridSettings.size)
+    return !targetPosition.legal(_storeGrid.size)
+        || !position.legal(_storeGrid.size)
         || (gridMode == GridMode.BASIC ? _barrierProvider(targetPosition).isAnyBlocked() : _barrierProvider(targetPosition).isBlocked(direction.turn(180)));
   }
 
@@ -182,8 +184,8 @@ class GridBarrierManager
   {
     GridMode gridMode = _storeGridSettings.gridMode;
     Position startPosition = position.go(direction);
-    return !startPosition.legal(_storeGridSettings.size)
-        || !position.legal(_storeGridSettings.size)
+    return !startPosition.legal(_storeGrid.size)
+        || !position.legal(_storeGrid.size)
         || (gridMode == GridMode.BASIC ? _barrierProvider(position).isAnyBlocked() : _barrierProvider(position).isBlocked(direction));
   }
 }

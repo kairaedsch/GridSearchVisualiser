@@ -589,6 +589,14 @@ g.blinking {
     background-image: url("images/cloud-upload.svg");
 }
 
+.button.icon.minus {
+    background-image: url("images/minus.svg");
+}
+
+.button.icon.plus {
+    background-image: url("images/plus.svg");
+}
+
 .historyContainer {
   flex-grow: 1;
   flex-basis: 0;
