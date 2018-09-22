@@ -1,5 +1,4 @@
 import '../../../general/Position.dart';
-import '../../../general/Settings.dart';
 import '../../../general/Size.dart';
 import 'package:over_react/over_react.dart';
 import 'package:vector_math/vector_math.dart';
@@ -113,11 +112,6 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
       return
         (Dom.div()
           ..className = "nodeArrow"
-          ..style =
-          <String, String>{
-            "width": "${props.size.width * Settings.nodeSize}px",
-            "height": "${props.size.height * Settings.nodeSize}px"
-          }
         )(
           (Dom.svg()
             ..className = "svg"

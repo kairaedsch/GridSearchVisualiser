@@ -28,8 +28,8 @@ class StoreGridSettings extends Store
     _size = size;
     _gridMode = GridMode.BASIC;
     _directionMode = DirectionMode.ALL;
-    _crossCornerMode = CrossCornerMode.DENY;
-    _wayMode = WayMode.BI_DIRECTIONAL;
+    _crossCornerMode = CrossCornerMode.ALLOW;
+    _wayMode = WayMode.ONE_DIRECTIONAL;
 
     _actions = new ActionsGridSettingsChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);

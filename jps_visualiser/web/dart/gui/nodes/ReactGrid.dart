@@ -1,6 +1,6 @@
 import '../../general/Direction.dart';
 import '../../general/Position.dart';
-import '../../general/Settings.dart';
+import '../../general/Size.dart';
 import '../../store/StoreGridSettings.dart';
 import '../../store/grid/StoreNode.dart';
 import '../../store/grid/StoreGrid.dart';
@@ -14,6 +14,8 @@ import 'dart:html';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
+import 'dart:math';
+import 'dart:js';
 
 @Factory()
 UiFactory<ReactGridProps> ReactGrid;
@@ -27,6 +29,8 @@ class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
 @Component()
 class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 {
+  Size get size => props.store.size;
+
   Optional<MouseMode> _mouseMode;
 
   Optional<MouseMode> get mouseMode => _mouseMode;
@@ -36,7 +40,13 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   ReactGridComponent()
   {
     _mouseMode = const Optional.absent();
+  }
+
+  void componentWillMount()
+  {
+    super.componentWillMount();
     _onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
+    window.addEventListener("resize", (e) => _updateCSSVariables());
   }
 
   @override
@@ -47,6 +57,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   @override
   ReactElement render()
   {
+    _updateCSSVariables();
     return
       (Dom.div()
         ..className = "grid"
@@ -54,17 +65,35 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
             " DIRECTION_MODE_${props.storeGridSettings.directionMode.name}"
             " CROSS_CORNER_${props.storeGridSettings.crossCornerMode.name}"
             " WAY_MODE_${props.storeGridSettings.wayMode.name}"
-        ..style =
-        <String, String>{
-          "width": "${Settings.nodeSize * props.store.size.width}px",
-          "height": "${Settings.nodeSize * props.store.size.height}px"
-        }
       )(
           (Dom.div()
             ..className = "nodes")(
-              new List<ReactElement>.generate(props.store.size.height, _renderRow)
+              new List<ReactElement>.generate(size.height, _renderRow)
           )
       );
+  }
+
+  void _updateCSSVariables()
+  {
+    double gridWidthAvailable = 100 * 0.6;
+    double gridHeightAvailable = 100 * (window.innerHeight / window.innerWidth);
+    double nodeSizeWidthAvailable = gridWidthAvailable / size.width;
+    double nodeSizeHeightAvailable = gridHeightAvailable / size.height;
+    double nodeSize = min(nodeSizeWidthAvailable, nodeSizeHeightAvailable);
+    double gridWidth = nodeSize * size.width;
+    double gridHeight = nodeSize * size.height;
+
+    _setCSSVariable("--grid-width", "${gridWidth}vw");
+    _setCSSVariable("--grid-height", "${gridHeight}vw");
+    _setCSSVariable("--node-size", "${nodeSize}vw");
+    _setCSSVariable("--node-part-size", "calc(var(--node-size) / 3)");
+    _setCSSVariable("--node-part-size-inner-padding", "${nodeSize * 0.02}vw");
+    _setCSSVariable("--node-part-size-inner", "calc(var(--node-size) / 3 - 2 * var(--node-part-size-inner-padding))");
+  }
+
+  void _setCSSVariable(String name, String value)
+  {
+    context.callMethod("eval", <String>["document.documentElement.style.setProperty('$name', '$value');"]);
   }
 
   ReactElement _renderRow(int y)
@@ -74,7 +103,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
         ..className = "row"
         ..key = y
       )(
-          new List<ReactElement>.generate(props.store.size.width, (x) => _renderNode(new Position(x, y)))
+          new List<ReactElement>.generate(size.width, (x) => _renderNode(new Position(x, y)))
       );
   }
 
@@ -127,7 +156,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   void componentWillUnmount()
   {
-    componentWillUnmount();
+    super.componentWillUnmount();
     _onDocumentMouseUpListener.cancel();
   }
 }

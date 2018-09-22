@@ -1,4 +1,3 @@
-import '../../../general/Settings.dart';
 import '../../../general/Size.dart';
 import '../../../model/history/Highlight.dart';
 import '../../../store/StoreGridSettings.dart';
@@ -31,11 +30,6 @@ class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
         )(
           (Dom.div()
             ..className = "nodeArrow"
-            ..style =
-            <String, String>{
-            "width": "${size.width * Settings.nodeSize}px",
-            "height": "${size.height * Settings.nodeSize}px"
-          }
           )(
             (Dom.svg()
             ..className = "svg"

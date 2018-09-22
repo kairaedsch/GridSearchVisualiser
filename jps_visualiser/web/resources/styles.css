@@ -1,11 +1,14 @@
 @import url('fonts/openSans.css');
 
 :root {
+  /* default values */
+  --grid-width: 60vw;
+  --grid-height: 60vw;
   --node-size: 66px;
-  --node-part-size: calc(var(--node-size) / 3);
-  --node-part-size-inner: calc(var(--node-size) / 3 - 4px);
-  --node-part-height: 10px;
-  --node-part-shadow: 14px;
+  --node-part-size: 12px;
+  --node-part-size-inner-padding: 2px;
+  --node-part-size-inner: 8px;
+  /* default values */
 
   --color-blue-darker: #004d8f;
   --color-blue-dark: #007ce6;
@@ -64,11 +67,11 @@ html, body {
 }
 
 .leftContent {
-  width: 60%;
+  width: var(--grid-width);
 }
 
 .rightContent {
-  width: 40%;
+  width: calc(100vw - var(--grid-width));
   display: flex;
   flex-direction: column;
 
@@ -76,6 +79,9 @@ html, body {
 }
 
 .grid {
+  width: var(--grid-width);
+  height: var(--grid-height);
+
   background: white;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -86,6 +92,7 @@ html, body {
 
 .grid .row {
   width: 100%;
+  height: var(--node-size);
 }
 
 .node {
@@ -245,7 +252,7 @@ html, body {
   cursor: pointer;
   background-size: var(--node-part-size-inner);
   background-repeat: no-repeat;
-  background-position: 2px 2px;
+  background-position: var(--node-part-size-inner-padding) var(--node-part-size-inner-padding);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.leaveUnblocked.cardinal {
@@ -339,8 +346,8 @@ html, body {
 
 .nodeArrow {
   position: absolute;
-  width: 100vh;
-  height: 100vw;
+  width: var(--grid-width);
+  height: var(--grid-height);
   top: 0;
   left: 0;
   pointer-events: none;
