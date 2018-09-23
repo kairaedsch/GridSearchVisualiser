@@ -43,6 +43,14 @@ class Distance
 
   double length() => _cardinal + _diagonal * sqrt(2);
 
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Distance &&
+          _cardinal == other._cardinal &&
+          _diagonal == other._diagonal;
+
   @override
   int get hashCode =>
       _cardinal.hashCode ^

@@ -3,10 +3,9 @@ import '../../general/Position.dart';
 import '../Grid.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
-import '../history/SearchHistory.dart';
-import '../history/SearchState.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
+import 'Dijkstra.dart';
 
 abstract class BasicSearchAlgorithm extends Algorithm
 {
@@ -104,11 +103,12 @@ abstract class BasicSearchAlgorithm extends Algorithm
       {
         searchHistory.setPath(getPath(target));
 
+        var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true);
         currentSearchState.description.add(new Explanation()
           ..addT("As our active node is our ")
           ..addH("target node", "red", [new CircleHighlight(new Set()..add(target.position))])
           ..addT(", the algorithm can finish and we have found an ")
-          ..addH("optimal path", "blue", [new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true)])
+          ..addH("optimal path", "blue", [optimalPath])
           ..addT(" from the ")
           ..addH("source node", "green", [new CircleHighlight(new Set()..add(start.position))])
           ..addT(" to the ")
@@ -116,6 +116,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
           ..addT(".")
         );
 
+        currentSearchState.defaultHighlights.add(optimalPath);
         currentSearchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
         break;
       }
@@ -149,9 +150,9 @@ abstract class BasicSearchAlgorithm extends Algorithm
             ..addT("All neighbour nodes which are ")
             ..addH("marked open", "green", [new CircleHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
             ..addT(" are checked, if we can have an maybe more optimal ")
-            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(2), on.position)).toList()))
+            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(3), on.position)).toList()))
             ..addT(" from our source node to them over the active node than the ")
-            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).length().toStringAsPrecision(2), on.position)).toList()))
+            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).length().toStringAsPrecision(3), on.position)).toList()))
             ..addT(" which we have already found for them. ")
           );
 
@@ -220,6 +221,24 @@ abstract class BasicSearchAlgorithm extends Algorithm
       //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
     }
 
-    searchHistory.title = "Searched with $name in $turn turns";
+    if (name == "norecursion")
+    {
+      searchHistory.title = "Test run";
+    }
+    else
+    {
+      Dijkstra dijkstra = new Dijkstra("norecursion", grid, start.position, target.position, heuristic);
+      dijkstra.run();
+      if (searchHistory.path.isPresent)
+      {
+        bool optimal = dijkstra.getDistance(dijkstra.target) == getDistance(target);
+        searchHistory.title = "$name took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long ${optimal ? "optimal path => no bug, no money" : "NON OPTIMAL path => a bug, a bill"}";
+      }
+      else
+      {
+        bool thereExistsNone = dijkstra.searchHistory.path.isEmpty;
+        searchHistory.title = "$name took $turn turns to find no path ${thereExistsNone ? "and there really exists none => no bug, no money" : "altough there exists one => a bug, a bill"}";
+      }
+    }
   }
 }

@@ -93,7 +93,7 @@ class StoreGrid extends Store
 
   void bigger()
   {
-    _resize(new Size(min(_size.width + 1, 50), min(_size.height + 1, 50)));
+    _resize(new Size(min(_size.width + 1, 20), min(_size.height + 1, 20)));
     _CheckUniqueStructureNodeType(new Position(0, 0), StructureNodeType.SOURCE_NODE);
     _CheckUniqueStructureNodeType(new Position(1, 1), StructureNodeType.TARGET_NODE);
     trigger();
