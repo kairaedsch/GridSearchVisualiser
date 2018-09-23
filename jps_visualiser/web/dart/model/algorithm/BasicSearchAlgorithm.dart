@@ -82,7 +82,6 @@ abstract class BasicSearchAlgorithm extends Algorithm
       ..addH("start node open", "green", [new BoxHighlight.styled("green", new Set()..add(start.position))])
       ..addT(".")
     );
-    searchHistory.add(currentSearchState);
 
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
