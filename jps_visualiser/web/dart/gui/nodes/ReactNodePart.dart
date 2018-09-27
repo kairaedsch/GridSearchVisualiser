@@ -1,6 +1,7 @@
 import '../../general/Direction.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
+import '../../model/history/Highlight.dart';
 import '../../store/StoreGridSettings.dart';
 import '../../store/grid/StoreNode.dart';
 import '../../store/grid/StructureNode.dart';
@@ -32,6 +33,11 @@ class ReactNodePartState extends UiState
 @Component()
 class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, ReactNodePartState>
 {
+  Optional<Direction> get direction => props.direction;
+  StructureNode get structureNode => props.storeNode.structureNode;
+  Position get position => props.storeNode.position;
+  List<DirectionTextHighlight> get directionTextHighlight => props.storeNode.directionTextHighlights;
+
   @override
   Map getInitialState() =>
       (newState()
@@ -40,11 +46,6 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
 
   ReactElement render()
   {
-    Optional<Direction> direction = props.direction;
-    StructureNode structureNode = props.storeNode.structureNode;
-    Position position = props.storeNode.position;
-    var directionTextHighlight = props.storeNode.directionTextHighlight;
-
     return
       (Dom.div()
         ..className =

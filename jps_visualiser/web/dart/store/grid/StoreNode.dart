@@ -27,8 +27,8 @@ class StoreNode extends Store
   List<PathHighlight> _pathHighlights;
   List<PathHighlight> get pathHighlights => _pathHighlights;
 
-  List<DirectionTextHighlight> _directionTextHighlight;
-  List<DirectionTextHighlight> get directionTextHighlight => _directionTextHighlight;
+  List<DirectionTextHighlight> _directionTextHighlights;
+  List<DirectionTextHighlight> get directionTextHighlights => _directionTextHighlights;
 
   StructureNode _structureNode;
   StructureNode get structureNode => _structureNode;
@@ -46,7 +46,7 @@ class StoreNode extends Store
     _textHighlight = const Optional.absent();
     _infoHighlight = const Optional.absent();
     _pathHighlights = [];
-    _directionTextHighlight = [];
+    _directionTextHighlights = [];
 
     _actions = new ActionsNodeChanged();
     _actions.structureNodeChanged.listen(_changeStructureNode);
@@ -68,7 +68,7 @@ class StoreNode extends Store
     Optional<TextHighlight> newTextHighlight = const Optional.absent();
     Optional<InfoHighlight> newInfoHighlight = const Optional.absent();
     List<PathHighlight> newPathHighlights = [];
-    List<DirectionTextHighlight> newDirectionTextHighlight = [];
+    List<DirectionTextHighlight> newDirectionTextHighlights = [];
 
     highlights.forEach((Highlight highlight)
     {
@@ -118,7 +118,7 @@ class StoreNode extends Store
       {
         if (highlight.position == position)
         {
-          newDirectionTextHighlight.add(highlight);
+          newDirectionTextHighlights.add(highlight);
         }
       }
     });
@@ -153,9 +153,9 @@ class StoreNode extends Store
       _pathHighlights = newPathHighlights;
       trigger();
     }
-    if (_directionTextHighlight != newDirectionTextHighlight && (_directionTextHighlight.isNotEmpty || newDirectionTextHighlight.isNotEmpty))
+    if (_directionTextHighlights != newDirectionTextHighlights && (_directionTextHighlights.isNotEmpty || newDirectionTextHighlights.isNotEmpty))
     {
-      _directionTextHighlight = newDirectionTextHighlight;
+      _directionTextHighlights = newDirectionTextHighlights;
       trigger();
     }
   }

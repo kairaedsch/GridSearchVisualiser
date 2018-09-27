@@ -134,7 +134,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   {
     StructureNode structureNode = props.store.structureNode;
 
-    if (props.store.directionTextHighlight.isEmpty && structureNode.type == StructureNodeType.NORMAL_NODE)
+    if (props.store.directionTextHighlights.isEmpty && structureNode.type == StructureNodeType.NORMAL_NODE)
     {
       if (props.storeGridSettings.gridMode == GridMode.BASIC)
       {

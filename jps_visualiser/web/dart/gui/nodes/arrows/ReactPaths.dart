@@ -5,6 +5,7 @@ import '../../../store/grid/StoreGrid.dart';
 import '../../../store/grid/StorePaths.dart';
 import '../arrows/ReactArrow.dart';
 import 'package:over_react/over_react.dart';
+import 'package:w_flux/w_flux.dart';
 
 @Factory()
 UiFactory<ReactPathsProps> ReactPaths;
@@ -18,10 +19,16 @@ class ReactPathsProps extends FluxUiProps<ActionsPathsChanged, StorePaths>
 @Component()
 class ReactPathsComponent extends FluxUiComponent<ReactPathsProps>
 {
+  Size get size => props.storeGrid.size;
+
+  @override
+  List<Store> redrawOn() {
+    return [props.store, props.storeGrid];
+  }
+
   @override
   ReactElement render()
   {
-    Size size = props.storeGrid.size;
     return
       (Dom.div()
         ..className = "paths"
