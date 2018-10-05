@@ -405,11 +405,11 @@ g.blinking {
   display: none;
 }
 
-.node:hover .popover {
+*:hover>.popover {
   display: block;
 }
 
-.node:hover .popover:hover {
+*:hover>.popover:hover {
   display: none;
 }
 
@@ -531,6 +531,7 @@ g.blinking {
   flex-basis: calc(100%/3);
   padding-right: 10px;
   min-width: 0;
+  margin: 0 1px;
 
   display: flex;
 }
@@ -619,12 +620,16 @@ g.blinking {
 }
 
 .history .parts {
-  padding: 10px;
   display: grid;
+  grid-template-columns: repeat(auto-fill, 50px);
+  grid-gap: 2px;
+  align-items: start;
+  align-content: start;
+  justify-content: space-between;
+  padding: 10px;
   min-height: 125px;
   max-height: 30vh;
   overflow-y: scroll;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 
   border: solid #DDD;
   border-width: 1px 0;
@@ -720,6 +725,7 @@ g.blinking {
   background: var(--color-blue);
   border-color: var(--color-blue-dark);
 }
+
 .history .turnOverview {
   flex-grow: 1;
   min-height: 50px;

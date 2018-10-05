@@ -30,7 +30,7 @@ class ReactPopoverComponent extends UiStatefulComponent<ReactPopoverProps, React
   @override
   ReactElement render()
   {
-    if (props.children.isEmpty)
+    if (props.children == null || props.children.isEmpty)
     {
       return null;
     }
@@ -60,8 +60,9 @@ class ReactPopoverComponent extends UiStatefulComponent<ReactPopoverProps, React
       );
   }
 
-  ResizeSensorHandler _resized(ResizeSensorEvent event)
+  void _resized(ResizeSensorEvent event)
   {
+    print("\n ${event.newHeight}");
     setState(newState()
       ..height = event.newHeight
     );

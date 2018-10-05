@@ -64,7 +64,7 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
             " GRID_MODE_${props.storeGridSettings.gridMode.name}"
             " DIRECTION_MODE_${props.storeGridSettings.directionMode.name}"
             " CROSS_CORNER_${props.storeGridSettings.crossCornerMode.name}"
-            " WAY_MODE_${props.storeGridSettings.wayMode.name}"
+            " WAY_MODE_${props.storeGridSettings.directionalMode.name}"
       )(
           (Dom.div()
             ..className = "nodes")(

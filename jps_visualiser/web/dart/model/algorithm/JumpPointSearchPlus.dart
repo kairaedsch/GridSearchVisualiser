@@ -90,9 +90,7 @@ class JumpPointSearchPlus extends AStar
     }
 
     currentSearchState.description.add(new Explanation()
-      ..addT("This is not JPS. Please implement it. After we have choosen our active node, we will take a look at all of his ")
-      ..addH("neighbour nodes", "blue", [new CircleHighlight(neighbours.map((n) => n.position).toSet())])
-      ..addT(": ")
+      ..addT("The explanation how JPS works is still missing.")
     );
 
     return neighbours;

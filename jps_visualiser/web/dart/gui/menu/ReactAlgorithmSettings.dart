@@ -22,6 +22,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
   @override
   ReactElement render()
   {
+    bool useHeuristic = (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.JPSP_DATA);
     return
       (Dom.div()..className = "menu")(
         (Dom.div()..className = "title")("Algorithm"),
@@ -29,15 +30,17 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Algorithm:"),
               (ReactDropDown()
+                ..title = "Select the algorithm to run on the grid"
                 ..value = props.store.algorithmType
                 ..values = AlgorithmType.values
                 ..selectListener = ((newValue) => props.store.actions.algorithmTypeChanged.call(newValue as AlgorithmType))
               )()
           ),
-          (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.JPSP_DATA) ?
+          useHeuristic ?
           (Dom.div()..className = "config")(
               (Dom.div()..className = "title")("Heuristic:"),
               (ReactDropDown()
+                ..title = "Select the heuristic to be used by the algorithm"
                 ..value = props.store.heuristicType
                 ..values = HeuristicType.values
                 ..selectListener = ((newValue) => props.store.actions.heuristicTypeChanged.call(newValue as HeuristicType))
@@ -45,6 +48,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           ) : (Dom.div()..className = "config")(),
           (Dom.div()..className = "config")(
               (Dom.div()
+                ..title = "Run the algorithm${useHeuristic ? " with the selected heuristic" : ""}"
                 ..className = "button"
                 ..onClick = ((_) => props.runAlgorithm())
               )("run algorithm"),

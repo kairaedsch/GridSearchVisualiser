@@ -231,12 +231,12 @@ abstract class BasicSearchAlgorithm extends Algorithm
       if (searchHistory.path.isPresent)
       {
         bool optimal = dijkstra.getDistance(dijkstra.target) == getDistance(target);
-        searchHistory.title = "$name took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long ${optimal ? "optimal path => no bug, no money" : "NON OPTIMAL path => a bug, a bill"}";
+        searchHistory.title = "The $name Algorithm took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long ${optimal ? "optimal path" : "NON OPTIMAL path => Have you found a bug?"}";
       }
       else
       {
         bool thereExistsNone = dijkstra.searchHistory.path.isEmpty;
-        searchHistory.title = "$name took $turn turns to find no path ${thereExistsNone ? "and there really exists none => no bug, no money" : "altough there exists one => a bug, a bill"}";
+        searchHistory.title = "The $name Algorithm took $turn turns to find no path ${thereExistsNone ? "and there really exists none" : "altough there exists one => Have you found a bug?"}";
       }
     }
   }

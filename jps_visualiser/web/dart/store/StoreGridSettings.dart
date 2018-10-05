@@ -17,21 +17,21 @@ class StoreGridSettings extends Store
   CrossCornerMode _crossCornerMode;
   CrossCornerMode get crossCornerMode => _crossCornerMode;
 
-  WayMode _wayMode;
-  WayMode get wayMode => _wayMode;
+  DirectionalMode _directionalMode;
+  DirectionalMode get directionalMode => _directionalMode;
 
   StoreGridSettings()
   {
     _gridMode = GridMode.BASIC;
     _directionMode = DirectionMode.ALL;
     _crossCornerMode = CrossCornerMode.ALLOW;
-    _wayMode = WayMode.ONE_DIRECTIONAL;
+    _directionalMode = DirectionalMode.BI;
 
     _actions = new ActionsGridSettingsChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);
     _actions.directionModeChanged.listen(_directionModeChanged);
     _actions.crossCornerModeChanged.listen(_crossCornerModeChanged);
-    _actions.wayModeChanged.listen(_wayModeChanged);
+    _actions.directionalModeChanged.listen(_directionalModeChanged);
   }
 
   void _gridModeChanged(GridMode newGridMode)
@@ -52,9 +52,9 @@ class StoreGridSettings extends Store
     trigger();
   }
 
-  void _wayModeChanged(WayMode newWayMode)
+  void _directionalModeChanged(DirectionalMode newDirectionalMode)
   {
-    _wayMode = newWayMode;
+    _directionalMode = newDirectionalMode;
     trigger();
   }
 
@@ -63,7 +63,7 @@ class StoreGridSettings extends Store
     save.writeEnum(5, _gridMode);
     save.writeEnum(6, _directionMode);
     save.writeEnum(7, _crossCornerMode);
-    save.writeEnum(8, _wayMode);
+    save.writeEnum(8, _directionalMode);
   }
 
   void load(Save save)
@@ -71,7 +71,7 @@ class StoreGridSettings extends Store
     _gridMode = save.readEnum(5, GridMode.values);
     _directionMode = save.readEnum(6, DirectionMode.values);
     _crossCornerMode = save.readEnum(7, CrossCornerMode.values);
-    _wayMode = save.readEnum(8, WayMode.values);
+    _directionalMode = save.readEnum(8, DirectionalMode.values);
     trigger();
   }
 }
@@ -82,7 +82,7 @@ class ActionsGridSettingsChanged
   final Action<Size> sizeChanged = new Action<Size>();
   final Action<DirectionMode> directionModeChanged = new Action<DirectionMode>();
   final Action<CrossCornerMode> crossCornerModeChanged = new Action<CrossCornerMode>();
-  final Action<WayMode> wayModeChanged = new Action<WayMode>();
+  final Action<DirectionalMode> directionalModeChanged = new Action<DirectionalMode>();
 }
 
 class GridMode implements DropDownElement, SaveData<GridMode>
@@ -125,10 +125,10 @@ class DirectionMode implements DropDownElement, SaveData<DirectionMode>
   List<DirectionMode> get saveDataValues => values;
 }
 
-class WayMode implements DropDownElement, SaveData<WayMode>
+class DirectionalMode implements DropDownElement, SaveData<DirectionalMode>
 {
-  static const WayMode ONE_DIRECTIONAL = const WayMode("ONE_DIRECTIONAL", "Allow");
-  static const WayMode BI_DIRECTIONAL = const WayMode("BI_DIRECTIONAL", "Deny");
+  static const DirectionalMode MONO = const DirectionalMode("MONO_DIRECTIONAL", "mono");
+  static const DirectionalMode BI = const DirectionalMode("BI_DIRECTIONAL", "bi");
 
   final String name;
   final String dropDownName;
@@ -136,12 +136,12 @@ class WayMode implements DropDownElement, SaveData<WayMode>
   @override
   String toString() => name;
 
-  const WayMode(this.name, this.dropDownName);
+  const DirectionalMode(this.name, this.dropDownName);
 
-  static const List<WayMode> values = const <WayMode>[ONE_DIRECTIONAL, BI_DIRECTIONAL];
+  static const List<DirectionalMode> values = const <DirectionalMode>[MONO, BI];
 
   @override
-  List<WayMode> get saveDataValues => values;
+  List<DirectionalMode> get saveDataValues => values;
 }
 
 class CrossCornerMode implements DropDownElement, SaveData<CrossCornerMode>

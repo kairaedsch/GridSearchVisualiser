@@ -1,4 +1,5 @@
 import 'DropDownElement.dart';
+import 'ReactPopover.dart';
 import 'package:over_react/over_react.dart';
 
 typedef SelectListener = void Function(DropDownElement newValue);
@@ -12,6 +13,7 @@ class ReactDropDownProps extends UiProps
   DropDownElement value;
   List<DropDownElement> values;
   SelectListener selectListener;
+  dynamic popover;
 }
 
 @State()
@@ -45,6 +47,10 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
             ..onInitialize = _resized
             ..isFlexChild = true
           )(
+            (ReactPopover()
+            )(
+                props.popover
+            ),
             (Dom.div()
               ..className = "value current"
               ..onClick = ((_) => _toggleOpen())
@@ -79,7 +85,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
       );
   }
 
-  ResizeSensorHandler _resized(ResizeSensorEvent event)
+  void _resized(ResizeSensorEvent event)
   {
     setState(newState()
       ..width = event.newWidth
