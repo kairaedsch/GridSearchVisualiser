@@ -77,7 +77,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
           _renderTextHighlight(),
           _renderCircleHighlight(),
           _renderDotHighlight(),
-          (state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.store.infoHighlight.isPresent)
+          /*(state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.store.infoHighlight.isPresent)
               ?
           (ReactPopover()
             ..className = "infoHighlight highlight_${props.store.infoHighlight.value.style}"
@@ -85,7 +85,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
               props.store.infoHighlight.value.info
           )
               :
-          null,
+          null,*/
           _renderInner(),
           _renderArrowsToGo(),
           _renderPathHighlights()

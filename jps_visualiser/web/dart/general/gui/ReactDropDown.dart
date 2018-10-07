@@ -13,7 +13,6 @@ class ReactDropDownProps extends UiProps
   DropDownElement value;
   List<DropDownElement> values;
   SelectListener selectListener;
-  dynamic popover;
 }
 
 @State()
@@ -37,51 +36,48 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
   ReactElement render()
   {
     return
-      (Dom.div()
+      (ReactPopover()
         ..className = "dropDown"
             " ${state.isOpen ? "open" : ""}"
         ..onMouseLeave = ((_) => _setClosed())
+        ..title = props.title
       )(
-          (ResizeSensor()
-            ..onResize = _resized
-            ..onInitialize = _resized
-            ..isFlexChild = true
+        (ResizeSensor()
+          ..onResize = _resized
+          ..onInitialize = _resized
+          ..isFlexChild = true
+        )(
+          (Dom.div()
+            ..className = "value current"
+            ..onClick = ((_) => _toggleOpen())
           )(
-            (ReactPopover()
-            )(
-                props.popover
-            ),
+              props.value.dropDownName
+          ),
+          (Dom.div()
+            ..className = "drop"
+            ..style =
+            <String, String>
+            {
+              "width": "${state.width}px"
+            }
+          )(
+            (Dom.div()..className = "arrowLine")(),
             (Dom.div()
-              ..className = "value current"
-              ..onClick = ((_) => _toggleOpen())
-            )(
-                props.value.dropDownName
+              ..className = "values")(
+                props.values
+                    .map((value) =>
+                    (Dom.div()
+                      ..className = "value"
+                          " ${props.value == value ? "selected" : ""}"
+                      ..key = value
+                      ..onClick = ((_) => _handleValueClick(value))
+                    )(
+                        value.dropDownName
+                    ))
+                    .toList()
             ),
-            (Dom.div()
-              ..className = "drop"
-              ..style =
-              <String, String>
-              {
-                "width": "${state.width}px"
-              }
-            )(
-              (Dom.div()..className = "arrowLine")(),
-              (Dom.div()
-                ..className = "values")(
-                  props.values
-                      .map((value) =>
-                      (Dom.div()
-                        ..className = "value"
-                            " ${props.value == value ? "selected" : ""}"
-                        ..key = value
-                        ..onClick = ((_) => _handleValueClick(value))
-                      )(
-                          value.dropDownName
-                      ))
-                      .toList()
-              ),
-            ),
-          )
+          ),
+        )
       );
   }
 
