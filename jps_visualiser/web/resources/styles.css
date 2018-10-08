@@ -10,10 +10,11 @@
   --node-part-size-inner: 8px;
   /* default values */
 
-  --color-blue-darker: #004d8f;
-  --color-blue-dark: #007ce6;
-  --color-blue: #0095FF;
+  --color-blue-lighter: #a9e2ff;
   --color-blue-light: #5bbaff;
+  --color-blue: #0095FF;
+  --color-blue-dark: #007ce6;
+  --color-blue-darker: #004d8f;
 
   --color-red-light: #f50505;
   --color-red: #CA0404;
@@ -397,43 +398,6 @@ g.blinking {
   opacity: 0.1;
 }
 
-.popover {
-  position: absolute;
-  max-width: 800px;
-
-  z-index: 1;
-  display: none;
-}
-
-*:hover>.popover {
-  display: block;
-}
-
-*:hover>.popover:hover {
-  display: none;
-}
-
-.popover .content {
-  padding: 5px 8px;
-  font-size: 14px;
-
-  background: var(--color-blue);
-  color: #FFF;
-  border-radius: 3px;
-  border: 1px solid #FFF;
-  white-space: pre-wrap;
-}
-
-.popover .arrow {
-  height: 10px;
-  margin-left: 10px;
-  margin-top: -1px;
-
-  background: url("images/popoverArrow.svg") no-repeat;
-  background-size: auto 10px;
-  background-position: 10px 0;
-}
-
 .dropDown {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -815,16 +779,15 @@ g.blinking {
 
 .tooltip {
   position: absolute;
-  background: #FFF;
-  border: 1px solid var(--color-yellow-dark);
+  background:var(--color-yellow-dark);
+  border: 1px solid #FFF;
   border-radius: 3px;
   padding: 5px;
   text-align: center;
 }
 
 .tooltip .tooltip-inner {
-  color: var(--color-yellow-darker);
-  font-weight: 100;
+  color: #FFF;
   font-size: 14px;
 }
 
@@ -835,7 +798,7 @@ g.blinking {
   position: absolute;
   margin: 5px;
 
-  border-color: var(--color-yellow-dark);
+  border-color: var(--color-yellow);
 }
 
  .tooltip[x-placement^="top"] {

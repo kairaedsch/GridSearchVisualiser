@@ -36,11 +36,10 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
   ReactElement render()
   {
     return
-      (ReactPopover()
+      (Dom.div()
         ..className = "dropDown"
             " ${state.isOpen ? "open" : ""}"
         ..onMouseLeave = ((_) => _setClosed())
-        ..title = props.title
       )(
         (ResizeSensor()
           ..onResize = _resized

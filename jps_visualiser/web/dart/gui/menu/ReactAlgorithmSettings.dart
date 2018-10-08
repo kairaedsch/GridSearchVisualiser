@@ -30,7 +30,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
         (Dom.div()..className = "configs")(
           (ReactPopover()
             ..className = "config"
-            ..title = "Select the algorithm to run on the grid"
+            ..popover = "Select the algorithm to run on the grid"
           )(
               (Dom.div()..className = "title")("Algorithm:"),
               (ReactDropDown()
@@ -42,7 +42,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           useHeuristic ?
           (ReactPopover()
             ..className = "config"
-            ..title = "Select the heuristic to be used by the algorithm"
+            ..popover = "Select the heuristic to be used by the algorithm"
           )(
               (Dom.div()..className = "title")("Heuristic:"),
               (ReactDropDown()
@@ -53,9 +53,9 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
           ) : (Dom.div()..className = "config")(),
           (ReactPopover()
             ..className = "config"
-            ..title = "Run the algorithm${useHeuristic ? " with the selected heuristic" : ""}"
+            ..popover = "Run the algorithm${useHeuristic ? " with the selected heuristic" : ""}"
           )(
-              (ReactPopover()
+              (Dom.div()
                 ..className = "button"
                 ..onClick = ((_) => props.runAlgorithm())
               )(

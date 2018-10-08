@@ -28,7 +28,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
         (Dom.div()..className = "configs")(
           (ReactPopover()
             ..className = "config"
-            ..title = "Select the mode of the grid"
+            ..popover = "Select the mode of the grid"
           )(
               (Dom.div()..className = "title")("Mode:"),
               (ReactDropDown()
@@ -39,7 +39,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config"
-            ..title = "Select which directions are allowed"
+            ..popover = "Select which directions are allowed"
           )(
               (Dom.div()..className = "title")("Directions:"),
               (ReactDropDown()
@@ -51,7 +51,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           props.store.gridMode != GridMode.BASIC ?
           (ReactPopover()
             ..className = "config"
-            ..title = "Select the directional mode"
+            ..popover = "Select the directional mode"
           )(
               (Dom.div()..className = "title")("Directional:"),
               (ReactDropDown()
@@ -63,7 +63,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
           (ReactPopover()
             ..className = "config"
-            ..title = "Select if edges are allowed to cross corners"
+            ..popover = "Select if edges are allowed to cross corners"
           )(
               (Dom.div()..className = "title")("Cross Corners:"),
               (ReactDropDown()
@@ -74,7 +74,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ) : null,
           (ReactPopover()
             ..className = "config icon"
-            ..title = "Shrink grid"
+            ..popover = "Shrink grid"
           )(
             (Dom.div()
               ..className = "button icon minus"
@@ -83,7 +83,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config icon"
-            ..title = "Enlarge grid"
+            ..popover = "Enlarge grid"
           )(
             (Dom.div()
               ..className = "button icon plus"
@@ -92,7 +92,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config icon"
-            ..title = "Download grid"
+            ..popover = "Download grid"
           )(
             (Dom.div()
               ..className = "button icon save"
@@ -101,7 +101,7 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config icon"
-            ..title = "Load grid"
+            ..popover = "Load grid"
           )(
             (Dom.label()
               ..className = "button icon load"

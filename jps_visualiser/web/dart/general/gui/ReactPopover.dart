@@ -12,11 +12,11 @@ external dynamic getElementById(String id);
 @JS()
 class Tooltip {
   external Tooltip(dynamic reference, TooltipOptions options);
-  external void show();
-  external void hide();
-  external void dispose();
-  external void toggle();
-  external void updateTitleContent(String newTitle);
+  external dynamic show();
+  external dynamic hide();
+  external dynamic dispose();
+  external dynamic toggle();
+  external dynamic updateTitleContent(String newTitle);
 }
 
 @JS()
@@ -59,19 +59,20 @@ UiFactory<ReactPopoverProps> ReactPopover;
 @Props()
 class ReactPopoverProps extends UiProps
 {
-
+  String popover;
 }
 
 @Component()
 class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
 {
-  Tooltip tooltip;
-  String id = "id${new Uuid().v1()}";
+  static int ids = 0;
+  String id = "id_${ids++}";
+  Tooltip tooltip = null;
 
   @override
   Map getInitialProps() =>
       (newProps()
-        ..title = "Fill me"
+        ..popover = "Fill me"
       );
 
   @override
@@ -91,13 +92,38 @@ class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
   void componentDidMount()
   {
     super.componentDidMount();
-    tooltip = new Tooltip(getElementById(id), new TooltipOptions(title: props.title, container: getElementById("body")));
+    _createTooltip();
+  }
+
+  @override
+  void componentDidUpdate(Map prevProps, Map prevState) {
+    super.componentDidUpdate(prevProps, prevState);
+    _createTooltip();
+  }
+
+  @override
+  void componentWillUpdate(Map prevProps, Map prevState) {
+    super.componentDidUpdate(prevProps, prevState);
+    _disposeTooltip();
   }
 
   @override
   void componentWillUnmount()
   {
     super.componentWillUnmount();
-    tooltip.dispose();
+    _disposeTooltip();
+  }
+
+  void _disposeTooltip()
+  {
+    if (tooltip != null)
+    {
+      tooltip.dispose();
+    }
+  }
+
+  void _createTooltip()
+  {
+    tooltip = new Tooltip(getElementById(id), new TooltipOptions(title: "${props.popover}", container: getElementById("body")));
   }
 }
