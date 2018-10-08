@@ -62,7 +62,6 @@ class ReactPopoverProps extends UiProps
   String popover;
 }
 
-
 @Component()
 class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
 {
