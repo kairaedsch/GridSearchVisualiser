@@ -804,7 +804,7 @@ g.blinking {
   padding: 5px;
   border-bottom: 1px solid #FFF;
 
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .tooltip .options {
@@ -824,7 +824,7 @@ g.blinking {
   display: grid;
   align-items: center;
 
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .tooltip .options>.content {
