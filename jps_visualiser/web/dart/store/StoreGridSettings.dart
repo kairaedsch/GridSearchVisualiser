@@ -14,8 +14,8 @@ class StoreGridSettings extends Store
   DirectionMode _directionMode;
   DirectionMode get directionMode => _directionMode;
 
-  CrossCornerMode _crossCornerMode;
-  CrossCornerMode get crossCornerMode => _crossCornerMode;
+  CornerMode _cornerMode;
+  CornerMode get cornerMode => _cornerMode;
 
   DirectionalMode _directionalMode;
   DirectionalMode get directionalMode => _directionalMode;
@@ -24,13 +24,13 @@ class StoreGridSettings extends Store
   {
     _gridMode = GridMode.BASIC;
     _directionMode = DirectionMode.ALL;
-    _crossCornerMode = CrossCornerMode.ALLOW;
-    _directionalMode = DirectionalMode.BI;
+    _cornerMode = CornerMode.CROSS;
+    _directionalMode = DirectionalMode.MONO;
 
     _actions = new ActionsGridSettingsChanged();
     _actions.gridModeChanged.listen(_gridModeChanged);
     _actions.directionModeChanged.listen(_directionModeChanged);
-    _actions.crossCornerModeChanged.listen(_crossCornerModeChanged);
+    _actions.cornerModeChanged.listen(_cornerModeChanged);
     _actions.directionalModeChanged.listen(_directionalModeChanged);
   }
 
@@ -46,9 +46,9 @@ class StoreGridSettings extends Store
     trigger();
   }
 
-  void _crossCornerModeChanged(CrossCornerMode newCrossCornerMode)
+  void _cornerModeChanged(CornerMode newCornerMode)
   {
-    _crossCornerMode = newCrossCornerMode;
+    _cornerMode = newCornerMode;
     trigger();
   }
 
@@ -62,7 +62,7 @@ class StoreGridSettings extends Store
   {
     save.writeEnum(5, _gridMode);
     save.writeEnum(6, _directionMode);
-    save.writeEnum(7, _crossCornerMode);
+    save.writeEnum(7, _cornerMode);
     save.writeEnum(8, _directionalMode);
   }
 
@@ -70,7 +70,7 @@ class StoreGridSettings extends Store
   {
     _gridMode = save.readEnum(5, GridMode.values);
     _directionMode = save.readEnum(6, DirectionMode.values);
-    _crossCornerMode = save.readEnum(7, CrossCornerMode.values);
+    _cornerMode = save.readEnum(7, CornerMode.values);
     _directionalMode = save.readEnum(8, DirectionalMode.values);
     trigger();
   }
@@ -81,7 +81,7 @@ class ActionsGridSettingsChanged
   final Action<GridMode> gridModeChanged = new Action<GridMode>();
   final Action<Size> sizeChanged = new Action<Size>();
   final Action<DirectionMode> directionModeChanged = new Action<DirectionMode>();
-  final Action<CrossCornerMode> crossCornerModeChanged = new Action<CrossCornerMode>();
+  final Action<CornerMode> cornerModeChanged = new Action<CornerMode>();
   final Action<DirectionalMode> directionalModeChanged = new Action<DirectionalMode>();
 }
 
@@ -89,6 +89,20 @@ class GridMode implements DropDownElement, SaveData<GridMode>
 {
   static const GridMode BASIC = const GridMode("BASIC", "Basic");
   static const GridMode ADVANCED = const GridMode("ADVANCED", "Advanced");
+
+  static String popover = """
+            <div class="title">Select the mode of the grid</div>
+            <div class="options">
+              <div class='title'>Basic</div>
+              <div class='content'>
+                Nodes can either be marked as walkable or as not walkable.
+              </div>
+              <div class='title'>Advanced</div>
+              <div class='content'>
+                For each direction a node can be marked as enterable or as not enterable.
+              </div>
+            </div>
+            """;
 
   final String name;
   final String dropDownName;
@@ -111,6 +125,24 @@ class DirectionMode implements DropDownElement, SaveData<DirectionMode>
   static const DirectionMode ONLY_CARDINAL = const DirectionMode("ONLY_CARDINAL", "Only cardinal");
   static const DirectionMode ONLY_DIAGONAL = const DirectionMode("ONLY_DIAGONAL", "Only diagonal");
 
+  static String popover = """
+            <div class="title">Select which directions are allowed</div>
+            <div class="options">
+              <div class='title'>All</div>
+              <div class='content'>
+                All 8 directions.
+              </div>
+              <div class='title'>Only cardinal</div>
+              <div class='content'>
+                Nort, east, south and west.
+              </div>
+              <div class='title'>Only diagonal</div>
+              <div class='content'>
+                Northeast, southeast, southwest and northwest.
+              </div>
+            </div>
+            """;
+
   final String name;
   final String dropDownName;
 
@@ -127,11 +159,25 @@ class DirectionMode implements DropDownElement, SaveData<DirectionMode>
 
 class DirectionalMode implements DropDownElement, SaveData<DirectionalMode>
 {
-  static const DirectionalMode MONO = const DirectionalMode("MONO_DIRECTIONAL", "mono");
-  static const DirectionalMode BI = const DirectionalMode("BI_DIRECTIONAL", "bi");
+  static const DirectionalMode MONO = const DirectionalMode("MONO", "Mono");
+  static const DirectionalMode BI = const DirectionalMode("BI", "Bi");
 
   final String name;
   final String dropDownName;
+
+  static String popover = """
+            <div class="title">Select the directional mode</div>
+            <div class="options">
+              <div class='title'>Mono</div>
+              <div class='content'>
+                You can have one-way connections between nodes.
+              </div>
+              <div class='title'>Bi</div>
+              <div class='content'>
+                You can <strong>not</strong> have one-way connections between nodes.
+              </div>
+            </div>
+            """;
 
   @override
   String toString() => name;
@@ -144,10 +190,24 @@ class DirectionalMode implements DropDownElement, SaveData<DirectionalMode>
   List<DirectionalMode> get saveDataValues => values;
 }
 
-class CrossCornerMode implements DropDownElement, SaveData<CrossCornerMode>
+class CornerMode implements DropDownElement, SaveData<CornerMode>
 {
-  static const CrossCornerMode ALLOW = const CrossCornerMode("ALLOW", "Allow");
-  static const CrossCornerMode DENY = const CrossCornerMode("DENY", "Deny");
+  static const CornerMode CROSS = const CornerMode("CROSS", "Cross");
+  static const CornerMode BYPASS = const CornerMode("BYPASS", "Bypass");
+
+  static String popover = """
+            <div class="title">Select how corners are handled</div>
+            <div class="options">
+              <div class='title'>Cross</div>
+              <div class='content'>
+                Edges are allowed to cross blocked corners.
+              </div>
+              <div class='title'>Bypass</div>
+              <div class='content'>
+                Eges are not allowed to cross blocked corners.
+              </div>
+            </div>
+            """;
 
   final String name;
   final String dropDownName;
@@ -155,10 +215,10 @@ class CrossCornerMode implements DropDownElement, SaveData<CrossCornerMode>
   @override
   String toString() => name;
 
-  const CrossCornerMode(this.name, this.dropDownName);
+  const CornerMode(this.name, this.dropDownName);
 
-  static const List<CrossCornerMode> values = const <CrossCornerMode>[ALLOW, DENY];
+  static const List<CornerMode> values = const <CornerMode>[CROSS, BYPASS];
 
   @override
-  List<CrossCornerMode> get saveDataValues => values;
+  List<CornerMode> get saveDataValues => values;
 }

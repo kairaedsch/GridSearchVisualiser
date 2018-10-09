@@ -60,6 +60,7 @@ UiFactory<ReactPopoverProps> ReactPopover;
 class ReactPopoverProps extends UiProps
 {
   String popover;
+  bool html;
 }
 
 @Component()
@@ -73,6 +74,7 @@ class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
   Map getInitialProps() =>
       (newProps()
         ..popover = "Fill me"
+        ..html = false
       );
 
   @override
@@ -82,6 +84,7 @@ class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
       (Dom.div()
         ..addProps(props.props)
         ..remove("ReactPopoverProps.popover")
+        ..remove("ReactPopoverProps.html")
         ..id = id
       )(
         props.children
@@ -124,6 +127,18 @@ class ReactPopoverComponent extends UiComponent<ReactPopoverProps>
 
   void _createTooltip()
   {
-    tooltip = new Tooltip(getElementById(id), new TooltipOptions(title: "${props.popover}", container: getElementById("body")));
+    String content;
+    String placement;
+    if (props.html == true)
+    {
+      content = "${props.popover}";
+      placement = "left";
+    }
+    else
+    {
+      content = "<div class='title'>${props.popover}</div>";
+      placement = "top";
+    }
+    tooltip = new Tooltip(getElementById(id), new TooltipOptions(title: content, container: getElementById("body"), placement: placement, html: true));
   }
 }

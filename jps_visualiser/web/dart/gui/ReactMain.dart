@@ -90,6 +90,8 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
     AnchorElement link = new AnchorElement();
     link.href = save.downloadLink();
     link.download = "grid.png";
+    link.style.display = "false";
+    querySelector('body').append(link);
     link.click();
   }
 

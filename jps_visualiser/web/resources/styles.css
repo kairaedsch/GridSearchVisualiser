@@ -40,25 +40,30 @@
 }
 
 *, *:before, *:after {
-  box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  color: #333;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  box-sizing: inherit;
+
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  text-overflow: inherit;
+  white-space: inherit;
 }
 
 html, body {
+  box-sizing: border-box;
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
-}
 
-.content {
-
+  color: #333;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .leftContent, .rightContent {
@@ -92,7 +97,7 @@ html, body {
 }
 
 .grid .row {
-  width: 100%;
+  width: calc(100% + 1px);
   height: var(--node-size);
 }
 
@@ -167,7 +172,7 @@ html, body {
 }
 
 .grid .node .parts {
-  width: var(--node-size);
+  width: calc(var(--node-size) + 1px);
   height: var(--node-size);
   overflow: hidden;
   margin: -1px;
@@ -408,8 +413,9 @@ g.blinking {
 
 .dropDown .value {
   padding: 5px 8px;
-  font-size: 14px;
 
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   background: var(--color-blue-light);
   color: #FFF;
@@ -524,9 +530,10 @@ g.blinking {
 
 .button {
   padding: 5px 8px 5px 30px;
-  font-size: 14px;
   height: 29px;
 
+  font-size: 14px;
+  font-weight: 600;
   border-radius: 3px;
   cursor: pointer;
   color: #FFF;
@@ -779,16 +786,53 @@ g.blinking {
 
 .tooltip {
   position: absolute;
-  background:var(--color-yellow-dark);
   border: 1px solid #FFF;
   border-radius: 3px;
-  padding: 5px;
-  text-align: center;
-}
 
-.tooltip .tooltip-inner {
+  background:var(--color-yellow-dark);
+  text-align: center;
   color: #FFF;
   font-size: 14px;
+  max-width: 350px;
+}
+
+.tooltip:hover {
+  display: none;
+}
+
+.tooltip>.tooltip-inner>.title {
+  padding: 5px;
+  border-bottom: 1px solid #FFF;
+
+  font-weight: 800;
+}
+
+.tooltip .options {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: stretch;
+}
+
+.tooltip .options>div {
+  float: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.tooltip .options>.title {
+  padding: 5px;
+  padding-right: 15px;
+  display: grid;
+  align-items: center;
+
+  font-weight: 800;
+}
+
+.tooltip .options>.content {
+  padding: 5px;
+
+  text-align: left;
+  white-space: normal;
+  font-weight: 600;
 }
 
 .tooltip-arrow {

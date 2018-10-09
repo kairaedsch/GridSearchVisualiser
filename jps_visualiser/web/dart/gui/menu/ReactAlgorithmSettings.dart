@@ -59,7 +59,7 @@ class ReactAlgorithmSettingsComponent extends FluxUiComponent<ReactAlgorithmSett
                 ..className = "button"
                 ..onClick = ((_) => props.runAlgorithm())
               )(
-                "run algorithm"),
+                "Run algorithm"),
           ),
         )
     );

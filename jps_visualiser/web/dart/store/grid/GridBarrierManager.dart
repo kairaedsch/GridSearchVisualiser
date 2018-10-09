@@ -27,7 +27,7 @@ class GridBarrierManager
 
   Map<Position, StructureNodeBarrier> transformTo(Position position, Direction direction, bool shouldBecomeBlocked)
   {
-    CrossCornerMode crossCornerMode = _storeGridSettings.crossCornerMode;
+    CornerMode cornerMode = _storeGridSettings.cornerMode;
     DirectionalMode directionalMode = _storeGridSettings.directionalMode;
 
     Map<Position, StructureNodeBarrier> transforms = new Map();
@@ -43,7 +43,7 @@ class GridBarrierManager
       }
     }
 
-    if (crossCornerMode == CrossCornerMode.DENY && direction.isDiagonal)
+    if (cornerMode == CornerMode.BYPASS && direction.isDiagonal)
     {
       Position positionPlus45 = position.go(direction.turn(45));
       if (positionPlus45.legal(_storeGrid.size))
@@ -110,7 +110,7 @@ class GridBarrierManager
   {
     GridMode gridMode = _storeGridSettings.gridMode;
     DirectionMode directionMode = _storeGridSettings.directionMode;
-    CrossCornerMode crossCornerMode = _storeGridSettings.crossCornerMode;
+    CornerMode cornerMode = _storeGridSettings.cornerMode;
     DirectionalMode directionalMode = _storeGridSettings.directionalMode;
 
     if (!position.legal(_storeGrid.size))
@@ -156,7 +156,7 @@ class GridBarrierManager
       }
     }
 
-    if (direction.isDiagonal && crossCornerMode == CrossCornerMode.DENY)
+    if (direction.isDiagonal && cornerMode == CornerMode.BYPASS)
     {
       bool isCornerBlocked = _enterBlockedDirectly(position, direction)
           || _leaveBlockedDirectly(position.go(direction.turn(45)), direction.turn(-90))

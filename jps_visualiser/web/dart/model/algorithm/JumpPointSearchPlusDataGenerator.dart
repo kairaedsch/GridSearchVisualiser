@@ -4,6 +4,7 @@ import '../../general/Position.dart';
 import '../../general/Size.dart';
 import '../Grid.dart';
 import '../heuristics/Heuristic.dart';
+import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import 'Algorithm.dart';
 import 'JumpPointSearchJumpPoints.dart';
@@ -27,6 +28,10 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     {
       addSearchState();
       currentSearchState.title..addT("Interaktive arrows");
+
+      currentSearchState.description.add(new Explanation()
+        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
+      );
 
       PathHighlight pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
@@ -65,6 +70,10 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       addSearchState();
       currentSearchState.title..addT("Static arrows");
 
+      currentSearchState.description.add(new Explanation()
+        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
+      );
+
       List<PathHighlight> paths = grid
           .positions()
           .expand((position) =>
@@ -88,6 +97,10 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     {
       addSearchState();
       currentSearchState.title..addT("Static numbers");
+
+      currentSearchState.description.add(new Explanation()
+        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
+      );
 
       List<DirectionTextHighlight> texts = grid
           .positions()

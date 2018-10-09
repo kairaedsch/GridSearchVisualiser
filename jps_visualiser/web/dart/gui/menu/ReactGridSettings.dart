@@ -28,7 +28,8 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
         (Dom.div()..className = "configs")(
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select the mode of the grid"
+            ..popover = GridMode.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Mode:"),
               (ReactDropDown()
@@ -39,7 +40,8 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select which directions are allowed"
+            ..popover = DirectionMode.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Directions:"),
               (ReactDropDown()
@@ -51,7 +53,8 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           props.store.gridMode != GridMode.BASIC ?
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select the directional mode"
+            ..popover = DirectionalMode.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Directional:"),
               (ReactDropDown()
@@ -63,13 +66,14 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select if edges are allowed to cross corners"
+            ..popover = CornerMode.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Cross Corners:"),
               (ReactDropDown()
-                ..value = props.store.crossCornerMode
-                ..values = CrossCornerMode.values
-                ..selectListener = ((newValue) => props.store.actions.crossCornerModeChanged.call(newValue as CrossCornerMode))
+                ..value = props.store.cornerMode
+                ..values = CornerMode.values
+                ..selectListener = ((newValue) => props.store.actions.cornerModeChanged.call(newValue as CornerMode))
               )()
           ) : null,
           (ReactPopover()

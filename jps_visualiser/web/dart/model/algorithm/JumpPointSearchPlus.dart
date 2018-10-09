@@ -90,8 +90,9 @@ class JumpPointSearchPlus extends AStar
     }
 
     currentSearchState.description.add(new Explanation()
-      ..addT("The explanation how JPS works is still missing.")
+      ..addT("<The JPS+ Algorithm is working but the explanation for it has not been implemented yet>")
     );
+
 
     return neighbours;
   }
