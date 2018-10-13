@@ -282,23 +282,23 @@ html, body {
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.SOUTH_EAST {
-  transform: rotate(90deg);
+  transform: scaleY(-1);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.SOUTH {
-  transform: rotate(180deg);
+  transform: scaleY(-1);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.SOUTH_WEST {
-  transform: rotate(180deg);
+  transform: scaleY(-1);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.WEST {
-  transform: rotate(270deg);
+  transform: scaleX(-1) rotate(90deg);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.NORTH_WEST {
-  transform: rotate(270deg);
+  transform: scaleX(-1);
 }
 
 .grid.GRID_MODE_ADVANCED .node.mouseUp .part.outer.enterUnblocked:hover {
