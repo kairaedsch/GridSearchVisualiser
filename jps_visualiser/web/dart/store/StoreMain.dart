@@ -36,7 +36,7 @@ class StoreMain extends Store
     _storeHistory = new StoreHistory();
     _storeGridSettings = new StoreGridSettings();
     _storeAlgorithmSettings = new StoreAlgorithmSettings();
-    _storeGrid = new StoreGrid(_storeGridSettings, _storeHistory.actions);
+    _storeGrid = new StoreGrid(_storeGridSettings, _storeHistory.actions, _runAlgorithm);
     _storePaths = new StorePaths(_storeHistory.actions);
 
     _actions = new ActionsMain();

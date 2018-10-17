@@ -31,13 +31,11 @@ class BoxHighlight extends Highlight
       identical(this, other) ||
           other is BoxHighlight &&
               runtimeType == other.runtimeType &&
-              style == other.style &&
-              positions == other.positions;
+              style == other.style;
 
   @override
   int get hashCode =>
-      style.hashCode ^
-      positions.hashCode;
+      style.hashCode;
 }
 
 class CircleHighlight extends Highlight
@@ -56,13 +54,11 @@ class CircleHighlight extends Highlight
       identical(this, other) ||
           other is CircleHighlight &&
               runtimeType == other.runtimeType &&
-              style == other.style &&
-              positions == other.positions;
+              style == other.style;
 
   @override
   int get hashCode =>
-      style.hashCode ^
-      positions.hashCode;
+      style.hashCode;
 }
 
 class DotHighlight extends Highlight
@@ -81,13 +77,11 @@ class DotHighlight extends Highlight
       identical(this, other) ||
           other is DotHighlight &&
               runtimeType == other.runtimeType &&
-              style == other.style &&
-              positions == other.positions;
+              style == other.style;
 
   @override
   int get hashCode =>
-      style.hashCode ^
-      positions.hashCode;
+      style.hashCode;
 }
 
 class PathHighlight extends Highlight
@@ -146,13 +140,11 @@ class TextHighlight extends Highlight
           other is TextHighlight &&
               runtimeType == other.runtimeType &&
               style == other.style &&
-              position == other.position &&
               text == other.text;
 
   @override
   int get hashCode =>
       style.hashCode ^
-      position.hashCode ^
       text.hashCode;
 }
 
@@ -175,14 +167,12 @@ class DirectionTextHighlight extends Highlight
           other is DirectionTextHighlight &&
               runtimeType == other.runtimeType &&
               style == other.style &&
-              position == other.position &&
               direction == other.direction &&
               text == other.text;
 
   @override
   int get hashCode =>
       style.hashCode ^
-      position.hashCode ^
       direction.hashCode ^
       text.hashCode;
 }
@@ -205,12 +195,10 @@ class InfoHighlight extends Highlight
           other is InfoHighlight &&
               runtimeType == other.runtimeType &&
               style == other.style &&
-              position == other.position &&
               info == other.info;
 
   @override
   int get hashCode =>
       style.hashCode ^
-      position.hashCode ^
       info.hashCode;
 }

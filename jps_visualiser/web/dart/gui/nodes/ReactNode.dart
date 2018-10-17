@@ -58,7 +58,7 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   ReactElement render()
   {
     StructureNode structureNode = props.store.structureNode;
-
+    print("render Node ${props.store.position}");
     return
       (Dom.div()
         ..className = "node"

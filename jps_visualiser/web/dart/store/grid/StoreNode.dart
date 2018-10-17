@@ -36,7 +36,7 @@ class StoreNode extends Store
   ActionsNodeChanged _actions;
   ActionsNodeChanged get actions => _actions;
 
-  StoreNode(this.position, ActionsHistory actionsHistory)
+  StoreNode(this.position, ActionsHistory actionsHistory, Function runAlgorithm)
   {
     _structureNode = new StructureNode.normal();
 
@@ -52,6 +52,8 @@ class StoreNode extends Store
     _actions.structureNodeChanged.listen(_changeStructureNode);
 
     actionsHistory.highlightsChanged.listen(_historyHighlightsChanged);
+
+    _actions.structureNodeChanged.listen((_) => runAlgorithm());
   }
 
   void _changeStructureNode(StructureNode structureNode)
@@ -125,39 +127,47 @@ class StoreNode extends Store
 
     if (_boxHighlight != newBoxHighlight)
     {
-      _boxHighlight = newBoxHighlight;
       trigger();
+      print("_boxHighlight");
     }
-    if (_circleHighlight != newCircleHighlight)
+    else if (_circleHighlight != newCircleHighlight)
     {
-      _circleHighlight = newCircleHighlight;
       trigger();
+      print("_circleHighlight");
     }
-    if (_dotHighlight != newDotHighlight)
+    else if (_dotHighlight != newDotHighlight)
     {
-      _dotHighlight = newDotHighlight;
       trigger();
+      print("_dotHighlight");
     }
-    if (_textHighlight != newTextHighlight)
+    else if (_textHighlight != newTextHighlight)
     {
-      _textHighlight = newTextHighlight;
       trigger();
+      print("_textHighlight");
     }
-    if (_infoHighlight != newInfoHighlight)
+    else if (_infoHighlight != newInfoHighlight)
     {
-      _infoHighlight = newInfoHighlight;
       trigger();
+      print("_infoHighlight");
     }
-    if (_pathHighlights != newPathHighlights && (_pathHighlights.isNotEmpty || newPathHighlights.isNotEmpty))
+    else if (_pathHighlights != newPathHighlights && (_pathHighlights.isNotEmpty || newPathHighlights.isNotEmpty))
     {
-      _pathHighlights = newPathHighlights;
       trigger();
+      print("_pathHighlights");
     }
-    if (_directionTextHighlights != newDirectionTextHighlights && (_directionTextHighlights.isNotEmpty || newDirectionTextHighlights.isNotEmpty))
+    else if (_directionTextHighlights != newDirectionTextHighlights && (_directionTextHighlights.isNotEmpty || newDirectionTextHighlights.isNotEmpty))
     {
-      _directionTextHighlights = newDirectionTextHighlights;
       trigger();
+      print("_directionTextHighlights");
     }
+
+    _boxHighlight = newBoxHighlight;
+    _circleHighlight = newCircleHighlight;
+    _dotHighlight = newDotHighlight;
+    _textHighlight = newTextHighlight;
+    _infoHighlight = newInfoHighlight;
+    _pathHighlights = newPathHighlights;
+    _directionTextHighlights = newDirectionTextHighlights;
   }
 }
 

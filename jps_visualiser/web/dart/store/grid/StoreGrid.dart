@@ -40,10 +40,10 @@ class StoreGrid extends Store
           .first
           .position;
 
-  StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory)
+  StoreGrid(this._storeGridSettings, ActionsHistory actionsHistory, Function runAlgorithm)
   {
     _size = new Size(15, 15);
-    _storeNodes = new Array2D<StoreNode>(size, (Position pos) => new StoreNode(pos, actionsHistory));
+    _storeNodes = new Array2D<StoreNode>(size, (Position pos) => new StoreNode(pos, actionsHistory, runAlgorithm));
 
     _CheckUniqueStructureNodeType(new Position(2, 7), StructureNodeType.SOURCE_NODE);
     _CheckUniqueStructureNodeType(new Position(12, 7), StructureNodeType.TARGET_NODE);
