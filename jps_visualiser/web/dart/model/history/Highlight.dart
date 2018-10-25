@@ -1,5 +1,5 @@
-import '../../general/Direction.dart';
 import '../../general/Position.dart';
+import '../../futuuure/grid/Direction.dart';
 import 'package:quiver/core.dart';
 
 abstract class Highlight

@@ -1,59 +1,61 @@
+import '../futuuure/transfer/Data.dart';
 import '../general/Save.dart';
-import '../store/grid/StorePaths.dart';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
+
+import 'package:over_react/react_dom.dart' as react_dom;
+import 'package:over_react/over_react.dart' as over_react;
 
 import '../store/StoreAlgorithmSettings.dart';
 import '../store/StoreGridSettings.dart';
 import '../store/grid/StoreGrid.dart';
-import '../store/StoreMain.dart';
-import '../store/history/StoreHistory.dart';
 import 'nodes/ReactGrid.dart';
 import 'nodes/arrows/ReactPaths.dart';
 import 'menu/ReactGridSettings.dart';
 import 'menu/ReactAlgorithmSettings.dart';
 import 'history/ReactHistory.dart';
 
+void initGUI(Data data)
+{
+  over_react.setClientConfiguration();
+
+  react_dom.render(
+      (ReactMain()
+        ..data = data
+      )(),
+      querySelector('#contentContainer')
+  );
+}
+
 @Factory()
 UiFactory<ReactMainProps> ReactMain;
 
 @Props()
-class ReactMainProps extends FluxUiProps<ActionsMain, StoreMain>
+class ReactMainProps extends UiProps
 {
-
+  Data data;
 }
 
 @Component()
-class ReactMainComponent extends FluxUiComponent<ReactMainProps>
+class ReactMainComponent extends UiComponent<ReactMainProps>
 {
   @override
   ReactElement render()
   {
-    StoreGrid storeGrid = props.store.storeGrid;
-    StoreGridSettings storeGridSettings = props.store.storeGridSettings;
-    StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
-    StoreHistory storeHistory = props.store.storeHistory;
-    StorePaths storePaths = props.store.storePaths;
-
     return (
     Dom.div()..className = "content")(
       (Dom.div()..className = "leftContent")(
         (ReactGrid()
-          ..storeGridSettings = storeGridSettings
-          ..store = storeGrid
-          ..actions = storeGrid.actions
+          ..data = props.data
         )(),
         (ReactPaths()
-          ..storeGrid = storeGrid
-          ..store = storePaths
-          ..actions = storePaths.actions
+          ..data = props.data
         )()
       ),
       (Dom.div()..className = "rightContent")(
         (Dom.div()..className = "gridSettingsContainer")(
             (ReactGridSettings()
-              ..store = storeGridSettings
-              ..actions = storeGridSettings.actions
+              ..data = props.data
               ..smallerGrid = storeGrid.smaller
               ..biggerGrid = storeGrid.bigger
               ..download = _download
@@ -62,15 +64,13 @@ class ReactMainComponent extends FluxUiComponent<ReactMainProps>
         ),
         (Dom.div()..className = "algorithmSettingsContainer")(
             (ReactAlgorithmSettings()
-              ..store = storeAlgorithmSettings
-              ..actions = storeAlgorithmSettings.actions
+              ..data = props.data
               ..runAlgorithm = props.store.actions.runAlgorithm.call
             )()
         ),
         (Dom.div()..className = "historyContainer")(
             (ReactHistory()
-              ..store = storeHistory
-              ..actions = storeHistory.actions
+              ..data = props.data
             )()
         )
       )

@@ -1,8 +1,7 @@
-import 'DropDownElement.dart';
-import 'ReactPopover.dart';
 import 'package:over_react/over_react.dart';
 
-typedef SelectListener = void Function(DropDownElement newValue);
+typedef SelectListener = void Function(dynamic newValue);
+typedef GetTitle = String Function(dynamic newValue);
 
 @Factory()
 UiFactory<ReactDropDownProps> ReactDropDown;
@@ -10,9 +9,10 @@ UiFactory<ReactDropDownProps> ReactDropDown;
 @Props()
 class ReactDropDownProps extends UiProps
 {
-  DropDownElement value;
-  List<DropDownElement> values;
+  dynamic value;
+  List<dynamic> values;
   SelectListener selectListener;
+  GetTitle getTitle;
 }
 
 @State()
@@ -64,14 +64,14 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
             (Dom.div()
               ..className = "values")(
                 props.values
-                    .map((value) =>
+                    .map((dynamic value) =>
                     (Dom.div()
                       ..className = "value"
                           " ${props.value == value ? "selected" : ""}"
                       ..key = value
                       ..onClick = ((_) => _handleValueClick(value))
                     )(
-                        value.dropDownName
+                        props.getTitle(value)
                     ))
                     .toList()
             ),
@@ -87,7 +87,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
     );
   }
 
-  void _handleValueClick(DropDownElement value)
+  void _handleValueClick(dynamic value)
   {
     _setClosed();
     if (value != props.value)

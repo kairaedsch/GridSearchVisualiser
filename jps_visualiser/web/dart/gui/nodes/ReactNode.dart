@@ -1,28 +1,27 @@
-import '../../general/Direction.dart';
+import '../../futuuure/grid/Direction.dart';
+import '../../futuuure/transfer/Data.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
+import '../../model/history/Highlight.dart';
 import '../../store/StoreGridSettings.dart';
-import '../../store/grid/StoreGrid.dart';
-import '../../store/grid/StoreNode.dart';
+import '../../futuuure/grid/Barrier.dart';
 import '../../store/grid/StructureNode.dart';
-import '../../general/gui/ReactPopover.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'arrows/ReactArrow.dart';
 import 'arrows/ReactPaths.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
-import 'package:w_flux/src/store.dart';
 
 @Factory()
 UiFactory<ReactNodeProps> ReactNode;
 
 @Props()
-class ReactNodeProps extends FluxUiProps<ActionsNodeChanged, StoreNode>
+class ReactNodeProps extends UiProps
 {
-  StoreGridSettings storeGridSettings;
-  StoreGrid storeGrid;
+  Data data;
   ReactGridComponent grid;
+  Position position;
 }
 
 @State()
@@ -33,8 +32,16 @@ class ReactNodeState extends UiState
 }
 
 @Component()
-class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNodeState>
+class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeState>
 {
+  Barrier get barrier => props.data.getBarrier(props.position);
+  Optional<BoxHighlight> get boxHighlight => const Optional.absent();
+  Optional<BoxHighlight> get directionTextHighlights => const Optional.absent();
+  List<PathHighlight> get pathHighlights => [];
+  Optional<TextHighlight> get textHighlight => const Optional.absent();
+  Optional<CircleHighlight> get circleHighlight => const Optional.absent();
+  Optional<DotHighlight> get dotHighlight => const Optional.absent();
+
   @override
   Map getInitialState() =>
       (newState()
@@ -43,32 +50,19 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
       );
 
   @override
-  List<Store> redrawOn() {
-    Position position = props.store.position;
-    StoreGrid storeGrid = props.storeGrid;
-    List<StoreNode> neighbours = Direction.values
-        .map((d) => position.go(d))
-        .where((Position position) => position.legal(props.storeGrid.size))
-        .map((Position position) => storeGrid[position]).toList();
-    neighbours.add(props.store);
-    return neighbours;
-  }
-
-  @override
   ReactElement render()
   {
-    StructureNode structureNode = props.store.structureNode;
-    print("render Node ${props.store.position}");
+    print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"
-            " ${props.storeGridSettings.gridMode == GridMode.BASIC ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
-            " ${props.storeGridSettings.gridMode == GridMode.ADVANCED ? (structureNode.barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
-            " ${structureNode.type.name}"
+            " ${props.data.gridMode == GridMode.BASIC ? (barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
+            " ${props.data.gridMode == GridMode.ADVANCED ? (barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
+            " ${props.data.startPosition == props.position ? "SOURCE_NODE" : (props.data.targetPosition == props.position ? "TARGET_NODE" : "NORMAL_NODE")}"
             " ${state.mouseIsOver ? "hover" : "noHover"}"
             " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
             " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
-            " ${props.store.boxHighlight.isPresent ? "boxHighlight highlight_${props.store.boxHighlight.value.style}" : ""}"
+            " ${boxHighlight.isPresent ? "boxHighlight highlight_${boxHighlight.value.style}" : ""}"
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseUp = ((_) => _handleMouseUp())
         ..onMouseEnter = ((_) => _handleMouseEnter())
@@ -77,12 +71,12 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
           _renderTextHighlight(),
           _renderCircleHighlight(),
           _renderDotHighlight(),
-          /*(state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.store.infoHighlight.isPresent)
+          /*(state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.data.infoHighlight.isPresent)
               ?
           (ReactPopover()
-            ..className = "infoHighlight highlight_${props.store.infoHighlight.value.style}"
+            ..className = "infoHighlight highlight_${props.data.infoHighlight.value.style}"
           )(
-              props.store.infoHighlight.value.info
+              props.data.infoHighlight.value.info
           )
               :
           null,*/
@@ -127,22 +121,20 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   }
 
   void _triggerMouseMode() {
-    props.grid.updateMouseModeFromNode(props.store);
+    props.grid.updateMouseModeFromNode(props.position);
   }
 
   ReactElement _renderInner()
   {
-    StructureNode structureNode = props.store.structureNode;
-
-    if (props.store.directionTextHighlights.isEmpty && structureNode.type == StructureNodeType.NORMAL_NODE)
+    if (directionTextHighlights.isEmpty && (props.data.startPosition != props.position && props.data.targetPosition != props.position))
     {
-      if (props.storeGridSettings.gridMode == GridMode.BASIC)
+      if (props.data.gridMode == GridMode.BASIC)
       {
         return null;
       }
       else
       {
-        if (props.storeGrid.gridBarrierManager.somethingToDisplay(props.store.position) && !state.mouseIsOver)
+        if (props.data.gridBarrierManager.somethingToDisplay(props.position) && !state.mouseIsOver)
         {
           return null;
         }
@@ -168,13 +160,10 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
   {
     return
       (ReactNodePart()
+        ..data = props.data
         ..key = direction
-        ..storeGridSettings = props.storeGridSettings
-        ..storeNode = props.store
         ..direction = new Optional.fromNullable(direction)
-        ..actions = props.actions
-        ..grid = props.grid
-        ..storeGrid = props.storeGrid
+        ..position = props.position
       )();
   }
 
@@ -194,8 +183,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
 
   ReactElement _renderArrowToGo(Direction direction)
   {
-    bool leaveAble = props.storeGrid.gridBarrierManager.leaveAble(props.store.position, direction);
-    bool enterAble = props.storeGrid.gridBarrierManager.enterAble(props.store.position, direction);
+    bool leaveAble = props.data.gridBarrierManager.leaveAble(props.position, direction);
+    bool enterAble = props.data.gridBarrierManager.enterAble(props.position, direction);
 
     if (!enterAble && !leaveAble)
     {
@@ -205,8 +194,8 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return
       (ReactArrow()
         ..key = direction
-        ..size = props.storeGrid.size
-        ..path = [props.store.position, props.store.position.go(direction)]
+        ..size = props.data.size
+        ..path = [props.position, props.position.go(direction)]
         ..showEnd = leaveAble && !(enterAble && leaveAble)
         ..showStart = enterAble && !(enterAble && leaveAble)
       )();
@@ -222,48 +211,48 @@ class ReactNodeComponent extends FluxUiStatefulComponent<ReactNodeProps, ReactNo
     return
       (Dom.div()
         ..className = "pathHighlights")(
-          props.store.pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.storeGrid.size, true)).toList()
+          pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.data.size, true)).toList()
       );
   }
 
   ReactElement _renderTextHighlight()
   {
-    if (props.store.textHighlight.isEmpty)
+    if (textHighlight.isEmpty)
     {
       return null;
     }
 
     return (Dom.div()
       ..className = "textHighlight"
-        " highlight_${props.store.textHighlight.value.style}"
+        " highlight_${textHighlight.value.style}"
     )(
-        props.store.textHighlight.value.text
+        textHighlight.value.text
     );
   }
 
   ReactElement _renderCircleHighlight()
   {
-    if (props.store.circleHighlight.isEmpty)
+    if (circleHighlight.isEmpty)
     {
       return null;
     }
 
     return (Dom.div()
       ..className = "circleHighlight"
-          " highlight_${props.store.circleHighlight.value.style}"
+          " highlight_${circleHighlight.value.style}"
     )();
   }
 
   ReactElement _renderDotHighlight()
   {
-    if (props.store.dotHighlight.isEmpty)
+    if (dotHighlight.isEmpty)
     {
       return null;
     }
 
     return (Dom.div()
       ..className = "dotHighlight"
-        " highlight_${props.store.dotHighlight.value.style}"
+        " highlight_${dotHighlight.value.style}"
     )();
   }
 }

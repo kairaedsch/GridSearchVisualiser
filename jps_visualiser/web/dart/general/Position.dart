@@ -1,6 +1,6 @@
+import '../futuuure/grid/Direction.dart';
 import 'Direction.dart';
 import 'Size.dart';
-import 'dart:math';
 
 class Position
 {
@@ -34,7 +34,7 @@ class Position
 
   Position goMulti(Direction direction, int length)
   {
-    return new Position(x + direction.dx * length, y + direction.dy * length);
+    return new Position(x + Directions.getDx(direction) * length, y + Directions.getDy(direction) * length);
   }
 
   Direction lastDirectionTo(Position targetPosition)

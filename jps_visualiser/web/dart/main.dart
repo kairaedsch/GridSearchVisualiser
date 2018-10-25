@@ -1,21 +1,20 @@
-import 'dart:html';
-
-import 'general/Size.dart';
-import 'store/StoreMain.dart';
-import 'package:over_react/react_dom.dart' as react_dom;
-import 'package:over_react/over_react.dart' as over_react;
+import 'futuuure/general/TransferMaster.dart';
+import 'futuuure/pathfinder/PathfinderWorker.dart';
+import 'futuuure/transfer/Data.dart';
 import 'gui/ReactMain.dart';
 
-void main() {
-  // Initialize React
-  over_react.setClientConfiguration();
+void main()
+{
+  Data data = new Data();
 
-  StoreMain storeMain = new StoreMain();
-  react_dom.render(
-      (ReactMain()
-          ..store = storeMain
-          ..actions = storeMain.actions
-      )(),
-      querySelector('#contentContainer')
-  );
+  if (Data.useWebWorker)
+  {
+    new TransferMaster(data);
+  }
+  else
+  {
+    new PathfinderWorker(data);
+  }
+
+  initGUI(data);
 }

@@ -1,16 +1,13 @@
-import '../../general/Direction.dart';
+import '../../futuuure/grid/Direction.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/Position.dart';
-import '../../store/StoreGridSettings.dart';
-import '../../store/grid/GridBarrierManager.dart';
-import '../../store/grid/StoreNode.dart';
-import '../../store/grid/StructureNode.dart';
 import 'MouseMode.dart';
 import 'ReactGrid.dart';
 import 'package:quiver/core.dart';
 
 class EditBarrierMouseMode extends MouseMode
 {
-  Optional<bool> _easyFillModus = const Optional.absent();
+  Optional<bool> _easyFillMode = const Optional.absent();
 
   EditBarrierMouseMode(ReactGridComponent reactGrid) : super(reactGrid);
 
@@ -18,18 +15,16 @@ class EditBarrierMouseMode extends MouseMode
 
   void evaluateNode(Position position)
   {
-    StoreNode storeNode = reactGrid.props.store[position];
-    GridBarrierManager gridBarrierManager = reactGrid.props.store.gridBarrierManager;
-    StructureNode structureNode = storeNode.structureNode;
+    var barrier = data.getBarrier(position);
+    var structureNodeType = getStructureNodeType(position);
 
-    if (reactGrid.props.storeGridSettings.gridMode == GridMode.BASIC && (structureNode.type == StructureNodeType.NORMAL_NODE || structureNode.barrier.isAnyBlocked()))
+    if (data.gridMode == GridMode.BASIC && (structureNodeType == StructureNodeType.NORMAL_NODE || barrier.isAnyBlocked()))
     {
-      bool maybeNewEasyFillModus = !structureNode.barrier.isAnyBlocked();
-      bool easyFillModus = getAndUpdateEasyFillModus(maybeNewEasyFillModus);
-      if (maybeNewEasyFillModus == easyFillModus)
+      bool maybeNewEasyFillMode = !barrier.isAnyBlocked();
+      bool easyFillMode = _getAndUpdateEasyFillMode(maybeNewEasyFillMode);
+      if (maybeNewEasyFillMode == easyFillMode)
       {
-        StructureNode newStructureNode = structureNode.clone(barrier: gridBarrierManager.getTotal(easyFillModus));
-        storeNode.actions.structureNodeChanged.call(newStructureNode);
+        data.gridBarrierManager.setTotal(position, easyFillMode);
       }
     }
   }
@@ -38,30 +33,21 @@ class EditBarrierMouseMode extends MouseMode
   {
     if (direction != null)
     {
-      GridBarrierManager gridBarrierManager = reactGrid.props.store.gridBarrierManager;
-
-      if (reactGrid.props.storeGridSettings.gridMode == GridMode.ADVANCED)
+      if (data.gridMode == GridMode.ADVANCED)
       {
-        bool maybeNewEasyFillModus = gridBarrierManager.enterAble(position, direction);
-        bool easyFillModus = getAndUpdateEasyFillModus(maybeNewEasyFillModus);
+        bool maybeNewEasyFillModus =  data.gridBarrierManager.enterAble(position, direction);
+        bool easyFillModus = _getAndUpdateEasyFillMode(maybeNewEasyFillModus);
         if (maybeNewEasyFillModus == easyFillModus)
         {
-          Map<Position, StructureNodeBarrier> changes = gridBarrierManager.transformTo(position, direction, easyFillModus);
-          changes.forEach((position, barrier)
-          {
-            StoreNode storeNode = reactGrid.props.store[position];
-            StructureNode structureNode = storeNode.structureNode;
-            StructureNode newStructureNode = structureNode.clone(barrier: barrier);
-            storeNode.actions.structureNodeChanged.call(newStructureNode);
-          });
+          data.gridBarrierManager.set(position, direction, easyFillModus);
         }
       }
     }
   }
 
-  bool getAndUpdateEasyFillModus(bool maybeNewValue)
+  bool _getAndUpdateEasyFillMode(bool maybeNewValue)
   {
-    _easyFillModus.ifAbsent(() => _easyFillModus = new Optional.of(maybeNewValue));
-    return _easyFillModus.value;
+    _easyFillMode.ifAbsent(() => _easyFillMode = new Optional.of(maybeNewValue));
+    return _easyFillMode.value;
   }
 }

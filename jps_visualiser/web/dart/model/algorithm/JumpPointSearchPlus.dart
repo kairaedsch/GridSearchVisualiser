@@ -1,9 +1,8 @@
-import '../../general/Direction.dart';
 import '../../general/Distance.dart';
 import '../../general/Position.dart';
+import '../../futuuure/grid/Direction.dart';
 import '../Grid.dart';
 import '../history/Explanation.dart';
-import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
@@ -49,11 +48,11 @@ class JumpPointSearchPlus extends AStar
     List<Node> neighbours = [];
 
     Direction directionToTarget = node.position.firstDirectionTo(target.position);
-    if (lastDirection.isEmpty || directionToTarget != lastDirection.value.turn(180))
+    if (lastDirection.isEmpty || directionToTarget != Directions.turn(lastDirection.value, 180))
     {
       var directionToTargetData = _data[node.position].signposts[directionToTarget];
       var distanceToTarget = new Distance.calc(node.position, target.position);
-      if (directionToTarget.isCardinal)
+      if (Directions.isCardinal(directionToTarget))
       {
         if (distanceToTarget.cardinal <= directionToTargetData.distance)
         {

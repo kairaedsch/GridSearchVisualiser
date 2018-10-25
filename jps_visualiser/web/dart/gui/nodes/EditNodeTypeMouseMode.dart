@@ -1,36 +1,35 @@
-import '../../general/Direction.dart';
+import '../../futuuure/grid/Direction.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/Position.dart';
-import '../../store/StoreGridSettings.dart';
-import '../../store/grid/StoreNode.dart';
-import '../../store/grid/StructureNode.dart';
 import 'MouseMode.dart';
 import 'ReactGrid.dart';
 
 class EditNodeTypeMouseMode extends MouseMode
 {
-  StoreNode _CurrentStoreNode;
-  StructureNodeType _type;
+  StructureNodeType _structureTypeChanging;
 
   EditNodeTypeMouseMode(ReactGridComponent reactGrid, Position position) : super(reactGrid)
   {
-    _CurrentStoreNode = reactGrid.props.store[position];
-    _type = _CurrentStoreNode.structureNode.type;
+    _structureTypeChanging = getStructureNodeType(position);
   }
 
   String get name => "EditNodeTypeMouseMode";
 
   void evaluateNode(Position position)
   {
-    StoreNode newStoreNode = reactGrid.props.store[position];
-    if (newStoreNode.structureNode.type == StructureNodeType.NORMAL_NODE && (!newStoreNode.structureNode.barrier.isAnyBlocked() || reactGrid.props.storeGridSettings.gridMode != GridMode.BASIC))
+    var barrier = data.getBarrier(position);
+    var structureNodeType = getStructureNodeType(position);
+
+    if (structureNodeType == StructureNodeType.NORMAL_NODE && (!barrier.isAnyBlocked() || data.gridMode != GridMode.BASIC))
     {
-      StructureNode _CurrentStoreNodeUpdated = _CurrentStoreNode.structureNode.clone(type: StructureNodeType.NORMAL_NODE);
-      _CurrentStoreNode.actions.structureNodeChanged.call(_CurrentStoreNodeUpdated);
-
-      StructureNode newStructureNodeUpdated = newStoreNode.structureNode.clone(type: _type);
-      newStoreNode.actions.structureNodeChanged.call(newStructureNodeUpdated);
-
-      _CurrentStoreNode = newStoreNode;
+      if (_structureTypeChanging == StructureNodeType.START_NODE)
+      {
+        data.startPosition = position;
+      }
+      if (_structureTypeChanging == StructureNodeType.TARGET_NODE)
+      {
+        data.targetPosition = position;
+      }
     }
   }
 

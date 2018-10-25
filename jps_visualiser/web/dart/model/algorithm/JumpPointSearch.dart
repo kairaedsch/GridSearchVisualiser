@@ -1,14 +1,11 @@
-import '../../general/Direction.dart';
-import '../../general/Distance.dart';
 import '../../general/Position.dart';
+import '../../futuuure/grid/Direction.dart';
 import '../Grid.dart';
 import '../history/Explanation.dart';
-import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
 import 'JumpPointSearchJumpPoints.dart';
-import 'JumpPointSearchPlusDataGenerator.dart';
 import 'package:quiver/core.dart';
 import 'package:tuple/tuple.dart';
 
@@ -74,7 +71,7 @@ class JumpPointSearch extends AStar
       {
         return new Optional.of(positionAfter);
       }
-      if (direction.isCardinal)
+      if (Directions.isCardinal(direction))
       {
         jumpDirections = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, positionAfter, direction);
       }

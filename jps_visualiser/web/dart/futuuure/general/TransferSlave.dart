@@ -1,9 +1,9 @@
 import 'Master.dart';
-import 'Transfer.dart';
+import 'DataTransferAble.dart';
 
 class TransferSlave
 {
-  TransferSlave(Transfer transfer)
+  TransferSlave(DataTransferAble transfer)
   {
     Master master = new Master();
 

@@ -1,9 +1,9 @@
-import 'Transfer.dart';
+import 'DataTransferAble.dart';
 import 'dart:html';
 
 class TransferMaster
 {
-  TransferMaster(Transfer transfer)
+  TransferMaster(DataTransferAble transfer)
   {
     var worker = new Worker('worker/dog_raiser.dart.js');
 

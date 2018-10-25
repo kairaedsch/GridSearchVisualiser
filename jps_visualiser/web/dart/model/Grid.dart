@@ -1,8 +1,8 @@
 import '../general/Array2D.dart';
-import '../general/Direction.dart';
 import '../general/Distance.dart';
 import '../general/Position.dart';
 import '../general/Size.dart';
+import '../futuuure/grid/Direction.dart';
 
 class Grid extends Size
 {

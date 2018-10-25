@@ -1,11 +1,8 @@
-import '../../general/Direction.dart';
+import '../../futuuure/grid/Direction.dart';
+import '../../futuuure/transfer/Data.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
 import '../../model/history/Highlight.dart';
-import '../../store/StoreGridSettings.dart';
-import '../../store/grid/StoreNode.dart';
-import '../../store/grid/StructureNode.dart';
-import '../../store/grid/StoreGrid.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
@@ -16,12 +13,10 @@ UiFactory<ReactNodePartProps> ReactNodePart;
 @Props()
 class ReactNodePartProps extends UiProps
 {
-  StoreGridSettings storeGridSettings;
-  StoreNode storeNode;
-  Optional<Direction> direction;
-  ActionsNodeChanged actions;
+  Data data;
   ReactGridComponent grid;
-  StoreGrid storeGrid;
+  Optional<Direction> direction;
+  Position position;
 }
 
 @State()
@@ -34,9 +29,8 @@ class ReactNodePartState extends UiState
 class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, ReactNodePartState>
 {
   Optional<Direction> get direction => props.direction;
-  StructureNode get structureNode => props.storeNode.structureNode;
-  Position get position => props.storeNode.position;
-  List<DirectionTextHighlight> get directionTextHighlight => props.storeNode.directionTextHighlights;
+  Position get position => props.position;
+  List<DirectionTextHighlight> get directionTextHighlight => [];
 
   @override
   Map getInitialState() =>
@@ -57,11 +51,11 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
             :
         (
             "part outer"
-            " ${direction.value.name}"
-            " ${direction.value.isDiagonal ? "diagonal" : "cardinal"}"
-            " ${position.go(direction.value).legal(props.storeGrid.size) ? "legal" : "illegal"}"
-            " ${props.storeGrid.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
-            " ${props.storeGrid.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
+            " ${direction.value.toString()}"
+            " ${Directions.isDiagonal(direction.value) ? "diagonal" : "cardinal"}"
+            " ${position.go(direction.value).legal(props.data.size) ? "legal" : "illegal"}"
+            " ${props.data.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
+            " ${props.data.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
         )
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseEnter = ((_) => _handleMouseEnter())
@@ -102,6 +96,6 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
   }
 
   void _triggerMouseMode() {
-    props.grid.updateMouseModeFromNodePart(props.storeNode, direction: props.direction.orNull);
+    props.grid.updateMouseModeFromNodePart(props.position, direction: props.direction.orNull);
   }
 }

@@ -1,7 +1,7 @@
 import '../../general/Array2D.dart';
-import '../../general/Direction.dart';
 import '../../general/Position.dart';
 import '../../general/Size.dart';
+import '../../futuuure/grid/Direction.dart';
 import '../Grid.dart';
 import '../heuristics/Heuristic.dart';
 import '../history/Explanation.dart';
@@ -174,7 +174,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     else
     {
       Set<Direction> jumpDirectionsAhead;
-      if (direction.isCardinal)
+      if (Directions.isCardinal(direction))
       {
         jumpDirectionsAhead = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, prePosition, direction);
       }

@@ -1,13 +1,13 @@
-class Direction
+class DirectionOLD
 {
-  static const Direction NORTH      = const Direction("NORTH",       0, -1, 0);
-  static const Direction NORTH_EAST = const Direction("NORTH_EAST",  1, -1, 1);
-  static const Direction EAST       = const Direction("EAST",        1,  0, 2);
-  static const Direction SOUTH_EAST = const Direction("SOUTH_EAST",  1,  1, 3);
-  static const Direction SOUTH     = const Direction("SOUTH",        0,  1, 4);
-  static const Direction SOUTH_WEST = const Direction("SOUTH_WEST", -1,  1, 5);
-  static const Direction WEST       = const Direction("WEST",       -1,  0, 6);
-  static const Direction NORTH_WEST = const Direction("NORTH_WEST", -1, -1, 7);
+  static const DirectionOLD NORTH      = const DirectionOLD("NORTH",       0, -1, 0);
+  static const DirectionOLD NORTH_EAST = const DirectionOLD("NORTH_EAST",  1, -1, 1);
+  static const DirectionOLD EAST       = const DirectionOLD("EAST",        1,  0, 2);
+  static const DirectionOLD SOUTH_EAST = const DirectionOLD("SOUTH_EAST",  1,  1, 3);
+  static const DirectionOLD SOUTH     = const DirectionOLD("SOUTH",        0,  1, 4);
+  static const DirectionOLD SOUTH_WEST = const DirectionOLD("SOUTH_WEST", -1,  1, 5);
+  static const DirectionOLD WEST       = const DirectionOLD("WEST",       -1,  0, 6);
+  static const DirectionOLD NORTH_WEST = const DirectionOLD("NORTH_WEST", -1, -1, 7);
 
   final String name;
 
@@ -16,9 +16,9 @@ class Direction
   final int dx, dy;
   final int id;
 
-  const Direction(this.name, this.dx, this.dy, this.id);
+  const DirectionOLD(this.name, this.dx, this.dy, this.id);
 
-  Direction turn(int plusDeg)
+  DirectionOLD turn(int plusDeg)
   {
     int deg = values.indexOf(this) * 45 + plusDeg;
     return values[((deg + 360) % 360) ~/ 45];
@@ -26,17 +26,17 @@ class Direction
 
   String toString() => name;
 
-  Iterable<Direction> expand(int amount)
+  Iterable<DirectionOLD> expand(int amount)
   {
     return values.where((d) => (id - d.id).abs() <= amount || (id + 8 - d.id).abs() <= amount || (id - d.id - 8).abs() <= amount);
   }
 
-  static const List<Direction> values = const <Direction>[
+  static const List<DirectionOLD> values = const <DirectionOLD>[
     NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST];
 
-  static const List<Direction> cardinals = const <Direction>[
+  static const List<DirectionOLD> cardinals = const <DirectionOLD>[
     NORTH, EAST, SOUTH, WEST];
 
-  static const List<Direction> diagonals = const <Direction>[
+  static const List<DirectionOLD> diagonals = const <DirectionOLD>[
     NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST];
 }

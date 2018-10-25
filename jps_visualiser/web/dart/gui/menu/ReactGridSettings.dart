@@ -1,4 +1,5 @@
-import '../../store/StoreGridSettings.dart';
+import '../../futuuure/transfer/Data.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'dart:html';
@@ -8,8 +9,9 @@ import 'package:over_react/over_react.dart';
 UiFactory<ReactGridSettingsProps> ReactGridSettings;
 
 @Props()
-class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, StoreGridSettings>
+class ReactGridSettingsProps extends UiProps
 {
+  Data data;
   Function download;
   Function load;
   Function smallerGrid;
@@ -17,7 +19,7 @@ class ReactGridSettingsProps extends FluxUiProps<ActionsGridSettingsChanged, Sto
 }
 
 @Component()
-class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
+class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
 {
   @override
   ReactElement render()
@@ -28,14 +30,15 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
         (Dom.div()..className = "configs")(
           (ReactPopover()
             ..className = "config"
-            ..popover = GridMode.popover
+            ..popover = GridModes.popover
             ..html = true
           )(
               (Dom.div()..className = "title")("Mode:"),
               (ReactDropDown()
-                ..value = props.store.gridMode
+                ..value = props.data.gridMode
                 ..values = GridMode.values
-                ..selectListener = ((newValue) => props.store.actions.gridModeChanged.call(newValue as GridMode))
+                ..getTitle = GridModes.getTitle
+                ..selectListener = ((dynamic newValue) => props.data.gridMode = newValue as GridMode)
               )()
           ),
           (ReactPopover()
@@ -45,35 +48,38 @@ class ReactGridSettingsComponent extends FluxUiComponent<ReactGridSettingsProps>
           )(
               (Dom.div()..className = "title")("Directions:"),
               (ReactDropDown()
-                ..value = props.store.directionMode
+                ..value = props.data.directionMode
                 ..values = DirectionMode.values
-                ..selectListener = ((newValue) => props.store.actions.directionModeChanged.call(newValue as DirectionMode))
+                ..getTitle = DirectionModes.getTitle
+                ..selectListener = ((dynamic newValue) => props.data.directionMode = newValue as DirectionMode)
               )()
           ),
-          props.store.gridMode != GridMode.BASIC ?
+          props.data.gridMode != GridMode.BASIC ?
           (ReactPopover()
             ..className = "config"
-            ..popover = DirectionalMode.popover
+            ..popover = DirectionalModes.popover
             ..html = true
           )(
               (Dom.div()..className = "title")("Directional:"),
               (ReactDropDown()
-                ..value = props.store.directionalMode
+                ..value = props.data.directionalMode
                 ..values = DirectionalMode.values
-                ..selectListener = ((newValue) => props.store.actions.directionalModeChanged.call(newValue as DirectionalMode))
+                ..getTitle = DirectionalModes.getTitle
+                ..selectListener = ((dynamic newValue) => props.data.directionalMode = newValue as DirectionalMode)
               )()
           ) : null,
-          props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
+          props.data.directionMode != DirectionMode.ONLY_CARDINAL ?
           (ReactPopover()
             ..className = "config"
-            ..popover = CornerMode.popover
+            ..popover = CornerModes.popover
             ..html = true
           )(
               (Dom.div()..className = "title")("Cross Corners:"),
               (ReactDropDown()
-                ..value = props.store.cornerMode
+                ..value = props.data.cornerMode
                 ..values = CornerMode.values
-                ..selectListener = ((newValue) => props.store.actions.cornerModeChanged.call(newValue as CornerMode))
+                ..getTitle = CornerModes.getTitle
+                ..selectListener = ((dynamic newValue) => props.data.cornerMode = newValue as CornerMode)
               )()
           ) : null,
           (ReactPopover()

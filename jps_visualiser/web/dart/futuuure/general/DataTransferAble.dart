@@ -1,12 +1,12 @@
 
 typedef Listener = void Function(String id);
 
-class Transfer
+class DataTransferAble
 {
   final Map<String, dynamic> _data;
   final List<Listener> _listeners;
 
-  Transfer()
+  DataTransferAble()
     :   _data = new Map<String, dynamic>(),
         _listeners = new List();
 

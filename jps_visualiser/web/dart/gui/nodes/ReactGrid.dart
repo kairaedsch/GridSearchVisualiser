@@ -1,4 +1,5 @@
-import '../../general/Direction.dart';
+import '../../futuuure/grid/Direction.dart';
+import '../../futuuure/transfer/Data.dart';
 import '../../general/Position.dart';
 import '../../general/Size.dart';
 import '../../store/StoreGridSettings.dart';
@@ -21,15 +22,15 @@ import 'dart:js';
 UiFactory<ReactGridProps> ReactGrid;
 
 @Props()
-class ReactGridProps extends FluxUiProps<ActionsGridChanged, StoreGrid>
+class ReactGridProps extends UiProps
 {
-  StoreGridSettings storeGridSettings;
+  Data data;
 }
 
 @Component()
-class ReactGridComponent extends FluxUiComponent<ReactGridProps>
+class ReactGridComponent extends UiComponent<ReactGridProps>
 {
-  Size get size => props.store.size;
+  Size get size => props.data.size;
 
   Optional<MouseMode> _mouseMode;
 
@@ -50,21 +51,16 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
   }
 
   @override
-  List<Store> redrawOn() {
-    return [props.store, props.storeGridSettings];
-  }
-
-  @override
   ReactElement render()
   {
     _updateCSSVariables();
     return
       (Dom.div()
         ..className = "grid"
-            " GRID_MODE_${props.storeGridSettings.gridMode.name}"
-            " DIRECTION_MODE_${props.storeGridSettings.directionMode.name}"
-            " CROSS_CORNER_${props.storeGridSettings.cornerMode.name}"
-            " WAY_MODE_${props.storeGridSettings.directionalMode.name}"
+            " GRID_MODE_${props.data.gridMode}"
+            " DIRECTION_MODE_${props.data.directionMode}"
+            " CROSS_CORNER_${props.data.cornerMode}"
+            " WAY_MODE_${props.data.directionalMode}"
       )(
           (Dom.div()
             ..className = "nodes")(
@@ -109,49 +105,45 @@ class ReactGridComponent extends FluxUiComponent<ReactGridProps>
 
   ReactElement _renderNode(Position pos)
   {
-    StoreNode storeNode = props.store[pos];
-
     return
       (ReactNode()
         ..key = pos
-        ..storeGridSettings = props.storeGridSettings
-        ..storeGrid = props.store
-        ..store = storeNode
-        ..actions = storeNode.actions
+        ..position = pos
+        ..data = props.data
         ..grid = this
       )();
   }
 
-  void updateMouseModeFromNode(StoreNode storeNode)
+  void updateMouseModeFromNode(Position position)
   {
-    if (props.storeGridSettings.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
+    if (props.data.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if (storeNode.structureNode.type != StructureNodeType.NORMAL_NODE)
+      if (props.data.startPosition != position && props.data.targetPosition != position)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, storeNode.position));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
       else
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(storeNode.position));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNode(position));
   }
 
-  void updateMouseModeFromNodePart(StoreNode storeNode, {Direction direction})
+  void updateMouseModeFromNodePart(Position position, {Direction direction})
   {
-    if (props.storeGridSettings.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
+    if (props.data.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if (storeNode.structureNode.type != StructureNodeType.NORMAL_NODE && direction == null)
+      if ((props.data.startPosition != position && props.data.targetPosition != position) && direction == null)
       {
-        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, storeNode.position));
+        _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
       else if (direction != null)
       {
         _mouseMode = new Optional.of(new EditBarrierMouseMode(this));
       }
     }
-    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(storeNode.position, direction: direction));
+    _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(position, direction: direction));
   }
 
   void componentWillUnmount()

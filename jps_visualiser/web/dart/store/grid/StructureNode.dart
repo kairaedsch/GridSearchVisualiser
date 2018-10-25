@@ -41,42 +41,42 @@ class StructureNodeBarrier
 {
   static const StructureNodeBarrier totalUnblocked = const StructureNodeBarrier(
       const {
-        Direction.NORTH: false,
-        Direction.NORTH_EAST: false,
-        Direction.EAST: false,
-        Direction.SOUTH_EAST: false,
-        Direction.SOUTH: false,
-        Direction.SOUTH_WEST: false,
-        Direction.WEST: false,
-        Direction.NORTH_WEST: false,
+        DirectionOLD.NORTH: false,
+        DirectionOLD.NORTH_EAST: false,
+        DirectionOLD.EAST: false,
+        DirectionOLD.SOUTH_EAST: false,
+        DirectionOLD.SOUTH: false,
+        DirectionOLD.SOUTH_WEST: false,
+        DirectionOLD.WEST: false,
+        DirectionOLD.NORTH_WEST: false,
       });
 
   static const StructureNodeBarrier totalBlocked = const StructureNodeBarrier(
       const {
-        Direction.NORTH: true,
-        Direction.NORTH_EAST: true,
-        Direction.EAST: true,
-        Direction.SOUTH_EAST: true,
-        Direction.SOUTH: true,
-        Direction.SOUTH_WEST: true,
-        Direction.WEST: true,
-        Direction.NORTH_WEST: true,
+        DirectionOLD.NORTH: true,
+        DirectionOLD.NORTH_EAST: true,
+        DirectionOLD.EAST: true,
+        DirectionOLD.SOUTH_EAST: true,
+        DirectionOLD.SOUTH: true,
+        DirectionOLD.SOUTH_WEST: true,
+        DirectionOLD.WEST: true,
+        DirectionOLD.NORTH_WEST: true,
       });
 
-  final Map<Direction, bool> blocked;
+  final Map<DirectionOLD, bool> blocked;
 
   const StructureNodeBarrier(this.blocked);
 
-  StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, Direction directionToTransform, bool shouldBecomeBlocked)
-      : blocked = new Map<Direction, bool>.fromIterable(barrier.blocked.keys,
-      key: (Direction direction) => direction,
-      value: (Direction direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
+  StructureNodeBarrier.cloneAndTransform(StructureNodeBarrier barrier, DirectionOLD directionToTransform, bool shouldBecomeBlocked)
+      : blocked = new Map<DirectionOLD, bool>.fromIterable(barrier.blocked.keys,
+      key: (DirectionOLD direction) => direction,
+      value: (DirectionOLD direction) => direction == directionToTransform ? shouldBecomeBlocked : barrier.blocked[direction]);
 
   bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
 
   bool isNoneBlocked() => !isAnyBlocked();
 
-  StructureNodeBarrier transformTo(Direction directionToTransform, bool shouldBecomeBlocked)
+  StructureNodeBarrier transformTo(DirectionOLD directionToTransform, bool shouldBecomeBlocked)
   {
     return new StructureNodeBarrier.cloneAndTransform(this, directionToTransform, shouldBecomeBlocked);
   }
@@ -93,7 +93,7 @@ class StructureNodeBarrier
     }
   }
 
-  bool isBlocked(Direction direction)
+  bool isBlocked(DirectionOLD direction)
   {
     return blocked[direction];
   }

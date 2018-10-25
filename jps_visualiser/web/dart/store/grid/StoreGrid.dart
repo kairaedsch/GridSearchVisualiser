@@ -7,7 +7,7 @@ import '../StoreGridSettings.dart';
 import '../grid/StoreNode.dart';
 import '../grid/StructureNode.dart';
 import '../history/StoreHistory.dart';
-import 'GridBarrierManager.dart';
+import '../../futuuure/grid/GridBarrierManager.dart';
 import 'dart:math';
 import 'package:quiver/core.dart';
 import 'package:w_flux/w_flux.dart';
@@ -54,7 +54,7 @@ class StoreGrid extends Store
     _storeNodes[new Position(7, 8)].actions.structureNodeChanged.call(_storeNodes[new Position(7, 7)].structureNode.clone(barrier: StructureNodeBarrier.totalBlocked));
     _storeNodes[new Position(7, 9)].actions.structureNodeChanged.call(_storeNodes[new Position(7, 7)].structureNode.clone(barrier: StructureNodeBarrier.totalBlocked));
 
-    _gridBarrierManager = new GridBarrierManager(this, _storeGridSettings, (Position p) => _storeNodes[p].structureNode.barrier);
+    _gridBarrierManager = null; // new GridBarrierManager(this, _storeGridSettings, (Position p) => _storeNodes[p].structureNode.barrier);
 
     _storeGridSettings.actions.gridModeChanged.listen(_gridSettingsGridModeChanged);
 
@@ -111,11 +111,11 @@ class StoreGrid extends Store
     {
       Position position = storeNode.position;
       var barrier = storeNode.structureNode.barrier;
-      for (Direction direction in Direction.values)
+      for (DirectionOLD direction in DirectionOLD.values)
       {
-        save.writeBarrier(position, new Optional.of(direction), barrier.isBlocked(direction));
+        save.writeBarrier(position, new Optional<dynamic>.of(direction), barrier.isBlocked(direction));
       }
-      save.writeBarrier(position, const Optional.absent(), _storeGridSettings.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
+      save.writeBarrier(position, const Optional<dynamic>.absent(), _storeGridSettings.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
     }
     save.writeSource(sourcePosition);
     save.writeTarget(targetPosition);
@@ -141,10 +141,10 @@ class StoreGrid extends Store
     {
       Position position = storeNode.position;
 
-      var barrier = new Map<Direction, bool>.fromIterable(
-          Direction.values,
-          key: (Direction d) => d,
-          value: (Direction d) => save.readBarrier(position, d));
+      var barrier = new Map<DirectionOLD, bool>.fromIterable(
+          DirectionOLD.values,
+          key: (DirectionOLD d) => d,
+          value: (DirectionOLD d) => save.readBarrier(position, d));
 
       StructureNodeType structureNodeType;
       if (position == newSourcePosition)

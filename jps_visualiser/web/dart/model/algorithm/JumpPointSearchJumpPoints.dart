@@ -1,17 +1,12 @@
-import '../../general/Array2D.dart';
-import '../../general/Direction.dart';
 import '../../general/Position.dart';
-import '../../general/Size.dart';
+import '../../futuuure/grid/Direction.dart';
 import '../Grid.dart';
-import '../heuristics/Heuristic.dart';
-import '../history/Highlight.dart';
-import 'Algorithm.dart';
 
 class JumpPointSearchJumpPoints
 {
   static Set<Direction> cardinalJumpDirections(Grid grid, Position position, Direction direction)
   {
-    Direction direction180 = direction.turn(180);
+    Direction direction180 = Directions.turn(direction, 180);
     Position wpBefore = position.go(direction180);
 
     if (!grid.leaveAble(wpBefore, direction))
@@ -23,9 +18,9 @@ class JumpPointSearchJumpPoints
 
     for (int side in [1, -1])
     {
-      Direction direction45 = direction.turn(45 * side);
-      Direction direction90 = direction.turn(90 * side);
-      Direction direction135 = direction.turn(135 * side);
+      Direction direction45 = Directions.turn(direction, 45 * side);
+      Direction direction90 = Directions.turn(direction, 90 * side);
+      Direction direction135 = Directions.turn(direction, 135 * side);
 
       if (grid.leaveAble(position, direction45))
       {
@@ -73,7 +68,7 @@ class JumpPointSearchJumpPoints
 
   static Set<Direction> diagonalJumpDirections(Grid grid, Position position, Direction direction, bool isJumpPoint(Position position, Direction direction))
   {
-    Direction direction180 = direction.turn(180);
+    Direction direction180 = Directions.turn(direction,180);
     Position wpBefore = position.go(direction180);
 
     if (!grid.leaveAble(wpBefore, direction))
@@ -85,9 +80,9 @@ class JumpPointSearchJumpPoints
 
     for (int side in [1, -1])
     {
-      Direction direction45 = direction.turn(45 * side);
-      Direction direction90 = direction.turn(90 * side);
-      Direction direction135 = direction.turn(135 * side);
+      Direction direction45 = Directions.turn(direction,45 * side);
+      Direction direction90 = Directions.turn(direction,90 * side);
+      Direction direction135 = Directions.turn(direction,135 * side);
 
       if (grid.leaveAble(position, direction45))
       {
@@ -116,7 +111,7 @@ class JumpPointSearchJumpPoints
         bool canNotGoCardinalBefore = !grid.leaveAble(wpBefore, direction45);
         if (canNotGoCardinalBefore)
         {
-          Direction direction_45 = direction.turn(45 * side * -1);
+          Direction direction_45 = Directions.turn(direction,45 * side * -1);
           bool canNotGoDiagonalBefore1 = !grid.leaveAble(wpBefore, direction90) || !grid.leaveAble(wpBefore.go(direction90),  direction_45);
           //bool canNotGoDiagonalBefore2 = !grid.leaveAble(wpBefore, direction135) || !grid.leaveAble(wpBefore.go(direction135), direction);
           //bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction_45) || !grid.leaveAble(wpBefore.go(direction_45), direction90);
