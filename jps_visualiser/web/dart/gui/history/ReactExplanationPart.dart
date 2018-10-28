@@ -1,5 +1,5 @@
+import '../../futuuure/transfer/Data.dart';
 import '../../model/history/Explanation.dart';
-import '../../store/history/StoreHistory.dart';
 import 'package:over_react/over_react.dart';
 
 @Factory()
@@ -9,7 +9,7 @@ UiFactory<ReactExplanationPartProps> ReactExplanationPart;
 class ReactExplanationPartProps extends UiProps
 {
   ExplanationPart explanationPart;
-  ActionsHistory actionsHistory;
+  Data data;
 }
 
 @Component()
@@ -23,12 +23,12 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
     return
       (Dom.div()
         ..className = "explanationPart"
-          " ${explanationPart.style.isPresent ? "styled highlight_${explanationPart.style.value}" : "unstyled"}"
+          " ${explanationPart.style != "" ? "styled highlight_${explanationPart.style}" : "unstyled"}"
           ..onMouseEnter = (
-                  (_) => props.actionsHistory.customHighlightsChanged.call(explanationPart.highlights)
+                  (_) => null //props.actionsHistory.customHighlightsChanged.call(explanationPart.highlights)
           )
           ..onMouseLeave = (
-                  (_) => props.actionsHistory.customHighlightsChanged.call([])
+                  (_) => null //props.actionsHistory.customHighlightsChanged.call([])
           )
       )(
           explanationPart.text

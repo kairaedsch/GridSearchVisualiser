@@ -1,3 +1,4 @@
+import '../../futuuure/general/DataTransferAble.dart';
 import '../../futuuure/transfer/Data.dart';
 import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
@@ -21,6 +22,17 @@ class ReactGridSettingsProps extends UiProps
 @Component()
 class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
 {
+  Listener listener;
+
+  @override
+  void componentWillMount()
+  {
+    super.componentWillMount();
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
+  }
+
   @override
   ReactElement render()
   {
@@ -43,7 +55,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           ),
           (ReactPopover()
             ..className = "config"
-            ..popover = DirectionMode.popover
+            ..popover = DirectionModes.popover
             ..html = true
           )(
               (Dom.div()..className = "title")("Directions:"),
@@ -139,5 +151,13 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           ),
         )
     );
+  }
+
+  @override
+  void componentWillUnmount()
+  {
+    super.componentWillUnmount();
+
+    props.data.removeListener(listener);
   }
 }

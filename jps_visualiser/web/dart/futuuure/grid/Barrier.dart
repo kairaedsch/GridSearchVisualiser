@@ -2,8 +2,8 @@ import 'Direction.dart';
 
 class Barrier
 {
-  static const Barrier totalUnblocked = const Barrier(
-      const {
+  static Barrier get totalUnblocked => new Barrier(
+      {
         Direction.NORTH: false,
         Direction.NORTH_EAST: false,
         Direction.EAST: false,
@@ -14,8 +14,8 @@ class Barrier
         Direction.NORTH_WEST: false,
       });
 
-  static const Barrier totalBlocked = const Barrier(
-      const {
+  static Barrier get totalBlocked => new Barrier(
+      {
         Direction.NORTH: true,
         Direction.NORTH_EAST: true,
         Direction.EAST: true,
@@ -26,17 +26,19 @@ class Barrier
         Direction.NORTH_WEST: true,
       });
 
-  final Map<Direction, bool> blocked;
+  final Map<Direction, bool> _blocked;
 
-  const Barrier(this.blocked);
+  const Barrier(this._blocked);
 
-  bool isAnyBlocked() => blocked.values.any((blocked) => blocked);
+  const Barrier.fromMap(this._blocked);
+
+  bool isAnyBlocked() => _blocked.values.any((blocked) => blocked);
 
   bool isNoneBlocked() => !isAnyBlocked();
 
   void set(Direction directionToTransform, bool shouldBecomeBlocked)
   {
-    blocked[directionToTransform] = shouldBecomeBlocked;
+    _blocked[directionToTransform] = shouldBecomeBlocked;
   }
 
   Barrier transformToTotal(bool shouldBecomeBlocked)
@@ -53,6 +55,8 @@ class Barrier
 
   bool isBlocked(Direction direction)
   {
-    return blocked[direction];
+    return _blocked[direction];
   }
+
+  Map toMap() => _blocked;
 }

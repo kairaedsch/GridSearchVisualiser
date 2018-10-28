@@ -6,6 +6,7 @@ import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'Dijkstra.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class BasicSearchAlgorithm extends Algorithm
 {
@@ -17,7 +18,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   Set<Node> open;
   Set<Node> closed;
 
-  BasicSearchAlgorithm(this.name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) : super(grid, startPosition, targetPosition, heuristic)
+  BasicSearchAlgorithm(this.name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) : super(grid, startPosition, targetPosition, heuristic, turnOfHistory)
   {
     distance = new Map<Node, Distance>();
     parent = new Map<Node, Node>();
@@ -57,66 +58,73 @@ abstract class BasicSearchAlgorithm extends Algorithm
   @override
   void runInner()
   {
-    addSearchState();
+    tunIsOver();
 
     distance[start] = new Distance(0, 0);
     open.add(start);
-    currentSearchState.title
-      ..addT("Setup")
-    ;
-    currentSearchState.description.add(new Explanation()
-      ..addT("For the setup we: ")
-    );
-    currentSearchState.description.add(new Explanation.styled("enumeration")
-      ..addT("Set all nodes unmarked.")
-    );
-    currentSearchState.description.add(new Explanation.styled("enumeration")
-      ..addT("Set the distance from our ")
-      ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
-      ..addT(" to our ")
-      ..addH("start node", "green", [new CircleHighlight(new Set()..add(start.position))])
-      ..addT(" to 0.0.")
-    );
-    currentSearchState.description.add(new Explanation.styled("enumeration")
-      ..addT("Mark our ")
-      ..addH("start node open", "green", [new BoxHighlight.styled("green", new Set()..add(start.position))])
-      ..addT(".")
-    );
+    
+    if (createHistory())
+    {
+      searchHistory.stepTitle = "Setup";
+
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("For the setup we: ");
+
+      searchHistory..newExplanation(new Explanation.styled("enumeration"))
+        ..addES_("Set all nodes unmarked.");
+
+      searchHistory..newExplanation(new Explanation.styled("enumeration"))
+        ..addES_("Set the distance from our ")
+        ..addESS("start node", "green", new CircleHighlight(), start.position)
+        ..addES_(" to our ")
+        ..addESS("start node", "green", new CircleHighlight(), start.position)
+        ..addES_(" to 0.0.");
+
+      searchHistory..newExplanation(new Explanation.styled("enumeration"))
+        ..addES_("Mark our ")
+        ..addESS("start node open", "green", new BoxHighlight(), start.position)
+        ..addES_(".");
+    }
 
     int turn;
     for (turn = 1; open.isNotEmpty; turn++)
     {
-      addSearchState();
-      currentSearchState.title
-        ..addT("Turn $turn")
-      ;
+      tunIsOver();
 
+      if (createHistory())
+      {
+        searchHistory.stepTitle = "Turn $turn";
+      }
       Node nStar = findNextActiveNode();
 
-      currentSearchState.backgroundHighlights.add(new BoxHighlight.styled("green", open.map((n) => n.position).toSet()));
-      currentSearchState.backgroundHighlights.add(new BoxHighlight.styled("grey", closed.map((n) => n.position).toSet()));
+      if (createHistory())
+      {
+        searchHistory.addH_("background", [new BoxHighlight.styled("green")], open.map((n) => n.position));
+        searchHistory.addH_("background", [new BoxHighlight.styled("grey")], closed.map((n) => n.position));
+      }
 
       Set<Node> updatedNodes = new Set();
 
       if (nStar == target)
       {
-        searchHistory.setPath(getPath(target));
+        if (createHistory())
+        {
+          var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true);
+          searchHistory..newExplanation(new Explanation())
+            ..addES_("As our active node is our ")
+            ..addESS("target node", "red", new CircleHighlight(), target.position)
+            ..addES_(", the algorithm can finish and we have found an ")
+            ..addESS("optimal path", "blue", optimalPath, null)
+            ..addES_(" from the ")
+            ..addESS("source node", "green", new CircleHighlight(), start.position)
+            ..addES_(" to the ")
+            ..addESS("target node", "red", new CircleHighlight(), target.position)
+            ..addES_(".");
 
-        var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true);
-        currentSearchState.description.add(new Explanation()
-          ..addT("As our active node is our ")
-          ..addH("target node", "red", [new CircleHighlight(new Set()..add(target.position))])
-          ..addT(", the algorithm can finish and we have found an ")
-          ..addH("optimal path", "blue", [optimalPath])
-          ..addT(" from the ")
-          ..addH("source node", "green", [new CircleHighlight(new Set()..add(start.position))])
-          ..addT(" to the ")
-          ..addH("target node", "red", [new CircleHighlight(new Set()..add(target.position))])
-          ..addT(".")
-        );
-
-        currentSearchState.defaultHighlights.add(optimalPath);
-        currentSearchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
+          searchHistory.addH_("foreground", [optimalPath], [null]);
+          searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar.position]);
+        }
+        searchHistory.foundPath = true;
         break;
       }
       else
@@ -128,40 +136,45 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
         if (neighboursMarkedClosed.isNotEmpty)
         {
-          List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+          if (createHistory())
+          {
+            List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
 
-          currentSearchState.description.add(new Explanation.styled("enumeration")
-            ..addT("All neighbour nodes which are ")
-            ..addH("marked closed", "grey", [new CircleHighlight(neighboursMarkedClosed.map((n) => n.position).toSet())])
-            ..addT(" are ignored as we have already found ")
-            ..addH("optimal paths", "grey", pathsOfClosed)
-            ..addT(" from the source node to them. ")
-          );
+            searchHistory..newExplanation(new Explanation.styled("enumeration"))
+              ..addES_("All neighbour nodes which are ")
+              ..addESM("marked closed", "grey", new CircleHighlight(), neighboursMarkedClosed.map((n) => n.position))
+              ..addES_(" are ignored as we have already found ")
+              ..addEMS("optimal paths", "grey", pathsOfClosed, null)
+              ..addES_(" from the source node to them. ");
+          }
         }
 
         if (neighboursMarkedOpen.isNotEmpty)
         {
-          List<PathHighlight> pathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+          if (createHistory())
+          {
+            List<PathHighlight> pathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+            List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar).map((n) => n.position))..add(on.position), showEnd: true)).toList();
 
-          List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar).map((n) => n.position))..add(on.position), showEnd: true)).toList();
-
-          currentSearchState.description.add(new Explanation.styled("enumeration")
-            ..addT("All neighbour nodes which are ")
-            ..addH("marked open", "green", [new CircleHighlight(neighboursMarkedOpen.map((n) => n.position).toSet())])
-            ..addT(" are checked, if we can have an maybe more optimal ")
-            ..addH("new path", "blue", new List.from(maybeNewPathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(3), on.position)).toList()))
-            ..addT(" from our source node to them over the active node than the ")
-            ..addH("current path", "green", new List.from(pathsOfOpen)..addAll(neighboursMarkedOpen.map((on) => new TextHighlight(getDistance(on).length().toStringAsPrecision(3), on.position)).toList()))
-            ..addT(" which we have already found for them. ")
-          );
+            searchHistory..newExplanation(new Explanation.styled("enumeration"))
+              ..addES_("All neighbour nodes which are ")
+              ..addESM("marked open", "green", new CircleHighlight(), neighboursMarkedOpen.map((n) => n.position))
+              ..addES_(" are checked, if we can have an maybe more optimal ")
+              ..addEM_("new path", "blue", [new Tuple2(maybeNewPathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(3))], [on.position]))))
+              ..addES_(" from our source node to them over the active node than the ")
+              ..addEM_("current path", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on.position]))))
+              ..addES_(" which we have already found for them. ");
+          }
 
           var neighboursMarkedOpenBetterPath = neighboursMarkedOpen.where((n) => getDistance(nStar) + nStar.distanceTo(n) < getDistance(n)).toList();
 
           if (neighboursMarkedOpenBetterPath.isEmpty)
           {
-            currentSearchState.description.last
-              ..addT("But all these nodes already have an good path. ")
-            ;
+            if (createHistory())
+            {
+              searchHistory
+                ..addES_("But all these nodes already have an good path. ");
+            }
           }
           else
           {
@@ -172,26 +185,29 @@ abstract class BasicSearchAlgorithm extends Algorithm
               updatedNodes.add(n);
             });
 
-            List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+            if (createHistory())
+            {
+              List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
 
-            currentSearchState.description.last
-              ..addT("And we also found some ")
-              ..addH("better paths", "blue", newPathsOfOpen)
-              ..addT(" for these ")
-              ..addH("nodes", "green", [new CircleHighlight(neighboursMarkedOpenBetterPath.map((n) => n.position).toSet())])
-              ..addT(". ")
-            ;
+              searchHistory
+                ..addES_("And we also found some ")
+                ..addEMS("better paths", "blue", newPathsOfOpen, null)
+                ..addES_(" for these ")
+                ..addESM("nodes", "green", new CircleHighlight(), neighboursMarkedOpenBetterPath.map((n) => n.position))
+                ..addES_(". ");
+            }
           }
         }
 
         if (neighboursUnmarked.isNotEmpty)
         {
-          currentSearchState.description.add(new Explanation.styled("enumeration")
-            ..addT("All neighbour nodes which are ")
-            ..addH("unmarked", "blue", [new CircleHighlight(neighboursUnmarked.map((n) => n.position).toSet())])
-            ..addT(" are marked as open ")
-          );
-
+          if (createHistory())
+          {
+            searchHistory..newExplanation(new Explanation.styled("enumeration"))
+              ..addES_("All neighbour nodes which are ")
+              ..addESM("unmarked", "blue", new CircleHighlight(), neighboursUnmarked.map((n) => n.position))
+              ..addES_(" are marked as open ");
+          }
           neighboursUnmarked.forEach((Node n)
           {
             open.add(n);
@@ -202,40 +218,46 @@ abstract class BasicSearchAlgorithm extends Algorithm
             updatedNodes.add(n);
           });
 
-          List<PathHighlight> pathsOfUnmarked = neighboursUnmarked.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+          if (createHistory())
+          {
+            List<PathHighlight> pathsOfUnmarked = neighboursUnmarked.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
 
-          currentSearchState.description.last
-            ..addT("and we set the new ")
-            ..addH("best path", "blue", pathsOfUnmarked)
-            ..addT(" from the source node to them over our active node. ")
-          ;
+            searchHistory
+              ..addES_("and we set the new ")
+              ..addEMS("best path", "blue", pathsOfUnmarked, null)
+              ..addES_(" from the source node to them over our active node. ");
+          }
         }
       }
 
       open.remove(nStar);
       closed.add(nStar);
 
-      updatedNodes.forEach((un) => currentSearchState.defaultHighlights.add(new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)));
-      currentSearchState.defaultHighlights.add(new DotHighlight.styled("yellow", new Set()..add(nStar.position)));
-      //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
+      if (createHistory())
+      {
+        searchHistory.addHM("forground", updatedNodes.map((un) => new Tuple2([new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)], [null])));
+        searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar.position]);
+        //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
+      }
     }
 
+    searchHistory.stepCount = nextTurn;
     if (name == "norecursion")
     {
       searchHistory.title = "Test run";
     }
     else
     {
-      Dijkstra dijkstra = new Dijkstra("norecursion", grid, start.position, target.position, heuristic);
+      Dijkstra dijkstra = new Dijkstra("norecursion", grid, start.position, target.position, heuristic, -1);
       dijkstra.run();
-      if (searchHistory.path.isPresent)
+      if (searchHistory.foundPath)
       {
         bool optimal = dijkstra.getDistance(dijkstra.target) == getDistance(target);
         searchHistory.title = "The $name Algorithm took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long ${optimal ? "optimal path" : "NON OPTIMAL path => Have you found a bug?"}";
       }
       else
       {
-        bool thereExistsNone = dijkstra.searchHistory.path.isEmpty;
+        bool thereExistsNone = !dijkstra.searchHistory.foundPath;
         searchHistory.title = "The $name Algorithm took $turn turns to find no path ${thereExistsNone ? "and there really exists none" : "altough there exists one => Have you found a bug?"}";
       }
     }

@@ -11,12 +11,12 @@ import 'package:tuple/tuple.dart';
 
 class JumpPointSearch extends AStar
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearch("JPS", grid, startPosition, targetPosition, heuristic);
+  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearch("JPS", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   Map<Tuple2<Position, Direction>, JumpPointSearchDirectionAdviser> _directionAdvisers;
 
-  JumpPointSearch(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
-      : super(name, grid, startPosition, targetPosition, heuristic);
+  JumpPointSearch(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+      : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
@@ -50,10 +50,11 @@ class JumpPointSearch extends AStar
       jumpPoint.ifPresent((p) => neighbours.add(grid[p]));
     }
 
-    currentSearchState.description.add(new Explanation()
-      ..addT("<The JPS Algorithm is working but the explanation for it has not been implemented yet>")
-    );
-
+    if (createHistory())
+    {
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
+    }
     return neighbours;
   }
 

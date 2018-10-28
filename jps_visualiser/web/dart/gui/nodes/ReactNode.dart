@@ -1,11 +1,11 @@
+import '../../futuuure/general/DataTransferAble.dart';
 import '../../futuuure/grid/Direction.dart';
 import '../../futuuure/transfer/Data.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
 import '../../model/history/Highlight.dart';
-import '../../store/StoreGridSettings.dart';
 import '../../futuuure/grid/Barrier.dart';
-import '../../store/grid/StructureNode.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'arrows/ReactArrow.dart';
@@ -34,13 +34,21 @@ class ReactNodeState extends UiState
 @Component()
 class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeState>
 {
+  Listener listener;
+
   Barrier get barrier => props.data.getBarrier(props.position);
-  Optional<BoxHighlight> get boxHighlight => const Optional.absent();
-  Optional<BoxHighlight> get directionTextHighlights => const Optional.absent();
-  List<PathHighlight> get pathHighlights => [];
-  Optional<TextHighlight> get textHighlight => const Optional.absent();
-  Optional<CircleHighlight> get circleHighlight => const Optional.absent();
-  Optional<DotHighlight> get dotHighlight => const Optional.absent();
+
+  List<Highlight> get backgroundHighlights => props.data.getCurrentStepHighlights(props.position)["background"];
+  List<Highlight> get foregroundHighlights => props.data.getCurrentStepHighlights(props.position)["foreground"];
+
+  Iterable<Highlight> get highlights => backgroundHighlights..addAll(foregroundHighlights);
+
+  Optional<BoxHighlight> get boxHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is BoxHighlight, orElse: () => null) as BoxHighlight);
+  Optional<DirectionTextHighlight> get directionTextHighlights => new Optional.fromNullable(highlights.lastWhere((h) => h is DirectionTextHighlight, orElse: () => null) as DirectionTextHighlight);
+  Iterable<PathHighlight> get pathHighlights => [];
+  Optional<TextHighlight> get textHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is TextHighlight, orElse: () => null) as TextHighlight);
+  Optional<CircleHighlight> get circleHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is CircleHighlight, orElse: () => null) as CircleHighlight);
+  Optional<DotHighlight> get dotHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is DotHighlight, orElse: () => null) as DotHighlight);
 
   @override
   Map getInitialState() =>
@@ -48,6 +56,15 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
         ..mouseIsOver = false
         ..mouseIsDown = false
       );
+
+  @override
+  void componentWillMount()
+  {
+    super.componentWillMount();
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
+  }
 
   @override
   ReactElement render()
@@ -71,15 +88,6 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
           _renderTextHighlight(),
           _renderCircleHighlight(),
           _renderDotHighlight(),
-          /*(state.mouseIsOver && !MouseTracker.tracker.mouseIsDown && props.data.infoHighlight.isPresent)
-              ?
-          (ReactPopover()
-            ..className = "infoHighlight highlight_${props.data.infoHighlight.value.style}"
-          )(
-              props.data.infoHighlight.value.info
-          )
-              :
-          null,*/
           _renderInner(),
           _renderArrowsToGo(),
           _renderPathHighlights()
@@ -160,6 +168,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   {
     return
       (ReactNodePart()
+        ..grid = props.grid
         ..data = props.data
         ..key = direction
         ..direction = new Optional.fromNullable(direction)
@@ -254,5 +263,13 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
       ..className = "dotHighlight"
         " highlight_${dotHighlight.value.style}"
     )();
+  }
+
+  @override
+  void componentWillUnmount()
+  {
+    super.componentWillUnmount();
+
+    props.data.removeListener(listener);
   }
 }

@@ -14,8 +14,9 @@ class TransferMaster
       transfer.set(command[0].toString(), command[1]);
     });
 
-    transfer.addListener((String id){
-      worker.postMessage(<dynamic>[id, transfer.get<dynamic>(id)]);
+    transfer.addUniversalListener((String id, dynamic oldValue, dynamic newValue)
+    {
+      worker.postMessage(<dynamic>[id, transfer.getA<dynamic>(id)]);
     });
   }
 }

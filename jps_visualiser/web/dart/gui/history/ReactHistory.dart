@@ -1,46 +1,51 @@
+import '../../futuuure/general/DataTransferAble.dart';
+import '../../futuuure/transfer/Data.dart';
 import '../../model/history/Explanation.dart';
-import '../../store/grid/StoreGrid.dart';
-import '../../store/history/History.dart';
-import '../../store/history/StoreHistory.dart';
-import '../../store/history/HistoryPart.dart';
 import 'ReactExplanationPart.dart';
 import 'package:over_react/over_react.dart';
-import 'package:quiver/core.dart';
 
 @Factory()
 UiFactory<ReactHistoryProps> ReactHistory;
 
 @Props()
-class ReactHistoryProps extends FluxUiProps<ActionsHistory, StoreHistory>
+class ReactHistoryProps extends UiProps
 {
-
+  Data data;
 }
 
 @Component()
-class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
+class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
 {
+  Listener listener;
+
+  @override
+  void componentWillMount()
+  {
+    super.componentWillMount();
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["title", "stepCount", "currentStepId", "currentStepTitle", "currentStepDescription"], listener);
+  }
+
   @override
   ReactElement render()
   {
-    if (props.store.history.isEmpty)
+    if (props.data.title == "")
     {
       return (Dom.div()..className = "history")();
     }
 
-    History history = props.store.history.value;
-    Optional<HistoryPart> historyPart = props.store.active;
-
     return
       (Dom.div()..className = "history")(
         (Dom.div()..className = "title")(
-            history.title
+            props.data.title
         ),
         (Dom.div()..className = "parts"
-          " ${historyPart.isEmpty ? "turnOverviewEmpty" : ""}"
+          " ${props.data.stepCount == 0 ? "turnOverviewEmpty" : ""}"
         )(
-            history.parts.map((p) => _renderPart(p))
+          new List<ReactElement>.generate(props.data.stepCount, (i) => _renderPart(i))
         ),
-        historyPart.isEmpty
+          props.data.currentStepId == -1
           ?
         (Dom.div()..className = "turnOverview")(
             (Dom.div()..className = "title")(
@@ -50,26 +55,25 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
           :
         (Dom.div()..className = "turnOverview")(
             (Dom.div()..className = "title")(
-                _renderExplanation(historyPart.value.title)
+                props.data.currentStepTitle
             ),
             (Dom.div()..className = "description")(
-                _renderExplanations(historyPart.value.description)
+                _renderExplanations(props.data.currentStepDescription)
             )
         )
       );
   }
 
-  ReactElement _renderPart(HistoryPart part)
+  ReactElement _renderPart(int stepId)
   {
-    bool selected = (props.store.active.isPresent && part == props.store.active.value);
+    bool selected = props.data.currentStepId == stepId;
     return
       (Dom.div()
-        ..key = part.turn
+        ..key = stepId
         ..className = "part"
             " ${selected ? "selected" : ""}"
-            " turnType_${part.turnType}"
-        ..onClick = ((_) => props.store.actions.activeChanged.call(selected ? const Optional.absent() : new Optional.of(part)))
-      )(part.turn);
+        ..onClick = ((_) => props.data.currentStepId = selected ? -1 : stepId)
+      )(stepId);
   }
 
   ReactElement _renderExplanations(List<Explanation> explanations)
@@ -85,7 +89,7 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
     return
       (Dom.div()
         ..className = "explanation"
-          " ${explanation.style.or("")}"
+          " ${explanation.style}"
         ..key = explanation.hashCode
       )(
           explanation.explanation.map((ep)
@@ -94,9 +98,17 @@ class ReactHistoryComponent extends FluxUiComponent<ReactHistoryProps>
               (ReactExplanationPart()
                 ..explanationPart = ep
                 ..key = ep.hashCode
-                ..actionsHistory = props.actions
+                ..data = props.data
               )();
           }).toList()
       );
+  }
+
+  @override
+  void componentWillUnmount()
+  {
+    super.componentWillUnmount();
+
+    props.data.removeListener(listener);
   }
 }

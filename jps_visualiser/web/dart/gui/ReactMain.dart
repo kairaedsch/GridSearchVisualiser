@@ -6,9 +6,6 @@ import 'package:over_react/over_react.dart';
 import 'package:over_react/react_dom.dart' as react_dom;
 import 'package:over_react/over_react.dart' as over_react;
 
-import '../store/StoreAlgorithmSettings.dart';
-import '../store/StoreGridSettings.dart';
-import '../store/grid/StoreGrid.dart';
 import 'nodes/ReactGrid.dart';
 import 'nodes/arrows/ReactPaths.dart';
 import 'menu/ReactGridSettings.dart';
@@ -56,8 +53,6 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
         (Dom.div()..className = "gridSettingsContainer")(
             (ReactGridSettings()
               ..data = props.data
-              ..smallerGrid = storeGrid.smaller
-              ..biggerGrid = storeGrid.bigger
               ..download = _download
               ..load = _load
             )()
@@ -65,7 +60,6 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
         (Dom.div()..className = "algorithmSettingsContainer")(
             (ReactAlgorithmSettings()
               ..data = props.data
-              ..runAlgorithm = props.store.actions.runAlgorithm.call
             )()
         ),
         (Dom.div()..className = "historyContainer")(
@@ -79,13 +73,7 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
 
   void _download()
   {
-    StoreGrid storeGrid = props.store.storeGrid;
-    StoreGridSettings storeGridSettings = props.store.storeGridSettings;
-    StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
-    Save save = new Save(storeGrid.size);
-    storeGrid.save(save);
-    storeGridSettings.save(save);
-    storeAlgorithmSettings.save(save);
+    Save save = new Save(props.data);
 
     AnchorElement link = new AnchorElement();
     link.href = save.downloadLink();
@@ -97,14 +85,6 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
 
   void _load(String imageData)
   {
-    StoreGrid storeGrid = props.store.storeGrid;
-    StoreGridSettings storeGridSettings = props.store.storeGridSettings;
-    StoreAlgorithmSettings storeAlgorithmSettings = props.store.storeAlgorithmSettings;
-
-    new Save.load(imageData, (save) {
-      storeGrid.load(save);
-      storeGridSettings.load(save);
-      storeAlgorithmSettings.load(save);
-    });
+    new Save.load(imageData, props.data);
   }
 }

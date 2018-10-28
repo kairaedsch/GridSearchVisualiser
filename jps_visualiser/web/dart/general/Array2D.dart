@@ -15,19 +15,7 @@ class Array2D<T> extends Size
   /// Creates a new 2D array with the given size and producer function.
   Array2D(Size size, this._producer) : super.clone(size)
   {
-    _array = [];
-    resize(size);
-  }
-
-  @override
-  void resize(Size newSize)
-  {
-    _array = new List<List<T>>.generate(newSize.width, (x) => new List<T>.generate(newSize.height, (y)
-        {
-          Position position = new Position(x, y);
-          return contains(position) ? this[position] : _producer(position);
-        }));
-    super.resize(newSize);
+    _array = new List<List<T>>.generate(size.width, (x) => new List<T>.generate(size.height, (y) => _producer(new Position(x, y))));
   }
 
   bool contains(Position position)

@@ -1,3 +1,4 @@
+import '../../futuuure/general/DataTransferAble.dart';
 import '../../futuuure/transfer/Data.dart';
 import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/gui/ReactDropDown.dart';
@@ -17,6 +18,17 @@ class ReactAlgorithmSettingsProps extends UiProps
 @Component()
 class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettingsProps>
 {
+  Listener listener;
+
+  @override
+  void componentWillMount()
+  {
+    super.componentWillMount();
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["algorithmType", "heuristicType"], listener);
+  }
+
   @override
   ReactElement render()
   {
@@ -27,7 +39,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
         (Dom.div()..className = "configs")(
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select the algorithm to run on the grid"
+            ..popover = AlgorithmTypes.popover
           )(
               (Dom.div()..className = "title")("Algorithm:"),
               (ReactDropDown()
@@ -40,7 +52,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
           useHeuristic ?
           (ReactPopover()
             ..className = "config"
-            ..popover = "Select the heuristic to be used by the algorithm"
+            ..popover = HeuristicTypes.popover
           )(
               (Dom.div()..className = "title")("Heuristic:"),
               (ReactDropDown()
@@ -62,5 +74,13 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
           ),
         )
     );
+  }
+
+  @override
+  void componentWillUnmount()
+  {
+    super.componentWillUnmount();
+
+    props.data.removeListener(listener);
   }
 }

@@ -11,6 +11,7 @@ import '../../model/heuristics/Euclidean.dart';
 import '../../model/heuristics/Heuristic.dart';
 import '../../model/heuristics/Manhattan.dart';
 import '../../model/heuristics/Octile.dart';
+import '../../model/history/Highlight.dart';
 import '../general/TransferSlave.dart';
 import '../transfer/Data.dart';
 import '../transfer/GridSettings.dart';
@@ -34,7 +35,7 @@ class PathfinderWorker
       new TransferSlave(_data);
     }
 
-    _data.addListener((String id)
+    _data.addListener(["size", "barrier_", "startPosition", "targetPosition", "algorithmType", "heuristicType", "gridMode", "directionMode", "cornerMode", "directionalMode", "currentStepId"], (String id, dynamic oldValue, dynamic newValue)
     {
       _run(_data);
     });
@@ -42,7 +43,7 @@ class PathfinderWorker
 
   void _run(Data data)
   {
-    Grid grid = new Grid(data.size, null);
+    Grid grid = new Grid(data.size, (p) => new Node(p, (d) => data.gridBarrierManager.leaveAble(p, d)));
 
     Position startPosition = data.startPosition;
     Position targetPosition = data.targetPosition;
@@ -66,10 +67,57 @@ class PathfinderWorker
       case AlgorithmType.JPSP_DATA: algorithmFactory = JumpPointSearchPlusDataGenerator.factory; break;
     }
 
-    Algorithm algorithm = algorithmFactory(grid, startPosition, targetPosition, heuristic);
+    Algorithm algorithm = algorithmFactory(grid, startPosition, targetPosition, heuristic, _data.currentStepId);
 
     algorithm.run();
 
-    _data.searchHistory = algorithm.searchHistory;
+    bool wasLastStep = data.currentStepId == data.stepCount - 1;
+    bool isLastStep = data.currentStepId == algorithm.searchHistory.stepCount - 1;
+    if ((wasLastStep && !isLastStep) || data.currentStepId >= algorithm.searchHistory.stepCount)
+    {
+      data.currentStepId = algorithm.searchHistory.stepCount - 1;
+      return;
+    }
+
+    _data.title = algorithm.searchHistory.title;
+    _data.stepCount = algorithm.searchHistory.stepCount;
+    _data.currentStepTitle = algorithm.searchHistory.stepTitle;
+    _data.currentStepDescription = algorithm.searchHistory.stepDescription;
+
+    for (Position position in _data.size.positions())
+    {
+      var currentStepHighlights = _data.getCurrentStepHighlights(position);
+      var newStepHighlights = algorithm.searchHistory.stepHighlights[position];
+      if (!_equal(currentStepHighlights, newStepHighlights))
+      {
+        _data.setCurrentStepHighlights(position, newStepHighlights);
+      }
+    }
+    _data.setCurrentStepHighlights(null, algorithm.searchHistory.stepHighlights[null]);
+  }
+
+  bool _equal(Map<String, List<Highlight>> mapOne, Map<String, List<Highlight>> mapTwo)
+  {
+    if (mapOne.length != mapTwo.length)
+    {
+      return false;
+    }
+    for (String key in mapOne.keys)
+    {
+      List<Highlight> listOne = mapOne[key];
+      List<Highlight> listTwo = mapTwo[key];
+      if (listOne == null || listTwo == null || listOne.length != listTwo.length)
+      {
+        return false;
+      }
+      for (int i = 0; i < listOne.length; i++)
+      {
+        if (listOne[i] != listTwo[i])
+        {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

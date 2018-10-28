@@ -635,54 +635,6 @@ g.blinking {
   cursor: pointer;
 }
 
-.history .parts .part.turnType_0 {
-  --typeColorR: 255;
-  --typeColorG: 15;
-  --typeColorB: 0;
-}
-
-.history .parts .part.turnType_1 {
-  --typeColorR: 255;
-  --typeColorG: 0;
-  --typeColorB: 134;
-}
-
-.history .parts .part.turnType_2 {
-  --typeColorR: 142;
-  --typeColorG: 0;
-  --typeColorB: 255;
-}
-
-.history .parts .part.turnType_3 {
-  --typeColorR: 0;
-  --typeColorG: 87;
-  --typeColorB: 255;
-}
-
-.history .parts .part.turnType_4 {
-  --typeColorR: 0;
-  --typeColorG: 255;
-  --typeColorB: 250;
-}
-
-.history .parts .part.turnType_5 {
-  --typeColorR: 0;
-  --typeColorG: 255;
-  --typeColorB: 67;
-}
-
-.history .parts .part.turnType_6 {
-  --typeColorR: 129;
-  --typeColorG: 255;
-  --typeColorB: 0;
-}
-
-.history .parts .part.turnType_7 {
-  --typeColorR: 255;
-  --typeColorG: 218;
-  --typeColorB: 0;
-}
-
 .history .parts .part:hover {
   color: #FFF;
   font-weight: 600;

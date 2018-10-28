@@ -1,48 +1,72 @@
-import '../Grid.dart';
-import 'SearchState.dart';
-import 'dart:collection';
-import 'package:quiver/core.dart';
+import '../../general/Position.dart';
+import '../../general/Size.dart';
+import 'Explanation.dart';
+import 'Highlight.dart';
+import 'package:tuple/tuple.dart';
 
 class SearchHistory
 {
-  Optional<List<Node>> _path;
-  Optional<List<Node>> get path => _path;
+  int _id = 0;
 
-  List<SearchState> _history;
-  List<SearchState> get history => _history;
-
+  bool foundPath = false;
   String title;
+  int stepCount;
+  String stepTitle;
 
-  SearchHistory()
+  final List<Explanation> _stepDescription = [];
+  List<Explanation> get stepDescription => _stepDescription;
+
+  final Map<Position, Map<String, List<Highlight>>> _stepHighlights;
+  Map<Position, Map<String, List<Highlight>>> get stepHighlights => _stepHighlights;
+
+  SearchHistory(Size size)
+    : _stepHighlights = new Map.fromIterable(size.positions(), value: (Position p) => new Map()..["background"] = [] ..["foreground"] = [])..[null] = (new Map()..["background"] = [] ..["foreground"] = []);
+
+  void newExplanation(Explanation explanation)
   {
-    _history = [];
-    _path = const Optional.absent();
+    _stepDescription.add(explanation);
   }
 
-  void setPath(List<Node> newPath)
+  void addES_(String text)
   {
-    _path = new Optional.of(newPath);
+    addEMM(text, "", [], []);
   }
 
-  void add(SearchState searchState)
+  void addESS(String text, String style, Highlight highlight, Position position)
   {
-    _history.add(searchState);
+    addEMM(text, style, [highlight], [position]);
   }
 
-  int getTurnType(SearchState searchState)
+  void addEMS(String text, String style, Iterable<Highlight> highlights, Position position)
   {
-    int targetTypeId = searchState.getTypeId();
-    Set<int> foundTargetIds = new HashSet();
-    for (SearchState state in _history)
-    {
-      int typeId = state.getTypeId();
-      if (targetTypeId == typeId)
-      {
-        return foundTargetIds.length;
-      }
-      foundTargetIds.add(typeId);
-    }
-    assert(false, "Did not found searchstate in history: ${searchState.turn}");
-    return 0;
+    addEMM(text, style, highlights, [position]);
+  }
+
+  void addESM(String text, String style, Highlight highlight, Iterable<Position> positions)
+  {
+    addEMM(text, style, [highlight], positions);
+  }
+
+  void addEMM(String text, String style, Iterable<Highlight> highlights, Iterable<Position> positions)
+  {
+    addEM_(text, style, [new Tuple2(highlights, positions)]);
+  }
+
+  void addEM_(String text, String style, List<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
+  {
+    _stepDescription.last.explanation.add(new ExplanationPart("${_id++}", text, style));
+    var explanationPart = _stepDescription.last.explanation.last;
+    highlightsMap.forEach((tuple) => tuple.item1.forEach((h) => h.setDefaultStyle(explanationPart.style)));
+    addHM(explanationPart.id, highlightsMap);
+  }
+
+  void addH_(String id, Iterable<Highlight> highlights, Iterable<Position> positions)
+  {
+    addHM(id, [new Tuple2(highlights, positions)]);
+  }
+
+  void addHM(String id, Iterable<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
+  {
+    highlightsMap.forEach((tuple) =>  tuple.item2.forEach((position) => _stepHighlights[position].putIfAbsent(id, () => new List()).addAll(tuple.item1)));
   }
 }

@@ -2,23 +2,23 @@ import 'Position.dart';
 
 class Size
 {
-  int _width;
-  int get width => _width;
+  final int width;
 
-  int _height;
-  int get height => _height;
+  final int height;
 
-  Size(this._width, this._height);
+  Size(this.width, this.height);
 
   Size.clone(Size size)
-      : _width = size.width,
-        _height = size.height;
+      : width = size.width,
+        height = size.height;
 
-  void resize(Size newSize)
-  {
-    _width = newSize.width;
-    _height = newSize.height;
-  }
+  Size.fromMap(Map map)
+      : width = map["width"] as int,
+        height = map["height"] as int;
+
+  Map toMap() => new Map<dynamic, dynamic>()
+    ..["width"] = width
+    ..["height"] = height;
 
   Iterable<Position> positions()
   {

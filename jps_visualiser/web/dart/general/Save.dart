@@ -1,4 +1,7 @@
-import '../general/Direction.dart';
+import '../futuuure/grid/Barrier.dart';
+import '../futuuure/grid/Direction.dart';
+import '../futuuure/transfer/Data.dart';
+import '../futuuure/transfer/GridSettings.dart';
 import '../general/Position.dart';
 import '../general/Size.dart';
 import 'dart:html';
@@ -21,15 +24,44 @@ class Save
   Size _gridSize;
   Size get gridSize => _gridSize;
 
-  Save(this._gridSize)
+  Save(Data data)
   {
+    _gridSize = data.size;
     _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
     _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
     _context.setFillColorRgb(colorGrid[0], colorGrid[1], colorGrid[2], colorGrid[3]);
     _context.fillRect(0, 0, gridSize.width * scale, gridSize.height * scale);
+    saveTo(data);
   }
 
-  Save.load(String imageSrc, void callback(Save save))
+  void saveTo(Data data)
+  {
+    for (Position position in gridSize.positions())
+    {
+      var barrier = data.getBarrier(position);
+      for (Direction direction in Direction.values)
+      {
+        writeBarrier(position, new Optional.of(direction), barrier.isBlocked(direction));
+      }
+      writeBarrier(position, const Optional.absent(), data.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
+    }
+    writeSource(data.targetPosition);
+    writeTarget(data.targetPosition);
+    writeInt(0, data.targetPosition.x);
+    writeInt(1, data.targetPosition.y);
+    writeInt(2, data.targetPosition.x);
+    writeInt(3, data.targetPosition.y);
+
+    writeEnum(5, data.gridMode.index);
+    writeEnum(6, data.directionMode.index);
+    writeEnum(7, data.cornerMode.index);
+    writeEnum(8, data.directionalMode.index);
+
+    writeEnum(10, data.algorithmType.index);
+    writeEnum(11, data.heuristicType.index);
+  }
+
+  Save.load(String imageSrc, Data data)
   {
     ImageElement image = new ImageElement(src: imageSrc);
     image.onLoad.listen((e) {
@@ -37,8 +69,40 @@ class Save
           _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
       _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
       _context.drawImage(image, 0, 0);
-      callback(this);
+      loadTo(data);
     });
+  }
+
+  void loadTo(Data data)
+  {
+    data.startPosition = new Position(0, 0);
+    data.targetPosition = new Position(1, 1);
+
+    for (Position position in gridSize.positions())
+    {
+      var barrierMap = new Map<Direction, bool>.fromIterable(
+          Direction.values,
+          key: (Direction d) => d,
+          value: (Direction d) => readBarrier(position, d));
+
+      data.setBarrier(position, new Barrier(barrierMap));
+    }
+
+    int sourceX = readInt(0);
+    int sourceY = readInt(1);
+    data.startPosition = new Position(sourceX, sourceY);
+
+    int targetX = readInt(2);
+    int targetY = readInt(3);
+    data.targetPosition = new Position(targetX, targetY);
+
+    data.gridMode = readEnum(5, GridMode.values);
+    data.directionMode = readEnum(6, DirectionMode.values);
+    data.cornerMode = readEnum(7, CornerMode.values);
+    data.directionalMode = readEnum(8, DirectionalMode.values);
+
+    data.algorithmType = readEnum(10, AlgorithmType.values);
+    data.heuristicType = readEnum(11, HeuristicType.values);
   }
 
   String downloadLink()
@@ -46,9 +110,9 @@ class Save
     return _canvas.toDataUrl("image/png", 100);
   }
 
-  void writeEnum(int pos, SaveData saveData)
+  void writeEnum(int pos, int enumId)
   {
-    writeInt(pos, saveData.saveDataValues.indexOf(saveData) * 10);
+    writeInt(pos, enumId * 10);
   }
 
   T readEnum<T>(int pos, List<T> saveEnum)
@@ -133,7 +197,7 @@ class Save
   List<int> _readBarrier(Position position, Direction direction, List<List<int>> colorToFind)
   {
     Vector2 pos = new Vector2(position.x + 0.5, position.y + 0.5)..scale(scale + 0.0);
-    Vector2 dir = new Vector2(direction.dx + 0.0, direction.dy + 0.0)..scale(scale * 0.35);
+    Vector2 dir = new Vector2(Directions.getDx(direction) + 0.0, Directions.getDy(direction) + 0.0)..scale(scale * 0.35);
 
     Vector2 recPosMiddlePix = pos.clone()..add(dir);
 

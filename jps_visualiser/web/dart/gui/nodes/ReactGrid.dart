@@ -1,11 +1,9 @@
+import '../../futuuure/general/DataTransferAble.dart';
 import '../../futuuure/grid/Direction.dart';
 import '../../futuuure/transfer/Data.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/Position.dart';
 import '../../general/Size.dart';
-import '../../store/StoreGridSettings.dart';
-import '../../store/grid/StoreNode.dart';
-import '../../store/grid/StoreGrid.dart';
-import '../../store/grid/StructureNode.dart';
 import 'EditBarrierMouseMode.dart';
 import 'EditNodeTypeMouseMode.dart';
 import 'MouseMode.dart';
@@ -14,7 +12,6 @@ import 'dart:async';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
-import 'package:w_flux/w_flux.dart';
 import 'dart:math';
 import 'dart:js';
 
@@ -30,24 +27,27 @@ class ReactGridProps extends UiProps
 @Component()
 class ReactGridComponent extends UiComponent<ReactGridProps>
 {
+  Listener listener;
+
   Size get size => props.data.size;
 
   Optional<MouseMode> _mouseMode;
-
   Optional<MouseMode> get mouseMode => _mouseMode;
 
   StreamSubscription _onDocumentMouseUpListener;
 
-  ReactGridComponent()
-  {
-    _mouseMode = const Optional.absent();
-  }
-
+  @override
   void componentWillMount()
   {
     super.componentWillMount();
+
+    _mouseMode = const Optional.absent();
     _onDocumentMouseUpListener = window.document.onMouseUp.listen((event) => _mouseMode = const Optional.absent());
+
     window.addEventListener("resize", (e) => _updateCSSVariables());
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
   }
 
   @override
@@ -57,10 +57,10 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     return
       (Dom.div()
         ..className = "grid"
-            " GRID_MODE_${props.data.gridMode}"
-            " DIRECTION_MODE_${props.data.directionMode}"
-            " CROSS_CORNER_${props.data.cornerMode}"
-            " WAY_MODE_${props.data.directionalMode}"
+            " GRID_MODE_${Enum.toName(props.data.gridMode)}"
+            " DIRECTION_MODE_${Enum.toName(props.data.directionMode)}"
+            " CROSS_CORNER_${Enum.toName(props.data.cornerMode)}"
+            " WAY_MODE_${Enum.toName(props.data.directionalMode)}"
       )(
           (Dom.div()
             ..className = "nodes")(
@@ -118,7 +118,7 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
   {
     if (props.data.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if (props.data.startPosition != position && props.data.targetPosition != position)
+      if (props.data.startPosition == position || props.data.targetPosition == position)
       {
         _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
@@ -134,7 +134,7 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
   {
     if (props.data.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if ((props.data.startPosition != position && props.data.targetPosition != position) && direction == null)
+      if ((props.data.startPosition == position || props.data.targetPosition == position) && direction == null)
       {
         _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
@@ -146,9 +146,12 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     _mouseMode.ifPresent((mouseMode) => mouseMode.evaluateNodePart(position, direction: direction));
   }
 
+  @override
   void componentWillUnmount()
   {
     super.componentWillUnmount();
     _onDocumentMouseUpListener.cancel();
+
+    props.data.removeListener(listener);
   }
 }

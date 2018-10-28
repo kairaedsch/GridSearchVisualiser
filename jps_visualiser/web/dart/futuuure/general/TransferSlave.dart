@@ -14,9 +14,9 @@ class TransferSlave
       transfer.set(command[0].toString(), command[1]);
     });
 
-    transfer.addListener((String id)
+    transfer.addUniversalListener((String id, dynamic oldValue, dynamic newValue)
     {
-      master.postMessage(<dynamic>[id, transfer.get<dynamic>(id)]);
+      master.postMessage(<dynamic>[id, transfer.getA<dynamic>(id)]);
     });
   }
 }

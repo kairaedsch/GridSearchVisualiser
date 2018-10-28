@@ -2,39 +2,36 @@ import '../../general/Position.dart';
 import '../Grid.dart';
 import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
-import '../history/SearchState.dart';
 
-typedef AlgorithmFactory = Algorithm Function(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic);
+typedef AlgorithmFactory = Algorithm Function(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory);
 
 abstract class Algorithm
 {
    final Grid grid;
    final Node start, target;
    final Heuristic heuristic;
+   final int _turnOfHistory;
 
    bool searched;
 
    final SearchHistory searchHistory;
 
-   SearchState _currentSearchState;
-   SearchState get currentSearchState => _currentSearchState;
-
    int nextTurn = 0;
 
-   Algorithm(this.grid, Position startPosition, Position targetPosition, this.heuristic)
+   Algorithm(this.grid, Position startPosition, Position targetPosition, this.heuristic, this._turnOfHistory)
        : start = grid[startPosition],
          target = grid[targetPosition],
-         searchHistory = new SearchHistory()
+         searchHistory = new SearchHistory(grid)
    {
       searched = false;
    }
 
-   void addSearchState()
+   void tunIsOver()
    {
-     _currentSearchState = new SearchState(nextTurn);
-     searchHistory.add(_currentSearchState);
      nextTurn++;
    }
+
+   bool createHistory() => nextTurn - 1 == _turnOfHistory;
 
    void run()
    {

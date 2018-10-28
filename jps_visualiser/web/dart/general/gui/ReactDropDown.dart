@@ -50,7 +50,7 @@ class ReactDropDownComponent extends UiStatefulComponent<ReactDropDownProps, Rea
             ..className = "value current"
             ..onClick = ((_) => _toggleOpen())
           )(
-              props.value.dropDownName
+              props.getTitle(props.value)
           ),
           (Dom.div()
             ..className = "drop"

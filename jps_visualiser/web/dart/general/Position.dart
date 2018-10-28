@@ -1,5 +1,4 @@
 import '../futuuure/grid/Direction.dart';
-import 'Direction.dart';
 import 'Size.dart';
 
 class Position
@@ -8,6 +7,14 @@ class Position
   final int y;
 
   const Position(this.x, this.y);
+
+  Position.fromMap(Map map)
+      : x = map["x"] as int,
+        y = map["y"] as int;
+
+  Map toMap() => new Map<dynamic, dynamic>()
+      ..["x"] = x
+      ..["y"] = y;
 
   Position go(Direction direction) => goMulti(direction, 1);
 
@@ -62,6 +69,6 @@ class Position
       tdx = dx.sign;
       tdy = dy.sign;
     }
-    return Direction.values.where((d) => d.dx == tdx && d.dy == tdy).first;
+    return Direction.values.where((d) => Directions.getDx(d) == tdx && Directions.getDy(d) == tdy).first;
   }
 }

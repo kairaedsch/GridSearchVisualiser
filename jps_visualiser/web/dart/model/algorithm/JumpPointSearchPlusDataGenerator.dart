@@ -8,16 +8,17 @@ import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import 'Algorithm.dart';
 import 'JumpPointSearchJumpPoints.dart';
+import 'package:tuple/tuple.dart';
 
 class JumpPointSearchPlusDataGenerator extends Algorithm
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic);
+  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   final JumpPointSearchData data;
 
-  JumpPointSearchPlusDataGenerator(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
+  JumpPointSearchPlusDataGenerator(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
       : data = new JumpPointSearchData(grid),
-        super(grid, startPosition, targetPosition, heuristic);
+        super(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
@@ -25,24 +26,24 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     _computeAllCardinal();
     _computeAllDiagonal();
 
+    tunIsOver();
+    if (createHistory())
     {
-      addSearchState();
-      currentSearchState.title..addT("Interaktive arrows");
+      searchHistory.stepTitle = "Interaktive arrows";
 
-      currentSearchState.description.add(new Explanation()
-        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
-      );
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
 
-      PathHighlight pathHighlightGenerator(Position origin, Position position, Direction direction)
+      Tuple2<Iterable<Highlight>, Iterable<Position>> pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
         var signpost = data[position].signposts[direction];
 
         List<Position> path = new List<Position>.generate(signpost.distance + 1, (d) => position.goMulti(direction, d));
 
-        return new PathHighlight.styled(signpost.isWallAhead ? "red" : "green", path, showEnd: true, origin: origin);
+        return new Tuple2([new PathHighlight.styled(signpost.isWallAhead ? "red" : "green", path, showEnd: true)], [origin]);
       }
 
-      List<PathHighlight> pathHighlightsGenerator(Position origin, Position position, Iterable<Direction> jumpDirections, int depth)
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> pathHighlightsGenerator(Position origin, Position position, Iterable<Direction> jumpDirections, int depth)
       {
         var highlights = jumpDirections.map((directionInJumpTarget) => pathHighlightGenerator(origin, position, directionInJumpTarget)).toList();
 
@@ -61,18 +62,18 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
         return highlights;
       }
 
-      List<PathHighlight> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
 
-      currentSearchState.backgroundHighlights.addAll(paths);
+      searchHistory.addHM("background", paths);
     }
 
+    tunIsOver();
+    if (createHistory())
     {
-      addSearchState();
-      currentSearchState.title..addT("Static arrows");
+      searchHistory.stepTitle = "Static arrows";
 
-      currentSearchState.description.add(new Explanation()
-        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
-      );
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
 
       List<PathHighlight> paths = grid
           .positions()
@@ -91,28 +92,28 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
             return new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), path, showEnd: true);
           })).toList();
 
-      currentSearchState.backgroundHighlights.addAll(paths);
+      searchHistory.addH_("background", paths, [null]);
     }
 
+    tunIsOver();
+    if (createHistory())
     {
-      addSearchState();
-      currentSearchState.title..addT("Static numbers");
+      searchHistory.stepTitle = "Static numbers";
 
-      currentSearchState.description.add(new Explanation()
-        ..addT("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>")
-      );
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
 
-      List<DirectionTextHighlight> texts = grid
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid
           .positions()
           .expand((position) =>
           Direction.values.map((direction)
           {
             var dataPointDirection = data[position].signposts[direction];
 
-            return new DirectionTextHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), "${dataPointDirection.distance}", position, direction);
+            return new Tuple2([new DirectionTextHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), "${dataPointDirection.distance}", direction)], [position]);
           })).toList();
 
-      currentSearchState.backgroundHighlights.addAll(texts);
+      searchHistory.addHM("background", texts);
     }
 
     searchHistory.title = "Generated JPS+ Data";

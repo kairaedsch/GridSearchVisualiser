@@ -1,3 +1,4 @@
+import '../../../futuuure/general/DataTransferAble.dart';
 import '../../../futuuure/transfer/Data.dart';
 import '../../../general/Size.dart';
 import '../../../model/history/Highlight.dart';
@@ -16,7 +17,24 @@ class ReactPathsProps extends UiProps
 @Component()
 class ReactPathsComponent extends UiComponent<ReactPathsProps>
 {
+  Listener listener;
+
   Size get size => props.data.size;
+
+  List<Highlight> get backgroundHighlights => props.data.getCurrentStepHighlights(null)["background"];
+  List<Highlight> get foregroundHighlights => props.data.getCurrentStepHighlights(null)["foreground"];
+
+  Iterable<Highlight> get highlights => backgroundHighlights..addAll(foregroundHighlights);
+  Iterable<PathHighlight> get pathHighlights => highlights.map((h) => h as PathHighlight);
+
+  @override
+  void componentWillMount()
+  {
+    super.componentWillMount();
+
+    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
+    props.data.addListener(["currentStepHighlights_null"], listener);
+  }
 
   @override
   ReactElement render()
@@ -35,7 +53,7 @@ class ReactPathsComponent extends UiComponent<ReactPathsProps>
             ..className = "svg"
             ..viewBox = "-0.5 -0.5 ${size.width} ${size.height}"
             )(
-                //props.store.highlights.map((highlight) => renderPathHighlight(highlight, props.storeGrid.size, false)).toList()
+                pathHighlights.map((highlight) => renderPathHighlight(highlight, size, false)).toList()
             ),
           )
         )
@@ -54,5 +72,13 @@ class ReactPathsComponent extends UiComponent<ReactPathsProps>
         ..path = highlight.path
         ..wrap = wrap
       )();
+  }
+
+  @override
+  void componentWillUnmount()
+  {
+    super.componentWillUnmount();
+
+    props.data.removeListener(listener);
   }
 }

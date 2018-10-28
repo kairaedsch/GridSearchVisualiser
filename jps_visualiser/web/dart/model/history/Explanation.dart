@@ -3,51 +3,45 @@ import 'package:quiver/core.dart';
 
 class Explanation
 {
-  final Optional<String> style;
+  final String style;
 
   List<ExplanationPart> _explanation = [];
   List<ExplanationPart> get explanation => _explanation;
 
   Explanation()
-      : style = const Optional.absent();
+      : style = "";
 
-  Explanation.styled(String style)
-      : style = new Optional.of(style);
+  Explanation.styled(this.style);
 
-  void addT(String text)
-  {
-    _explanation.add(new ExplanationPart.Text(text));
-  }
+  Explanation.fromMap(Map map)
+      : style = map["style"] as String,
+        _explanation = (map["explanation"] as List).map((Map map) => new ExplanationPart.fromMap(map)).toList();
 
-  void addH(String text, String style, List<Highlight> highlights)
-  {
-    _explanation.add(new ExplanationPart.Highlight(text, style, highlights));
-  }
-
-  int getTypeId()
-  {
-    return _explanation.map((e) => e.getTypeId()).reduce((t1, t2) => t1 ^ t2);
-  }
+  Map toMap() => new Map<dynamic, dynamic>()
+    ..["style"] = style
+    ..["explanation"] = explanation.map((e) => e.toMap()).toList();
 }
 
 class ExplanationPart
 {
+  final String id;
   final String text;
-  final List<Highlight> highlights;
-  final Optional<String> style;
+  final String style;
 
-  ExplanationPart.Text(this.text)
-      : highlights = [],
-        style = const Optional.absent();
+  ExplanationPart(this.id, this.text, this.style);
 
-  ExplanationPart.Highlight(this.text, String style, this.highlights)
-      : style = new Optional.of(style)
+  ExplanationPart.fromMap(Map map)
+      : id = map["id"] as String,
+        text = map["text"] as String,
+        style = map["style"] as String;
+
+  void setDefaultStyle(Iterable<Highlight> highlights)
   {
     highlights.forEach((h) => h.setDefaultStyle(style));
   }
 
-  int getTypeId()
-  {
-    return text.hashCode;
-  }
+  Map toMap() => new Map<dynamic, dynamic>()
+    ..["id"] = id
+    ..["text"] = text
+    ..["style"] = style;
 }

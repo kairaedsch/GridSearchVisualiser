@@ -11,17 +11,17 @@ import 'package:quiver/core.dart';
 
 class JumpPointSearchPlus extends AStar
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic) => new JumpPointSearchPlus("JPS+", grid, startPosition, targetPosition, heuristic);
+  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlus("JPS+", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   JumpPointSearchData _data;
 
-  JumpPointSearchPlus(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic)
-      : super(name, grid, startPosition, targetPosition, heuristic);
+  JumpPointSearchPlus(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+      : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
   {
-    var dataGenerator = new JumpPointSearchPlusDataGenerator(grid, start.position, target.position, heuristic);
+    var dataGenerator = new JumpPointSearchPlusDataGenerator(grid, start.position, target.position, heuristic, -1);
     dataGenerator.run();
     _data = dataGenerator.data;
 
@@ -88,11 +88,11 @@ class JumpPointSearchPlus extends AStar
       }
     }
 
-    currentSearchState.description.add(new Explanation()
-      ..addT("<The JPS+ Algorithm is working but the explanation for it has not been implemented yet>")
-    );
-
-
+    if (createHistory())
+    {
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
+    }
     return neighbours;
   }
 }
