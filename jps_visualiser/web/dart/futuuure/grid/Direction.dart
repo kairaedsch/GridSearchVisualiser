@@ -25,14 +25,14 @@ class Directions
   {
     switch (direction)
     {
-      case Direction.NORTH      : return  0; break;
-      case Direction.NORTH_EAST : return  1; break;
-      case Direction.EAST       : return  1; break;
-      case Direction.SOUTH_EAST : return  1; break;
-      case Direction.SOUTH      : return  0; break;
-      case Direction.SOUTH_WEST : return -1; break;
-      case Direction.WEST       : return -1; break;
-      case Direction.NORTH_WEST : return -1; break;
+      case Direction.NORTH     : return  0;
+      case Direction.NORTH_EAST: return  1;
+      case Direction.EAST      : return  1;
+      case Direction.SOUTH_EAST: return  1;
+      case Direction.SOUTH     : return  0;
+      case Direction.SOUTH_WEST: return -1;
+      case Direction.WEST      : return -1;
+      case Direction.NORTH_WEST: return -1;
     }
 
   }
@@ -41,14 +41,14 @@ class Directions
   {
     switch (direction)
     {
-      case Direction.NORTH      : return -1; break;
-      case Direction.NORTH_EAST : return -1; break;
-      case Direction.EAST       : return  0; break;
-      case Direction.SOUTH_EAST : return  1; break;
-      case Direction.SOUTH      : return  1; break;
-      case Direction.SOUTH_WEST : return  1; break;
-      case Direction.WEST       : return  0; break;
-      case Direction.NORTH_WEST : return -1; break;
+      case Direction.NORTH     : return -1;
+      case Direction.NORTH_EAST: return -1;
+      case Direction.EAST      : return  0;
+      case Direction.SOUTH_EAST: return  1;
+      case Direction.SOUTH     : return  1;
+      case Direction.SOUTH_WEST: return  1;
+      case Direction.WEST      : return  0;
+      case Direction.NORTH_WEST: return -1;
   }
   }
 }

@@ -45,10 +45,10 @@ class Save
       }
       writeBarrier(position, const Optional.absent(), data.gridMode == GridMode.BASIC ? barrier.isAnyBlocked() : false);
     }
-    writeSource(data.targetPosition);
+    writeSource(data.startPosition);
     writeTarget(data.targetPosition);
-    writeInt(0, data.targetPosition.x);
-    writeInt(1, data.targetPosition.y);
+    writeInt(0, data.startPosition.x);
+    writeInt(1, data.startPosition.y);
     writeInt(2, data.targetPosition.x);
     writeInt(3, data.targetPosition.y);
 

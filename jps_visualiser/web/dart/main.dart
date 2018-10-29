@@ -9,7 +9,7 @@ void main()
 
   if (Data.useWebWorker)
   {
-    new TransferMaster(data);
+    new TransferMaster(data, 'dart/futuuure/pathfinder/PathfinderWorker.dart.js');
   }
   else
   {

@@ -9,7 +9,7 @@ import 'GridSettings.dart';
 
 class Data extends DataTransferAble
 {
-  static final bool useWebWorker = false;
+  static final bool useWebWorker = identical(1, 1.0);
 
   GridBarrierManager _gridBarrierManager;
   GridBarrierManager get gridBarrierManager => _gridBarrierManager;
@@ -17,7 +17,7 @@ class Data extends DataTransferAble
   Data()
   {
     _gridBarrierManager = new GridBarrierManager(this);
-    size = new Size(10, 10);
+    size = new Size(20, 20);
     size.positions().forEach((p) => setBarrier(p, Barrier.totalUnblocked));
     startPosition = new Position(0, 0);
     targetPosition = new Position(1, 1);
@@ -52,24 +52,24 @@ class Data extends DataTransferAble
   void set targetPosition(Position newTargetPosition) => set("targetPosition", newTargetPosition.toMap());
 
   // ALGORITHM SETTINGS #######################################################
-  AlgorithmType get algorithmType => getA("algorithmType");
-  void set algorithmType(AlgorithmType newAlgorithmType) => set("algorithmType", newAlgorithmType);
+  AlgorithmType get algorithmType => AlgorithmType.values[getA<int>("algorithmType")];
+  void set algorithmType(AlgorithmType newAlgorithmType) => set("algorithmType", newAlgorithmType.index);
 
-  HeuristicType get heuristicType => getA("heuristicType");
-  void set heuristicType(HeuristicType newHeuristicType) => set("heuristicType", newHeuristicType);
+  HeuristicType get heuristicType => HeuristicType.values[getA<int>("heuristicType")];
+  void set heuristicType(HeuristicType newHeuristicType) => set("heuristicType", newHeuristicType.index);
 
   // GRID SETTINGS ############################################################
-  GridMode get gridMode => getA("gridMode");
-  void set gridMode(GridMode newGridMode) => set("gridMode", newGridMode);
+  GridMode get gridMode => GridMode.values[getA<int>("gridMode")];
+  void set gridMode(GridMode newGridMode) => set("gridMode", newGridMode.index);
 
-  DirectionMode get directionMode => getA("directionMode");
-  void set directionMode(DirectionMode newDirectionMode) => set("directionMode", newDirectionMode);
+  DirectionMode get directionMode => DirectionMode.values[getA<int>("directionMode")];
+  void set directionMode(DirectionMode newDirectionMode) => set("directionMode", newDirectionMode.index);
 
-  CornerMode get cornerMode => getA("cornerMode");
-  void set cornerMode(CornerMode newCornerMode) => set("cornerMode", newCornerMode);
+  CornerMode get cornerMode => CornerMode.values[getA<int>("cornerMode")];
+  void set cornerMode(CornerMode newCornerMode) => set("cornerMode", newCornerMode.index);
 
-  DirectionalMode get directionalMode => getA("directionalMode");
-  void set directionalMode(DirectionalMode newDirectionalMode) => set("directionalMode", newDirectionalMode);
+  DirectionalMode get directionalMode => DirectionalMode.values[getA<int>("directionalMode")];
+  void set directionalMode(DirectionalMode newDirectionalMode) => set("directionalMode", newDirectionalMode.index);
 
   // HISTORY SETTINGS #########################################################
   String get title => getA("title");

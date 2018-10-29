@@ -17,11 +17,11 @@ class AlgorithmTypes
   {
     switch (algorithmType)
     {
-      case AlgorithmType.DIJKSTRA: return "Dijkstra"; break;
-      case AlgorithmType.A_STAR: return "A*"; break;
-      case AlgorithmType.JPS: return "JPS"; break;
-      case AlgorithmType.JPSP: return "JPS+"; break;
-      case AlgorithmType.JPSP_DATA: return "JPS+ Data"; break;
+      case AlgorithmType.DIJKSTRA: return "Dijkstra";
+      case AlgorithmType.A_STAR: return "A*";
+      case AlgorithmType.JPS: return "JPS";
+      case AlgorithmType.JPSP: return "JPS+";
+      case AlgorithmType.JPSP_DATA: return "JPS+ Data";
     }
     return "Not Found";
   }
@@ -62,8 +62,8 @@ class GridModes
   {
     switch (gridmode)
     {
-      case GridMode.BASIC: return "Basic"; break;
-      case GridMode.ADVANCED: return "Advanced"; break;
+      case GridMode.BASIC: return "Basic";
+      case GridMode.ADVANCED: return "Advanced";
     }
     return "Not Found";
   }
@@ -94,9 +94,9 @@ class DirectionModes
   {
     switch (directionMode)
     {
-      case DirectionMode.ALL: return "All"; break;
-      case DirectionMode.ONLY_CARDINAL: return "Only cardinal"; break;
-      case DirectionMode.ONLY_DIAGONAL: return "Only diagonal"; break;
+      case DirectionMode.ALL: return "All";
+      case DirectionMode.ONLY_CARDINAL: return "Only cardinal";
+      case DirectionMode.ONLY_DIAGONAL: return "Only diagonal";
     }
     return "Not Found";
   }
@@ -131,8 +131,8 @@ class DirectionalModes
   {
     switch (directionalMode)
     {
-      case DirectionalMode.MONO: return "Mono"; break;
-      case DirectionalMode.BI: return "Bi"; break;
+      case DirectionalMode.MONO: return "Mono";
+      case DirectionalMode.BI: return "Bi";
     }
     return "Not Found";
   }
@@ -163,8 +163,8 @@ class CornerModes
   {
     switch (cornerMode)
     {
-      case CornerMode.CROSS: return "Cross"; break;
-      case CornerMode.BYPASS: return "Bypass"; break;
+      case CornerMode.CROSS: return "Cross";
+      case CornerMode.BYPASS: return "Bypass";
     }
     return "Not Found";
   }

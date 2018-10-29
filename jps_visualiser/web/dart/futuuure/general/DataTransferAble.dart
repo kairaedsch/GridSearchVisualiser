@@ -1,5 +1,15 @@
+import 'package:js/js.dart';
 
 typedef Listener = void Function(String id, dynamic oldValue, dynamic newValue);
+
+@anonymous
+@JS()
+abstract class JsData
+{
+  external dynamic get data;
+
+  external factory JsData({String data});
+}
 
 class DataTransferAble
 {

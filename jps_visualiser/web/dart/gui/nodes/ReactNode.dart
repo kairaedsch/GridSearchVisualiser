@@ -69,7 +69,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   @override
   ReactElement render()
   {
-    print("render Node ${props.position}");
+    //int("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"
