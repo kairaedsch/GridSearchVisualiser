@@ -24,12 +24,15 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
       (Dom.div()
         ..className = "explanationPart"
           " ${explanationPart.style != "" ? "styled highlight_${explanationPart.style}" : "unstyled"}"
-          ..onMouseEnter = (
-                  (_) => null //props.actionsHistory.customHighlightsChanged.call(explanationPart.highlights)
-          )
-          ..onMouseLeave = (
-                  (_) => null //props.actionsHistory.customHighlightsChanged.call([])
-          )
+          ..onMouseEnter = (_) {
+            props.data.currentStepDescriptionHoverId = explanationPart.id;
+          }
+          ..onMouseLeave = (_) {
+            if (props.data.currentStepDescriptionHoverId == explanationPart.id)
+            {
+              props.data.currentStepDescriptionHoverId = "foreground";
+            }
+          }
       )(
           explanationPart.text
       );

@@ -27,7 +27,7 @@ class ReactGridProps extends UiProps
 @Component()
 class ReactGridComponent extends UiComponent<ReactGridProps>
 {
-  Listener listener;
+  SimpleListener listener;
 
   Size get size => props.data.size;
 
@@ -46,8 +46,8 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
 
     window.addEventListener("resize", (e) => _updateCSSVariables());
 
-    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
-    props.data.addListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
+    listener = () => redraw();
+    props.data.addSimpleListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
   }
 
   @override
@@ -57,10 +57,10 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     return
       (Dom.div()
         ..className = "grid"
-            " GRID_MODE_${Enum.toName(props.data.gridMode)}"
-            " DIRECTION_MODE_${Enum.toName(props.data.directionMode)}"
-            " CROSS_CORNER_${Enum.toName(props.data.cornerMode)}"
-            " WAY_MODE_${Enum.toName(props.data.directionalMode)}"
+            " GRID_MODE_${Enums.toName(props.data.gridMode)}"
+            " DIRECTION_MODE_${Enums.toName(props.data.directionMode)}"
+            " CROSS_CORNER_${Enums.toName(props.data.cornerMode)}"
+            " WAY_MODE_${Enums.toName(props.data.directionalMode)}"
       )(
           (Dom.div()
             ..className = "nodes")(
@@ -152,6 +152,6 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     super.componentWillUnmount();
     _onDocumentMouseUpListener.cancel();
 
-    props.data.removeListener(listener);
+    props.data.removeSimpleListener(listener);
   }
 }

@@ -1,25 +1,48 @@
 import 'DataTransferAble.dart';
-import 'dart:html';
+import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 
 class TransferMaster
 {
-  TransferMaster(DataTransferAble transfer, String webworker)
-  {
-    var worker = new Worker(webworker);
+  String _webworker;
+  DataTransferAble _transfer;
+  ReceivePort _masterReceiver;
+  SendPort _slaveSender = null;
 
-    worker.onMessage.listen((MessageEvent msg)
+  TransferMaster(this._webworker, this._transfer)
+  {
+    _masterReceiver = new ReceivePort();
+    Future<Isolate> future = Isolate.spawnUri(Uri.parse(identical(1, 1.0) ? "dart/$_webworker.js" : _webworker), [], _masterReceiver.sendPort);
+    future.then(_setup);
+  }
+
+  Future<Null> _setup(Isolate isolate) async
+  {
+    _masterReceiver.listen((dynamic jsonDatas)
     {
-      print('master: got  ${msg.data}');
-      Map gar = JSON.decode(msg.data[0] as String) as Map<String, dynamic>;
-      transfer.set(gar["id"] as String, gar["data"]);
+      if (_slaveSender == null)
+      {
+        _slaveSender = jsonDatas as SendPort;
+        return;
+      }
+      List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
+      print('master: got  ${datas.map((data) => data["id"] as String)}');
+      for (Map data in datas)
+      {
+        _transfer.autoTriggerListeners = false;
+        _transfer.set(data["id"] as String, data["data"], triggerSyncing: false);
+        _transfer.autoTriggerListeners = true;
+        _transfer.triggerListeners();
+      }
     });
 
-    transfer.addUniversalListener((String id, dynamic oldValue, dynamic newValue)
+    _transfer.addUniversalListener((List<String> ids)
     {
-      var data = new Map<String, dynamic>()..["id"] = id ..["data"] = transfer.getA<dynamic>(id);
-      print('master: send $data');
-      worker.postMessage(new JsData(data: JSON.encode(data)));
+      var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = _transfer.getA<dynamic>(id)).toList();
+      print('master: send $ids');
+      _slaveSender.send(JSON.encode(data));
     });
   }
+
 }

@@ -22,15 +22,15 @@ class ReactGridSettingsProps extends UiProps
 @Component()
 class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
 {
-  Listener listener;
+  SimpleListener listener;
 
   @override
   void componentWillMount()
   {
     super.componentWillMount();
 
-    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
-    props.data.addListener(["gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
+    listener = () => redraw();
+    props.data.addSimpleListener(["gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
   }
 
   @override
@@ -158,6 +158,6 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
   {
     super.componentWillUnmount();
 
-    props.data.removeListener(listener);
+    props.data.removeSimpleListener(listener);
   }
 }

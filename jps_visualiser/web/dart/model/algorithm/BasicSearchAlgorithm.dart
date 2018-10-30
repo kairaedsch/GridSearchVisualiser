@@ -242,24 +242,13 @@ abstract class BasicSearchAlgorithm extends Algorithm
     }
 
     searchHistory.stepCount = nextTurn;
-    if (name == "norecursion")
+    if (searchHistory.foundPath)
     {
-      searchHistory.title = "Test run";
+      searchHistory.title = "The $name Algorithm took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long path";
     }
     else
     {
-      Dijkstra dijkstra = new Dijkstra("norecursion", grid, start.position, target.position, heuristic, -1);
-      dijkstra.run();
-      if (searchHistory.foundPath)
-      {
-        bool optimal = dijkstra.getDistance(dijkstra.target) == getDistance(target);
-        searchHistory.title = "The $name Algorithm took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long ${optimal ? "optimal path" : "NON OPTIMAL path => Have you found a bug?"}";
-      }
-      else
-      {
-        bool thereExistsNone = !dijkstra.searchHistory.foundPath;
-        searchHistory.title = "The $name Algorithm took $turn turns to find no path ${thereExistsNone ? "and there really exists none" : "altough there exists one => Have you found a bug?"}";
-      }
+      searchHistory.title = "The $name Algorithm took $turn turns to find no path";
     }
   }
 }

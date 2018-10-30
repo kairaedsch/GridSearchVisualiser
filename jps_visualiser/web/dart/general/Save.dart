@@ -66,7 +66,7 @@ class Save
     ImageElement image = new ImageElement(src: imageSrc);
     image.onLoad.listen((e) {
       _gridSize = new Size((image.width / scale).round(), ((image.height - header) / scale).round());
-          _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
+      _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
       _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
       _context.drawImage(image, 0, 0);
       loadTo(data);
@@ -75,8 +75,10 @@ class Save
 
   void loadTo(Data data)
   {
+    data.autoTriggerListeners = false;
     data.startPosition = new Position(0, 0);
     data.targetPosition = new Position(1, 1);
+    data.size = _gridSize;
 
     for (Position position in gridSize.positions())
     {
@@ -103,6 +105,8 @@ class Save
 
     data.algorithmType = readEnum(10, AlgorithmType.values);
     data.heuristicType = readEnum(11, HeuristicType.values);
+    data.autoTriggerListeners = true;
+    data.triggerListeners();
   }
 
   String downloadLink()

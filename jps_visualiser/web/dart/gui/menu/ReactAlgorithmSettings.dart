@@ -18,21 +18,21 @@ class ReactAlgorithmSettingsProps extends UiProps
 @Component()
 class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettingsProps>
 {
-  Listener listener;
+  SimpleListener listener;
 
   @override
   void componentWillMount()
   {
     super.componentWillMount();
 
-    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
-    props.data.addListener(["algorithmType", "heuristicType"], listener);
+    listener = () => redraw();
+    props.data.addSimpleListener(["algorithmType", "heuristicType"], listener);
   }
 
   @override
   ReactElement render()
   {
-    bool useHeuristic = (props.data.algorithmType != AlgorithmType.DIJKSTRA && props.data.algorithmType != AlgorithmType.JPSP_DATA);
+    bool useHeuristic = (props.data.algorithmType != AlgorithmType.DIJKSTRA && props.data.algorithmType != AlgorithmType.JPSP_DATA && props.data.algorithmType != AlgorithmType.NO_ALGORITHM);
     return
       (Dom.div()..className = "menu")(
         (Dom.div()..className = "title")("Algorithm"),
@@ -81,6 +81,6 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
   {
     super.componentWillUnmount();
 
-    props.data.removeListener(listener);
+    props.data.removeSimpleListener(listener);
   }
 }

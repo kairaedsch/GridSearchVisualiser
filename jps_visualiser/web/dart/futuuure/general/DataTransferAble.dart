@@ -1,48 +1,62 @@
-import 'package:js/js.dart';
+import 'Util.dart';
 
-typedef Listener = void Function(String id, dynamic oldValue, dynamic newValue);
-
-@anonymous
-@JS()
-abstract class JsData
-{
-  external dynamic get data;
-
-  external factory JsData({String data});
-}
+typedef SimpleListener = void Function();
+typedef UniversalListener = void Function(List<String> ids);
 
 class DataTransferAble
 {
-  final Map<String, dynamic> _data;
-  final Map<Object, Listener> _listeners;
+  final Map<String, dynamic> _data = new Map<String, dynamic>();
+  final Map<SimpleListener, List<String>> _simpleListeners = new Map();
+  final List<UniversalListener> _universalListeners = [];
 
-  DataTransferAble()
-    :   _data = new Map<String, dynamic>(),
-        _listeners = new Map();
+  bool autoTriggerListeners = true;
+  Map<String, bool> changes = new Map();
 
   T getA<T>(String id) => _data[id] as T;
 
-  void set(String id, dynamic newValue)
+  void set(String id, dynamic newValue, {bool triggerSyncing = true})
   {
     dynamic oldValue =  _data[id];
-    _data[id] = newValue;
-    _listeners.values.forEach((listener) => listener(id, oldValue, newValue));
+    if (triggerSyncing ? !Util.equal(newValue, oldValue) : (newValue != oldValue))
+    {
+      _data[id] = newValue;
+      changes[id] = changes.containsKey(id) ? (changes[id] || triggerSyncing) : triggerSyncing;
+      if (autoTriggerListeners)
+      {
+        triggerListeners();
+      }
+    }
   }
 
-  void removeListener(Listener listener)
+  void triggerListeners()
   {
-    _listeners.remove(listener);
-  }
-
-  void addListener(List<String> keys, Listener listener)
-  {
-    _listeners[listener] = ((key, dynamic oldValue, dynamic newValue) {
-      if (keys.any((k) => key.startsWith(k))) listener(key, oldValue, newValue);
+    new Map<SimpleListener, List<String>>.from(_simpleListeners).forEach((simpleListener, idStarts)
+    {
+      if (idStarts.any((idStart) => changes.keys.any((id) => id.startsWith(idStart))))
+      {
+        simpleListener();
+      }
     });
+    List<String> changesSyncable = changes.keys.where((id) => changes[id]).toList();
+    if (changesSyncable.isNotEmpty)
+    {
+      _universalListeners.forEach((universalListener) => universalListener(changesSyncable));
+    }
+    changes.clear();
   }
 
-  void addUniversalListener(Listener listener)
+  void addSimpleListener(List<String> idStarts, SimpleListener simpleListener)
   {
-    addListener([""], listener);
+    _simpleListeners[simpleListener] = idStarts;
+  }
+
+  void removeSimpleListener(SimpleListener simpleListener)
+  {
+    _simpleListeners.remove(simpleListener);
+  }
+
+  void addUniversalListener(UniversalListener universalListener)
+  {
+    _universalListeners.add(universalListener);
   }
 }

@@ -16,15 +16,15 @@ class ReactHistoryProps extends UiProps
 @Component()
 class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
 {
-  Listener listener;
+  SimpleListener listener;
 
   @override
   void componentWillMount()
   {
     super.componentWillMount();
 
-    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
-    props.data.addListener(["title", "stepCount", "currentStepId", "currentStepTitle", "currentStepDescription"], listener);
+    listener = () => redraw();
+    props.data.addSimpleListener(["title", "stepCount", "currentStepId", "currentStepTitle", "currentStepDescription"], listener);
   }
 
   @override
@@ -109,6 +109,6 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
   {
     super.componentWillUnmount();
 
-    props.data.removeListener(listener);
+    props.data.removeSimpleListener(listener);
   }
 }

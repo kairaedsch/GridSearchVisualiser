@@ -1,5 +1,6 @@
 import '../../futuuure/grid/Direction.dart';
 import '../../futuuure/transfer/Data.dart';
+import '../../futuuure/transfer/GridSettings.dart';
 import '../../general/MouseTracker.dart';
 import '../../general/Position.dart';
 import '../../model/history/Highlight.dart';
@@ -51,7 +52,7 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
             :
         (
             "part outer"
-            " ${direction.value.toString()}"
+            " ${Enums.toName(props.direction.value)}"
             " ${Directions.isDiagonal(direction.value) ? "diagonal" : "cardinal"}"
             " ${position.go(direction.value).legal(props.data.size) ? "legal" : "illegal"}"
             " ${props.data.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"

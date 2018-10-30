@@ -1,4 +1,4 @@
-class Enum
+class Enums
 {
   static String toName(dynamic dynamic)
   {
@@ -8,7 +8,7 @@ class Enum
 
 enum AlgorithmType
 {
-  DIJKSTRA, A_STAR, JPS, JPSP, JPSP_DATA
+  NO_ALGORITHM, DIJKSTRA, A_STAR, JPS, JPSP, JPSP_DATA
 }
 
 class AlgorithmTypes
@@ -17,6 +17,7 @@ class AlgorithmTypes
   {
     switch (algorithmType)
     {
+      case AlgorithmType.NO_ALGORITHM: return "None";
       case AlgorithmType.DIJKSTRA: return "Dijkstra";
       case AlgorithmType.A_STAR: return "A*";
       case AlgorithmType.JPS: return "JPS";

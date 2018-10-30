@@ -1,25 +1,36 @@
-import 'Slave.dart';
 import 'DataTransferAble.dart';
 import 'dart:convert';
+import 'dart:isolate';
 
 class TransferSlave
 {
-  TransferSlave(DataTransferAble transfer)
-  {
-    Slave slave = new Slave();
+  DataTransferAble _transfer;
+  ReceivePort _slaveReceiver;
+  SendPort _masterSender;
 
-    slave.onMessage((MessageEvent msg)
+  TransferSlave(this._masterSender, this._transfer)
+  {
+    _slaveReceiver = new ReceivePort();
+    _masterSender.send(_slaveReceiver.sendPort);
+
+    _slaveReceiver.listen((dynamic jsonDatas)
     {
-      log('worker: got  ${msg.data}');
-      Map gay = JSON.decode(msg.data[0] as String) as Map<String, dynamic>;
-      transfer.set(gay["id"] as String, gay["data"]);
+      List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
+      print('worker: got  ${datas.map((data) => data["id"] as String)}');
+      for (Map data in datas)
+      {
+        _transfer.autoTriggerListeners = false;
+        _transfer.set(data["id"] as String, data["data"], triggerSyncing: false);
+        _transfer.autoTriggerListeners = true;
+        _transfer.triggerListeners();
+      }
     });
 
-    transfer.addUniversalListener((String id, dynamic oldValue, dynamic newValue)
+    _transfer.addUniversalListener((List<String> ids)
     {
-      var data = new Map<String, dynamic>()..["id"] = id ..["data"] = transfer.getA<dynamic>(id);
-      log('worker: send $data');
-      slave.postMessage(new JsData(data: JSON.encode(data)));
+      var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = _transfer.getA<dynamic>(id)).toList();
+      print('worker: send $ids');
+      _masterSender.send(JSON.encode(data));
     });
   }
 }

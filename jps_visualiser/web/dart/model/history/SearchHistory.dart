@@ -9,9 +9,9 @@ class SearchHistory
   int _id = 0;
 
   bool foundPath = false;
-  String title;
-  int stepCount;
-  String stepTitle;
+  String title = "";
+  int stepCount = 0;
+  String stepTitle = "";
 
   final List<Explanation> _stepDescription = [];
   List<Explanation> get stepDescription => _stepDescription;
@@ -49,12 +49,12 @@ class SearchHistory
 
   void addEMM(String text, String style, Iterable<Highlight> highlights, Iterable<Position> positions)
   {
-    addEM_(text, style, [new Tuple2(highlights, positions)]);
+    addEM_(text, style, highlights.isNotEmpty ? [new Tuple2(highlights, positions)] : []);
   }
 
   void addEM_(String text, String style, List<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
   {
-    _stepDescription.last.explanation.add(new ExplanationPart("${_id++}", text, style));
+    _stepDescription.last.explanation.add(new ExplanationPart(highlightsMap.isNotEmpty ? "${_id++}" : "foreground", text, style));
     var explanationPart = _stepDescription.last.explanation.last;
     highlightsMap.forEach((tuple) => tuple.item1.forEach((h) => h.setDefaultStyle(explanationPart.style)));
     addHM(explanationPart.id, highlightsMap);

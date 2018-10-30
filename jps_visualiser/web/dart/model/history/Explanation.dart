@@ -1,5 +1,4 @@
 import 'Highlight.dart';
-import 'package:quiver/core.dart';
 
 class Explanation
 {

@@ -1,6 +1,5 @@
 import '../../general/Position.dart';
 import '../../futuuure/grid/Direction.dart';
-import 'package:quiver/core.dart';
 
 class Highlights
 {
@@ -76,17 +75,6 @@ class BoxHighlight extends Highlight
   Map toMap() => new Map<dynamic, dynamic>()
     ..["highlight"] = "BoxHighlight"
     ..["style"] = style;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is BoxHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style;
-
-  @override
-  int get hashCode =>
-      style.hashCode;
 }
 
 class CircleHighlight extends Highlight
@@ -99,17 +87,6 @@ class CircleHighlight extends Highlight
 
   Map toMap() => super.toMap()
     ..["highlight"] = "CircleHighlight";
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is CircleHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style;
-
-  @override
-  int get hashCode =>
-      style.hashCode;
 }
 
 class DotHighlight extends Highlight
@@ -122,17 +99,6 @@ class DotHighlight extends Highlight
 
   Map toMap() => super.toMap()
     ..["highlight"] = "DotHighlight";
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is DotHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style;
-
-  @override
-  int get hashCode =>
-      style.hashCode;
 }
 
 class PathHighlight extends Highlight
@@ -161,23 +127,6 @@ class PathHighlight extends Highlight
     ..["path"] = path.map((p) => p.toMap()).toList()
     ..["showEnd"] = showEnd
     ..["showStart"] = showStart;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is PathHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style &&
-              path == other.path &&
-              showEnd == other.showEnd &&
-              showStart == other.showStart;
-
-  @override
-  int get hashCode =>
-      style.hashCode ^
-      path.hashCode ^
-      showEnd.hashCode ^
-      showStart.hashCode;
 }
 
 class TextHighlight extends Highlight
@@ -195,19 +144,6 @@ class TextHighlight extends Highlight
   Map toMap() => super.toMap()
     ..["highlight"] = "TextHighlight"
     ..["text"] = text;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is TextHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style &&
-              text == other.text;
-
-  @override
-  int get hashCode =>
-      style.hashCode ^
-      text.hashCode;
 }
 
 class DirectionTextHighlight extends Highlight
@@ -228,19 +164,4 @@ class DirectionTextHighlight extends Highlight
     ..["highlight"] = "DirectionTextHighlight"
     ..["direction"] = direction
     ..["text"] = text;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is DirectionTextHighlight &&
-              runtimeType == other.runtimeType &&
-              style == other.style &&
-              direction == other.direction &&
-              text == other.text;
-
-  @override
-  int get hashCode =>
-      style.hashCode ^
-      direction.hashCode ^
-      text.hashCode;
 }

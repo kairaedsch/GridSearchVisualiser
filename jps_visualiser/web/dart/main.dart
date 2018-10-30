@@ -7,13 +7,13 @@ void main()
 {
   Data data = new Data();
 
-  if (Data.useWebWorker)
+  if (Data.useMultiThreading)
   {
-    new TransferMaster(data, 'dart/futuuure/pathfinder/PathfinderWorker.dart.js');
+    new TransferMaster('futuuure/pathfinder/PathfinderWorker.dart', data);
   }
   else
   {
-    new PathfinderWorker(data);
+    new PathfinderWorker.noIsolate(data);
   }
 
   initGUI(data);

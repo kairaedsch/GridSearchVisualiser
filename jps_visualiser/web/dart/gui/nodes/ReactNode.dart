@@ -34,12 +34,13 @@ class ReactNodeState extends UiState
 @Component()
 class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeState>
 {
-  Listener listener;
+  SimpleListener listener;
+  SimpleListener currentStepDescriptionListener;
 
   Barrier get barrier => props.data.getBarrier(props.position);
 
-  List<Highlight> get backgroundHighlights => props.data.getCurrentStepHighlights(props.position)["background"];
-  List<Highlight> get foregroundHighlights => props.data.getCurrentStepHighlights(props.position)["foreground"];
+  List<Highlight> get backgroundHighlights => props.data.getCurrentStepHighlights(props.position, "background");
+  List<Highlight> get foregroundHighlights => props.data.getCurrentStepHighlights(props.position, props.data.currentStepDescriptionHoverId);
 
   Iterable<Highlight> get highlights => backgroundHighlights..addAll(foregroundHighlights);
 
@@ -62,14 +63,23 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   {
     super.componentWillMount();
 
-    listener = (String key, dynamic oldValue, dynamic newValue) => redraw();
-    props.data.addListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
+    currentStepDescriptionListener = () => redraw();
+    listener = ()
+    {
+      redraw();
+      props.data.removeSimpleListener(currentStepDescriptionListener);
+      if (props.data.getCurrentStepHighlightsMap(props.position).keys.length > 1)
+      {
+        props.data.addSimpleListener(["currentStepDescriptionHoverId"], currentStepDescriptionListener);
+      }
+    };
+    props.data.addSimpleListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
   }
 
   @override
   ReactElement render()
   {
-    //int("render Node ${props.position}");
+    print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"
@@ -270,6 +280,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   {
     super.componentWillUnmount();
 
-    props.data.removeListener(listener);
+    props.data.removeSimpleListener(listener);
+    props.data.removeSimpleListener(currentStepDescriptionListener);
   }
 }

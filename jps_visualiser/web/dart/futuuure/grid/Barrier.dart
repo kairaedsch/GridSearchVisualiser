@@ -30,7 +30,8 @@ class Barrier
 
   const Barrier(this._blocked);
 
-  const Barrier.fromMap(this._blocked);
+  Barrier.fromMap(Map map)
+    : _blocked = new Map<Direction, bool>.fromIterables(map.keys.map((String d) => Direction.values[int.parse(d)]), map.values as Iterable<bool>);
 
   bool isAnyBlocked() => _blocked.values.any((blocked) => blocked);
 
@@ -58,5 +59,5 @@ class Barrier
     return _blocked[direction];
   }
 
-  Map toMap() => _blocked;
+  Map toMap() => new Map<String, bool>.fromIterables(_blocked.keys.map((d) => "${d.index}"), _blocked.values);
 }
