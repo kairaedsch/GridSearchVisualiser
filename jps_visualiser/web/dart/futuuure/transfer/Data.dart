@@ -11,6 +11,8 @@ import 'GridSettings.dart';
 class Data extends DataTransferAble
 {
   static final bool useMultiThreading = true;
+  static final Size maxSize = new Size(20, 20);
+  static final Size minSize = new Size(2, 2);
 
   GridBarrierManager _gridBarrierManager;
   GridBarrierManager get gridBarrierManager => _gridBarrierManager;
@@ -18,10 +20,10 @@ class Data extends DataTransferAble
   Data()
   {
     _gridBarrierManager = new GridBarrierManager(this);
+    startPosition = new Position(5, 5);
+    targetPosition = new Position(10, 5);
     size = new Size(20, 20);
     size.positions().forEach((p) => setBarrier(p, Barrier.totalUnblocked));
-    startPosition = new Position(0, 0);
-    targetPosition = new Position(1, 1);
 
     algorithmType = AlgorithmType.JPSP;
     heuristicType = HeuristicType.OCTILE;
@@ -43,7 +45,34 @@ class Data extends DataTransferAble
 
   // GRID #####################################################################
   Size get size => new Size.fromMap(getA("size"));
-  void set size(Size newSize) => set("size", newSize.toMap());
+  void set size(Size newMaybeSize)
+  {
+    Size newSize = new Size(Util.range(newMaybeSize.width, minSize.width, maxSize.width), Util.range(newMaybeSize.height, minSize.height, maxSize.height));
+
+    Position newStartPosition = new Position(Util.range(startPosition.x, 0, newSize.width - 1), Util.range(startPosition.y, 0, newSize.height - 1));
+    Position newTargetPosition = new Position(Util.range(targetPosition.x, 0, newSize.width - 1), Util.range(targetPosition.y, 0, newSize.height - 1));
+    if (newStartPosition == newTargetPosition)
+    {
+      newStartPosition = newTargetPosition != new Position(0, 0) ? new Position(0, 0) : new Position(1, 1);
+    }
+
+    if (autoTriggerListeners)
+    {
+      autoTriggerListeners = false;
+      set("size", newSize.toMap());
+      startPosition = newStartPosition;
+      targetPosition = newTargetPosition;
+      autoTriggerListeners = true;
+      triggerListeners();
+    }
+    else
+    {
+      set("size", newSize.toMap());
+      startPosition = newStartPosition;
+      targetPosition = newTargetPosition;
+      autoTriggerListeners = true;
+    }
+  }
 
   Barrier getBarrier(Position position) => new Barrier.fromMap(Util.notNull(getA("barrier_$position"), orElse: () => Barrier.totalUnblocked.toMap()));
   void setBarrier(Position position, Barrier newBarrier) => set("barrier_$position", newBarrier.toMap());

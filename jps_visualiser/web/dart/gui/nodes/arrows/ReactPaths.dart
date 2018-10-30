@@ -33,7 +33,7 @@ class ReactPathsComponent extends UiComponent<ReactPathsProps>
     super.componentWillMount();
 
     listener = () => redraw();
-    props.data.addSimpleListener(["currentStepHighlights_null", "currentStepDescriptionHoverId"], listener);
+    props.data.addSimpleListener(["size", "currentStepHighlights_null", "currentStepDescriptionHoverId"], listener);
   }
 
   @override

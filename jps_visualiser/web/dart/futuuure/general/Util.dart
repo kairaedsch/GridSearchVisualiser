@@ -3,6 +3,11 @@ import 'dart:core';
 
 class Util
 {
+  static int range(int value, int min, int max)
+  {
+    return value < min ? min : (value > max ? max : value);
+  }
+
   static void print(dynamic content)
   {
     String now = new DateTime.now().toIso8601String();

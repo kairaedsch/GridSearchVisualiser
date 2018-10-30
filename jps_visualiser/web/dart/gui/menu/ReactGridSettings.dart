@@ -1,9 +1,13 @@
 import '../../futuuure/general/DataTransferAble.dart';
+import '../../futuuure/general/Util.dart';
 import '../../futuuure/transfer/Data.dart';
 import '../../futuuure/transfer/GridSettings.dart';
+import '../../general/Position.dart';
+import '../../general/Size.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'dart:html';
+import 'dart:math';
 import 'package:over_react/over_react.dart';
 
 @Factory()
@@ -15,8 +19,6 @@ class ReactGridSettingsProps extends UiProps
   Data data;
   Function download;
   Function load;
-  Function smallerGrid;
-  Function biggerGrid;
 }
 
 @Component()
@@ -100,7 +102,13 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
             (Dom.div()
               ..className = "button icon minus"
-              ..onClick = ((_) => props.smallerGrid())
+              ..onClick = ((_)
+              {
+                props.data.autoTriggerListeners = false;
+                props.data.size = new Size(max(props.data.size.width - 1, 2), max(props.data.size.height - 1, 2));
+                props.data.autoTriggerListeners = true;
+                props.data.triggerListeners();
+              })
             )(" "),
           ),
           (ReactPopover()
@@ -109,7 +117,10 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
             (Dom.div()
               ..className = "button icon plus"
-              ..onClick = ((_) => props.biggerGrid())
+              ..onClick = ((_)
+              {
+                props.data.size = new Size(min(props.data.size.width + 1, 20), min(props.data.size.height + 1, 20));
+              })
             )(" "),
           ),
           (ReactPopover()
