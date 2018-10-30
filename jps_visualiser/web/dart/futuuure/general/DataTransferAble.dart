@@ -30,7 +30,7 @@ class DataTransferAble
 
   void triggerListeners()
   {
-    new Map<SimpleListener, List<String>>.from(_simpleListeners).forEach((simpleListener, idStarts)
+    _simpleListeners.forEach((simpleListener, idStarts)
     {
       if (idStarts.any((idStart) => changes.keys.any((id) => id.startsWith(idStart))))
       {

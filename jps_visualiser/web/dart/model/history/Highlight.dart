@@ -17,24 +17,14 @@ class Highlights
     throw new Exception("Invalid Highlight");
   }
 
-  static Map toMapList(Map<String, List<Highlight>> highlights)
+  static List<Map> toListMap(List<Highlight> highlights)
   {
-    Map<String, List<Map>> mapList = new Map();
-    highlights.forEach((key, list)
-    {
-      mapList[key] = list.map((h) => h.toMap()).toList();
-    });
-    return mapList;
+    return highlights.map((h) => h.toMap()).toList();
   }
 
-  static Map<String, List<Highlight>> fromMapList(Map<String, List<Map>> mapList)
+  static List<Highlight> fromListMap(List<Map> mapList)
   {
-    Map<String, List<Highlight>> highlights = new Map();
-    mapList.forEach((key, list)
-    {
-      highlights[key] = list.map((h) => fromMap(h)).toList();
-    });
-    return highlights;
+    return mapList.map((map) => fromMap(map)).toList();
   }
 }
 

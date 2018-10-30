@@ -1,4 +1,5 @@
 import '../../futuuure/general/DataTransferAble.dart';
+import '../../futuuure/general/Util.dart';
 import '../../futuuure/grid/Direction.dart';
 import '../../futuuure/transfer/Data.dart';
 import '../../futuuure/transfer/GridSettings.dart';
@@ -35,7 +36,6 @@ class ReactNodeState extends UiState
 class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeState>
 {
   SimpleListener listener;
-  SimpleListener currentStepDescriptionListener;
 
   Barrier get barrier => props.data.getBarrier(props.position);
 
@@ -63,23 +63,14 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   {
     super.componentWillMount();
 
-    currentStepDescriptionListener = () => redraw();
-    listener = ()
-    {
-      redraw();
-      props.data.removeSimpleListener(currentStepDescriptionListener);
-      if (props.data.getCurrentStepHighlightsMap(props.position).keys.length > 1)
-      {
-        props.data.addSimpleListener(["currentStepDescriptionHoverId"], currentStepDescriptionListener);
-      }
-    };
+    listener = () => redraw();
     props.data.addSimpleListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
   }
 
   @override
   ReactElement render()
   {
-    print("render Node ${props.position}");
+    Util.print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"
@@ -281,6 +272,5 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     super.componentWillUnmount();
 
     props.data.removeSimpleListener(listener);
-    props.data.removeSimpleListener(currentStepDescriptionListener);
   }
 }

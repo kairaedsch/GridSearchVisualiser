@@ -1,4 +1,5 @@
 import 'DataTransferAble.dart';
+import 'Util.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
@@ -27,7 +28,7 @@ class TransferMaster
         return;
       }
       List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
-      print('master: got  ${datas.map((data) => data["id"] as String)}');
+      Util.print('master: got  ${datas.map((data) => data["id"] as String)}');
       for (Map data in datas)
       {
         _transfer.autoTriggerListeners = false;
@@ -40,7 +41,7 @@ class TransferMaster
     _transfer.addUniversalListener((List<String> ids)
     {
       var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = _transfer.getA<dynamic>(id)).toList();
-      print('master: send $ids');
+      Util.print('master: send $ids');
       _slaveSender.send(JSON.encode(data));
     });
   }

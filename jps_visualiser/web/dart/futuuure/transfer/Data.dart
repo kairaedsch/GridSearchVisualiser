@@ -35,8 +35,8 @@ class Data extends DataTransferAble
     currentStepId = -1;
     currentStepTitle = "";
     currentStepDescription = [];
-    size.positions().forEach((p) => setCurrentStepHighlights(p, new Map()..["background"] = [] ..["foreground"] = []));
-    setCurrentStepHighlights(null, new Map()..["background"] = [] ..["foreground"] = []);
+    size.positions().forEach((p) => setCurrentStepHighlights(p, []));
+    setCurrentStepHighlights(null, []);
 
     currentStepDescriptionHoverId = "foreground";
   }
@@ -45,7 +45,7 @@ class Data extends DataTransferAble
   Size get size => new Size.fromMap(getA("size"));
   void set size(Size newSize) => set("size", newSize.toMap());
 
-  Barrier getBarrier(Position position) => new Barrier.fromMap(getA("barrier_$position"));
+  Barrier getBarrier(Position position) => new Barrier.fromMap(Util.notNull(getA("barrier_$position"), orElse: () => Barrier.totalUnblocked.toMap()));
   void setBarrier(Position position, Barrier newBarrier) => set("barrier_$position", newBarrier.toMap());
 
   Position get startPosition => new Position.fromMap(getA("startPosition"));
@@ -93,7 +93,6 @@ class Data extends DataTransferAble
   List<Explanation> get currentStepDescription => (getA<List<Map>>("currentStepDescription")).map((map) => new Explanation.fromMap(map)).toList();
   void set currentStepDescription(List<Explanation> newExplanations) => set("currentStepDescription", newExplanations.map<Map>((Explanation p) => p.toMap()).toList());
 
-  Map<String, List<Highlight>> getCurrentStepHighlightsMap(Position position) => Highlights.fromMapList(getA("currentStepHighlights_$position"));
-  List<Highlight> getCurrentStepHighlights(Position position, String key) => Util.notNull(Util.notNull<Map<String, List<Highlight>>>(Highlights.fromMapList(getA("currentStepHighlights_$position")), orElse: () => new Map())[key], orElse: () => []);
-  void setCurrentStepHighlights(Position position, Map<String, List<Highlight>> newHighlights) => set("currentStepHighlights_$position", Highlights.toMapList(newHighlights));
+  List<Highlight> getCurrentStepHighlights(Position position, String key) => Util.notNull(Highlights.fromListMap(getA("currentStepHighlights_$position")), orElse: () => []);
+  void setCurrentStepHighlights(Position position, List<Highlight> newHighlights) => set("currentStepHighlights_$position", Highlights.toListMap(newHighlights));
 }

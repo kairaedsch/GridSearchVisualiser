@@ -12,7 +12,9 @@ import '../../model/heuristics/Euclidean.dart';
 import '../../model/heuristics/Heuristic.dart';
 import '../../model/heuristics/Manhattan.dart';
 import '../../model/heuristics/Octile.dart';
+import '../../model/history/Highlight.dart';
 import '../general/TransferSlave.dart';
+import '../general/Util.dart';
 import '../transfer/Data.dart';
 import '../transfer/GridSettings.dart';
 import 'dart:async';
@@ -30,7 +32,7 @@ class PathfinderWorker
 
   PathfinderWorker.isolate(SendPort sendPort)
   {
-    print('Worker created');
+    Util.print('Worker created');
 
     _data = new Data();
     new TransferSlave(sendPort, _data);
@@ -61,6 +63,7 @@ class PathfinderWorker
 
   void _runInner(int currentStepId)
   {
+    Util.print("run: $currentStepId");
     Grid grid = new Grid(_data.size, (p) => new Node(p, (d) => _data.gridBarrierManager.leaveAble(p, d)));
 
     Position startPosition = _data.startPosition;
@@ -103,13 +106,15 @@ class PathfinderWorker
     _data.currentStepId = currentStepId;
     _data.currentStepTitle = algorithm.searchHistory.stepTitle;
     _data.currentStepDescription = algorithm.searchHistory.stepDescription;
-    _data.setCurrentStepHighlights(null, algorithm.searchHistory.stepHighlights[null]);
+    List<Highlight> backgroundPathHighlights = Util.notNull(algorithm.searchHistory.stepHighlights[null]["background"], orElse: () => []);
+    List<Highlight> foregroundPathHighlights = Util.notNull(algorithm.searchHistory.stepHighlights[null][_data.currentStepDescriptionHoverId], orElse: () => []);
+    _data.setCurrentStepHighlights(null, new List.from(backgroundPathHighlights)..addAll(foregroundPathHighlights));
 
     for (Position position in _data.size.positions())
     {
-      var newStepHighlights = algorithm.searchHistory.stepHighlights[position];
-      _data.setCurrentStepHighlights(position, newStepHighlights);
+      List<Highlight> backgroundHighlights = Util.notNull(algorithm.searchHistory.stepHighlights[position]["background"], orElse: () => []);
+      List<Highlight> foregroundHighlights = Util.notNull(algorithm.searchHistory.stepHighlights[position][_data.currentStepDescriptionHoverId], orElse: () => []);
+      _data.setCurrentStepHighlights(position, new List.from(backgroundHighlights)..addAll(foregroundHighlights));
     }
-
   }
 }

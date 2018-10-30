@@ -1,4 +1,5 @@
 import 'DataTransferAble.dart';
+import 'Util.dart';
 import 'dart:convert';
 import 'dart:isolate';
 
@@ -16,7 +17,7 @@ class TransferSlave
     _slaveReceiver.listen((dynamic jsonDatas)
     {
       List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
-      print('worker: got  ${datas.map((data) => data["id"] as String)}');
+      Util.print('worker: got  ${datas.map((data) => data["id"] as String)}');
       for (Map data in datas)
       {
         _transfer.autoTriggerListeners = false;
@@ -29,7 +30,7 @@ class TransferSlave
     _transfer.addUniversalListener((List<String> ids)
     {
       var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = _transfer.getA<dynamic>(id)).toList();
-      print('worker: send $ids');
+      Util.print('worker: send $ids');
       _masterSender.send(JSON.encode(data));
     });
   }

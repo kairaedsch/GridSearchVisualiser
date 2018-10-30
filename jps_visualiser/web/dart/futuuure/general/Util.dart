@@ -1,5 +1,14 @@
+import 'dart:core' as core;
+import 'dart:core';
+
 class Util
 {
+  static void print(dynamic content)
+  {
+    String now = new DateTime.now().toIso8601String();
+    core.print("$now: $content");
+  }
+
   static T notNull<T>(T value, {T orElse()})
   {
     return value != null ? value : orElse();
