@@ -1,7 +1,7 @@
 import '../../general/transfer/StoreTransferAble.dart';
-import '../../model/grid/Direction.dart';
+import '../../general/geo/Direction.dart';
 import '../../model/store/Store.dart';
-import '../../model/store/GridSettings.dart';
+import '../../model/store/Enums.dart';
 import '../../general/geo/Position.dart';
 import '../../general/geo/Size.dart';
 import 'mouse.mode/EditBarrierMouseMode.dart';

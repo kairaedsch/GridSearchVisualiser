@@ -1,5 +1,5 @@
 import '../../../general/geo/Position.dart';
-import '../../../model/grid/Direction.dart';
+import '../../../general/geo/Direction.dart';
 import '../../../model/store/Store.dart';
 import '../ReactGrid.dart';
 

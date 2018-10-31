@@ -1,8 +1,8 @@
+import '../../general/geo/Direction.dart';
 import '../../general/geo/Position.dart';
 import '../../general/geo/Size.dart';
-import '../grid/Barrier.dart';
-import '../grid/Direction.dart';
-import 'GridSettings.dart';
+import 'grid/Barrier.dart';
+import 'Enums.dart';
 import 'Store.dart';
 import 'dart:html';
 import 'package:quiver/core.dart';
@@ -76,11 +76,9 @@ class Save
   void loadTo(Store store)
   {
     store.autoTriggerListeners = false;
-    store.startPosition = new Position(0, 0);
-    store.targetPosition = new Position(1, 1);
     store.size = _gridSize;
 
-    for (Position position in gridSize.positions())
+    for (Position position in store.size.positions())
     {
       var barrierMap = new Map<Direction, bool>.fromIterable(
           Direction.values,
@@ -119,10 +117,10 @@ class Save
     writeInt(pos, enumId * 10);
   }
 
-  T readEnum<T>(int pos, List<T> saveEnum)
+  T readEnum<T>(int pos, List<T> enums)
   {
     int index = (readInt(pos) / 10.0).round().toInt();
-    return saveEnum[index];
+    return index < enums.length ? enums[index] : enums[0];
   }
 
   void writeInt(int x, int value)

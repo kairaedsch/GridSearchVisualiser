@@ -1,5 +1,5 @@
 import '../../general/geo/Position.dart';
-import '../store/GridCache.dart';
+import '../store/grid/GridCache.dart';
 import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
 

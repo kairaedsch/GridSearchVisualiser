@@ -1,7 +1,7 @@
 import '../general/general/Util.dart';
 import '../general/geo/Position.dart';
 import '../general/transfer/TransferSlave.dart';
-import 'store/GridCache.dart';
+import 'store/grid/GridCache.dart';
 import 'algorithm/Dijkstra.dart';
 import 'algorithm/AStar.dart';
 import 'algorithm/Algorithm.dart';
@@ -17,7 +17,7 @@ import 'heuristics/Octile.dart';
 import 'history/Highlight.dart';
 import 'dart:async';
 import 'dart:isolate';
-import 'store/GridSettings.dart';
+import 'store/Enums.dart';
 import 'store/Store.dart';
 
 void main(List<String> args, SendPort sendPort)

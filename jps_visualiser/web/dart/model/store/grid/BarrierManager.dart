@@ -1,14 +1,14 @@
-import '../store/Store.dart';
-import '../store/GridSettings.dart';
-import '../../general/geo/Position.dart';
-import 'Barrier.dart';
-import 'Direction.dart';
+import '../../../general/geo/Direction.dart';
+import '../Store.dart';
+import '../Enums.dart';
+import '../grid/Barrier.dart';
+import '../../../general/geo/Position.dart';
 
-class GridBarrierManager
+class BarrierManager
 {
   final Store _store;
 
-  GridBarrierManager(this._store);
+  BarrierManager(this._store);
 
   void setTotal(Position position, bool shouldBecomeBlocked)
   {

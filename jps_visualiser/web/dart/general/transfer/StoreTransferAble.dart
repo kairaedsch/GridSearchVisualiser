@@ -20,6 +20,10 @@ class StoreTransferAble
 
   void set(String id, dynamic newValue, {bool toTransfer = true})
   {
+    if (newValue == null)
+    {
+      return;
+    }
     dynamic oldValue =  _store[id];
     if (toTransfer ? !Util.equal(newValue, oldValue) : (newValue != oldValue))
     {

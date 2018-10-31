@@ -1,7 +1,7 @@
 import '../../general/geo/Distance.dart';
 import '../../general/geo/Position.dart';
-import '../store/GridCache.dart';
-import '../grid/Direction.dart';
+import '../store/grid/GridCache.dart';
+import '../../general/geo/Direction.dart';
 import '../history/Explanation.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';

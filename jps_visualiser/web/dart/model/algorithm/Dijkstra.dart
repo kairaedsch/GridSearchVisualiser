@@ -1,5 +1,5 @@
 import '../../general/geo/Position.dart';
-import '../store/GridCache.dart';
+import '../store/grid/GridCache.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
@@ -44,7 +44,7 @@ class Dijkstra extends BasicSearchAlgorithm
    @override
    Iterable<Position> findNeighbourNodes(Position node)
    {
-      var neighbours = grid.neighbours(node);
+      var neighbours = grid.accessibleNeighbours(node);
 
       if (createHistory())
       {

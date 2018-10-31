@@ -1,8 +1,8 @@
-import '../../general/geo/Array2D.dart';
-import '../../general/geo/Position.dart';
-import '../../general/geo/Size.dart';
-import '../grid/Direction.dart';
-import 'Store.dart';
+import '../../../general/geo/Array2D.dart';
+import '../../../general/geo/Position.dart';
+import '../../../general/geo/Size.dart';
+import '../../../general/geo/Direction.dart';
+import '../Store.dart';
 
 class GridCache
 {
@@ -42,7 +42,7 @@ class GridCache
   void update(Position position)
   {
     _updateOne(position);
-    neighbours(position).forEach(_updateOne);
+    position.neighbours(_store.size).forEach(_updateOne);
   }
 
   void _updateOne(Position position)
@@ -53,7 +53,7 @@ class GridCache
     }
   }
 
-  Iterable<Position> neighbours(Position origin)
+  Iterable<Position> accessibleNeighbours(Position origin)
   {
     return Direction.values
         .where((Direction direction) => leaveAble(origin, direction))

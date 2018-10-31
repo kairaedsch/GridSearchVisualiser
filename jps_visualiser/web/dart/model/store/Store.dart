@@ -4,30 +4,30 @@ import '../../general/geo/Size.dart';
 import '../../general/transfer/StoreTransferAble.dart';
 import '../../model/history/Explanation.dart';
 import '../../model/history/Highlight.dart';
-import 'GridCache.dart';
-import '../grid/Barrier.dart';
-import '../grid/GridBarrierManager.dart';
-import 'GridSettings.dart';
+import 'grid/GridCache.dart';
+import 'grid/Barrier.dart';
+import 'grid/BarrierManager.dart';
+import 'Enums.dart';
+import 'grid/GridManager.dart';
 
 class Store extends StoreTransferAble
 {
-  static final bool useMultiThreading = true;
-  static final Size maxSize = new Size(20, 20);
-  static final Size minSize = new Size(2, 2);
-
-  GridBarrierManager _gridBarrierManager;
-  GridBarrierManager get gridBarrierManager => _gridBarrierManager;
+  BarrierManager _gridBarrierManager;
+  BarrierManager get gridBarrierManager => _gridBarrierManager;
 
   GridCache _gridCache;
   GridCache get gridCache => _gridCache;
 
+  GridManager _gridManager;
+  GridManager get gridManager => _gridManager;
+
   Store()
   {
-    _gridBarrierManager = new GridBarrierManager(this);
+    _gridManager = new GridManager(this);
+    _gridBarrierManager = new BarrierManager(this);
     startPosition = new Position(5, 5);
     targetPosition = new Position(10, 5);
     size = new Size(20, 20);
-    size.positions().forEach((p) => setBarrier(p, Barrier.totalUnblocked));
 
     algorithmType = AlgorithmType.JPSP;
     heuristicType = HeuristicType.OCTILE;
@@ -52,33 +52,7 @@ class Store extends StoreTransferAble
 
   // GRID #####################################################################
   Size get size => new Size.fromMap(getA("size"));
-  void set size(Size newMaybeSize)
-  {
-    Size newSize = new Size(Util.range(newMaybeSize.width, minSize.width, maxSize.width), Util.range(newMaybeSize.height, minSize.height, maxSize.height));
-
-    Position newStartPosition = new Position(Util.range(startPosition.x, 0, newSize.width - 1), Util.range(startPosition.y, 0, newSize.height - 1));
-    Position newTargetPosition = new Position(Util.range(targetPosition.x, 0, newSize.width - 1), Util.range(targetPosition.y, 0, newSize.height - 1));
-    if (newStartPosition == newTargetPosition)
-    {
-      newStartPosition = newTargetPosition != new Position(0, 0) ? new Position(0, 0) : new Position(1, 1);
-    }
-
-    if (autoTriggerListeners)
-    {
-      autoTriggerListeners = false;
-      set("size", newSize.toMap());
-      startPosition = newStartPosition;
-      targetPosition = newTargetPosition;
-      autoTriggerListeners = true;
-      triggerListeners();
-    }
-    else
-    {
-      set("size", newSize.toMap());
-      startPosition = newStartPosition;
-      targetPosition = newTargetPosition;
-    }
-  }
+  void set size(Size newSize) => set("size", newSize.toMap());
 
   Barrier getBarrier(Position position) => new Barrier.fromMap(Util.notNull(getA("barrier_$position"), orElse: () => Barrier.totalUnblocked.toMap()));
   void setBarrier(Position position, Barrier newBarrier) => set("barrier_$position", newBarrier.toMap());

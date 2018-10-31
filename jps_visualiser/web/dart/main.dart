@@ -1,3 +1,4 @@
+import 'Settings.dart';
 import 'general/transfer/TransferMaster.dart';
 import 'model/PathfinderWorker.dart';
 import 'model/store/Store.dart';
@@ -7,7 +8,7 @@ void main()
 {
   Store store = new Store();
 
-  if (Store.useMultiThreading)
+  if (Settings.useMultiThreading)
   {
     new TransferMaster('model/PathfinderWorker.dart', store);
   }

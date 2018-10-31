@@ -1,9 +1,8 @@
-import '../../general/general/Util.dart';
+import '../../general/geo/Direction.dart';
 import '../../general/transfer/StoreTransferAble.dart';
-import '../../model/grid/Barrier.dart';
-import '../../model/grid/Direction.dart';
+import '../../model/store/grid/Barrier.dart';
 import '../../model/store/Store.dart';
-import '../../model/store/GridSettings.dart';
+import '../../model/store/Enums.dart';
 import '../../general/gui/MouseTracker.dart';
 import '../../general/geo/Position.dart';
 import '../../model/history/Highlight.dart';
@@ -64,7 +63,8 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     super.componentWillMount();
 
     listener = () => redraw();
-    props.store.addEqualListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
+    var neighbourBarriers = props.position.neighbours(props.store.size).map((p) => "barrier_${p}");
+    props.store.addEqualListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"]..addAll(neighbourBarriers), listener);
   }
 
   @override

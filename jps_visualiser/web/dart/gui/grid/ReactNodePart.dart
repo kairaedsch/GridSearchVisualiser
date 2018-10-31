@@ -1,6 +1,6 @@
-import '../../model/grid/Direction.dart';
+import '../../general/geo/Direction.dart';
 import '../../model/store/Store.dart';
-import '../../model/store/GridSettings.dart';
+import '../../model/store/Enums.dart';
 import '../../general/gui/MouseTracker.dart';
 import '../../general/geo/Position.dart';
 import '../../model/history/Highlight.dart';

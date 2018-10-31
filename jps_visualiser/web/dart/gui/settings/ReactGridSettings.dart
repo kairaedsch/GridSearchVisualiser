@@ -1,6 +1,6 @@
 import '../../general/transfer/StoreTransferAble.dart';
 import '../../model/store/Store.dart';
-import '../../model/store/GridSettings.dart';
+import '../../model/store/Enums.dart';
 import '../../general/geo/Size.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';

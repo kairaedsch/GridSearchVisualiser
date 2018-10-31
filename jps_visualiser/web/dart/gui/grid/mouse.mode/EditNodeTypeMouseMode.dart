@@ -1,6 +1,6 @@
 import '../../../general/geo/Position.dart';
-import '../../../model/grid/Direction.dart';
-import '../../../model/store/GridSettings.dart';
+import '../../../model/store/Enums.dart';
+import '../../../general/geo/Direction.dart';
 import '../ReactGrid.dart';
 import 'MouseMode.dart';
 
@@ -25,11 +25,11 @@ class EditNodeTypeMouseMode extends MouseMode
     {
       if (_structureTypeChanging == StructureNodeType.START_NODE)
       {
-        store.startPosition = position;
+        store.gridManager.setStartPosition(position);
       }
       if (_structureTypeChanging == StructureNodeType.TARGET_NODE)
       {
-        store.targetPosition = position;
+        store.gridManager.setTargetPosition(position);
       }
     }
   }

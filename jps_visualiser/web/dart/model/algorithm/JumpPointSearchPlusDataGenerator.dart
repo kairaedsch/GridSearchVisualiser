@@ -1,8 +1,8 @@
 import '../../general/geo/Array2D.dart';
 import '../../general/geo/Position.dart';
 import '../../general/geo/Size.dart';
-import '../store/GridCache.dart';
-import '../grid/Direction.dart';
+import '../store/grid/GridCache.dart';
+import '../../general/geo/Direction.dart';
 import '../heuristics/Heuristic.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';

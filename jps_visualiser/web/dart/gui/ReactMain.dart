@@ -1,4 +1,4 @@
-import '../model/store/GridSettings.dart';
+import '../model/store/Enums.dart';
 import '../model/store/Store.dart';
 import '../model/store/Save.dart';
 import 'dart:html';

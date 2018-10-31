@@ -1,4 +1,4 @@
-import '../../model/grid/Direction.dart';
+import 'Direction.dart';
 import 'Size.dart';
 
 class Position
@@ -74,5 +74,12 @@ class Position
       tdy = dy.sign;
     }
     return Direction.values.where((d) => Directions.getDx(d) == tdx && Directions.getDy(d) == tdy).first;
+  }
+
+  Iterable<Position> neighbours(Size size)
+  {
+    return Direction.values
+        .map((Direction direction) => go(direction))
+        .where((Position position) => position.legal(size));
   }
 }

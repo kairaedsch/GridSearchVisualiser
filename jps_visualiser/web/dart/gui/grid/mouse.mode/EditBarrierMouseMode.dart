@@ -1,6 +1,6 @@
 import '../../../general/geo/Position.dart';
-import '../../../model/grid/Direction.dart';
-import '../../../model/store/GridSettings.dart';
+import '../../../general/geo/Direction.dart';
+import '../../../model/store/Enums.dart';
 import '../ReactGrid.dart';
 import 'MouseMode.dart';
 import 'package:quiver/core.dart';

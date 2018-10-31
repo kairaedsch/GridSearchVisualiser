@@ -1,4 +1,4 @@
-import 'Direction.dart';
+import '../../../general/geo/Direction.dart';
 
 class Barrier
 {
