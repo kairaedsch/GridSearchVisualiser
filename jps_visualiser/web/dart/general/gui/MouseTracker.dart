@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:html';
 
 class MouseTracker

@@ -1,7 +1,7 @@
-import '../../general/Distance.dart';
-import '../../general/Position.dart';
-import '../../futuuure/grid/Direction.dart';
-import '../Grid.dart';
+import '../../general/geo/Distance.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
+import '../grid/Direction.dart';
 import '../history/Explanation.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
@@ -11,17 +11,17 @@ import 'package:quiver/core.dart';
 
 class JumpPointSearchPlus extends AStar
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlus("JPS+", grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlus("JPS+", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   JumpPointSearchData _data;
 
-  JumpPointSearchPlus(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+  JumpPointSearchPlus(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
       : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
   {
-    var dataGenerator = new JumpPointSearchPlusDataGenerator(grid, start.position, target.position, heuristic, -1);
+    var dataGenerator = new JumpPointSearchPlusDataGenerator(grid, start, target, heuristic, -1);
     dataGenerator.run();
     _data = dataGenerator.data;
 
@@ -29,7 +29,7 @@ class JumpPointSearchPlus extends AStar
   }
 
   @override
-  Iterable<Node> findNeighbourNodes(Node node)
+  Iterable<Position> findNeighbourNodes(Position node)
   {
     Optional<Direction> lastDirection;
     Set<Direction> relevantDirections;
@@ -40,18 +40,18 @@ class JumpPointSearchPlus extends AStar
     }
     else
     {
-      lastDirection = new Optional.of(parent[node].position.lastDirectionTo(node.position));
-      var directionAdviser = _data[node.position].directionAdvisers[lastDirection.value];
+      lastDirection = new Optional.of(parent[node].lastDirectionTo(node));
+      var directionAdviser = _data[node].directionAdvisers[lastDirection.value];
       relevantDirections = new Set.from(directionAdviser.jumpDirections)..add(lastDirection.value);
     }
 
-    List<Node> neighbours = [];
+    List<Position> neighbours = [];
 
-    Direction directionToTarget = node.position.firstDirectionTo(target.position);
+    Direction directionToTarget = node.firstDirectionTo(target);
     if (lastDirection.isEmpty || directionToTarget != Directions.turn(lastDirection.value, 180))
     {
-      var directionToTargetData = _data[node.position].signposts[directionToTarget];
-      var distanceToTarget = new Distance.calc(node.position, target.position);
+      var directionToTargetData = _data[node].signposts[directionToTarget];
+      var distanceToTarget = new Distance.calc(node, target);
       if (Directions.isCardinal(directionToTarget))
       {
         if (distanceToTarget.cardinal <= directionToTargetData.distance)
@@ -64,7 +64,7 @@ class JumpPointSearchPlus extends AStar
       {
         if (distanceToTarget.diagonal <= directionToTargetData.distance)
         {
-          neighbours.add(grid[node.position.goMulti(directionToTarget, distanceToTarget.diagonal)]);
+          neighbours.add(node.goMulti(directionToTarget, distanceToTarget.diagonal));
           relevantDirections.remove(directionToTarget);
         }
       }
@@ -73,7 +73,7 @@ class JumpPointSearchPlus extends AStar
     for (Direction relevantDirection in relevantDirections)
     {
       JumpPointSearchDataSignpost directionData;
-      Position position = node.position;
+      Position position = node;
 
       do
       {
@@ -84,7 +84,7 @@ class JumpPointSearchPlus extends AStar
 
       if (directionData.isJumpPointAhead)
       {
-        neighbours.add(grid[position]);
+        neighbours.add(position);
       }
     }
 

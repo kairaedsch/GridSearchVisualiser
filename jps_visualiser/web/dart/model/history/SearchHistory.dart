@@ -1,5 +1,5 @@
-import '../../general/Position.dart';
-import '../../general/Size.dart';
+import '../../general/geo/Position.dart';
+import '../../general/geo/Size.dart';
 import 'Explanation.dart';
 import 'Highlight.dart';
 import 'package:tuple/tuple.dart';

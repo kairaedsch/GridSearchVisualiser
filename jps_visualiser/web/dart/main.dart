@@ -1,20 +1,20 @@
-import 'futuuure/general/TransferMaster.dart';
-import 'futuuure/pathfinder/PathfinderWorker.dart';
-import 'futuuure/transfer/Data.dart';
+import 'general/transfer/TransferMaster.dart';
+import 'model/PathfinderWorker.dart';
+import 'model/store/Store.dart';
 import 'gui/ReactMain.dart';
 
 void main()
 {
-  Data data = new Data();
+  Store store = new Store();
 
-  if (Data.useMultiThreading)
+  if (Store.useMultiThreading)
   {
-    new TransferMaster('futuuure/pathfinder/PathfinderWorker.dart', data);
+    new TransferMaster('model/PathfinderWorker.dart', store);
   }
   else
   {
-    new PathfinderWorker.noIsolate(data);
+    new PathfinderWorker.noIsolate(store);
   }
 
-  initGUI(data);
+  initGUI(store);
 }

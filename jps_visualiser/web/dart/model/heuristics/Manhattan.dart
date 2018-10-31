@@ -1,5 +1,5 @@
-import '../../general/Position.dart';
-import '../Grid.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
 import 'Heuristic.dart';
 
 class Manhattan extends Heuristic
@@ -7,13 +7,13 @@ class Manhattan extends Heuristic
   const Manhattan(): super("Manhattan distance");
 
   @override
-  double calcP(Position p1, Position p2)
+  double calc(Position p1, Position p2)
   {
     return 0.0 + (p1.x - p2.x).abs() + (p1.y - p2.y).abs();
   }
 
   @override
-  List<Position> getPathP(Position source, Position target)
+  List<Position> getPath(Position source, Position target)
   {
     List<Position> path = [source];
     while (path.last.x != target.x)

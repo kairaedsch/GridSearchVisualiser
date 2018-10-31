@@ -1,12 +1,12 @@
-import '../../futuuure/general/DataTransferAble.dart';
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/Data.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/Position.dart';
-import '../../general/Size.dart';
-import 'EditBarrierMouseMode.dart';
-import 'EditNodeTypeMouseMode.dart';
-import 'MouseMode.dart';
+import '../../general/transfer/StoreTransferAble.dart';
+import '../../model/grid/Direction.dart';
+import '../../model/store/Store.dart';
+import '../../model/store/GridSettings.dart';
+import '../../general/geo/Position.dart';
+import '../../general/geo/Size.dart';
+import 'mouse.mode/EditBarrierMouseMode.dart';
+import 'mouse.mode/EditNodeTypeMouseMode.dart';
+import 'mouse.mode/MouseMode.dart';
 import 'ReactNode.dart';
 import 'dart:async';
 import 'dart:html';
@@ -21,15 +21,15 @@ UiFactory<ReactGridProps> ReactGrid;
 @Props()
 class ReactGridProps extends UiProps
 {
-  Data data;
+  Store store;
 }
 
 @Component()
 class ReactGridComponent extends UiComponent<ReactGridProps>
 {
-  SimpleListener listener;
+  EqualListener listener;
 
-  Size get size => props.data.size;
+  Size get size => props.store.size;
 
   Optional<MouseMode> _mouseMode;
   Optional<MouseMode> get mouseMode => _mouseMode;
@@ -47,7 +47,7 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     window.addEventListener("resize", (e) => _updateCSSVariables());
 
     listener = () => redraw();
-    props.data.addSimpleListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
+    props.store.addEqualListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
   }
 
   @override
@@ -57,10 +57,10 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     return
       (Dom.div()
         ..className = "grid"
-            " GRID_MODE_${Enums.toName(props.data.gridMode)}"
-            " DIRECTION_MODE_${Enums.toName(props.data.directionMode)}"
-            " CROSS_CORNER_${Enums.toName(props.data.cornerMode)}"
-            " WAY_MODE_${Enums.toName(props.data.directionalMode)}"
+            " GRID_MODE_${Enums.toName(props.store.gridMode)}"
+            " DIRECTION_MODE_${Enums.toName(props.store.directionMode)}"
+            " CROSS_CORNER_${Enums.toName(props.store.cornerMode)}"
+            " WAY_MODE_${Enums.toName(props.store.directionalMode)}"
       )(
           (Dom.div()
             ..className = "nodes")(
@@ -109,16 +109,16 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
       (ReactNode()
         ..key = pos
         ..position = pos
-        ..data = props.data
+        ..store = props.store
         ..grid = this
       )();
   }
 
   void updateMouseModeFromNode(Position position)
   {
-    if (props.data.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
+    if (props.store.gridMode == GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if (props.data.startPosition == position || props.data.targetPosition == position)
+      if (props.store.startPosition == position || props.store.targetPosition == position)
       {
         _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
@@ -132,9 +132,9 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
 
   void updateMouseModeFromNodePart(Position position, {Direction direction})
   {
-    if (props.data.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
+    if (props.store.gridMode != GridMode.BASIC && _mouseMode.isEmpty)
     {
-      if ((props.data.startPosition == position || props.data.targetPosition == position) && direction == null)
+      if ((props.store.startPosition == position || props.store.targetPosition == position) && direction == null)
       {
         _mouseMode = new Optional.of(new EditNodeTypeMouseMode(this, position));
       }
@@ -152,6 +152,6 @@ class ReactGridComponent extends UiComponent<ReactGridProps>
     super.componentWillUnmount();
     _onDocumentMouseUpListener.cancel();
 
-    props.data.removeSimpleListener(listener);
+    props.store.removeEqualListener(listener);
   }
 }

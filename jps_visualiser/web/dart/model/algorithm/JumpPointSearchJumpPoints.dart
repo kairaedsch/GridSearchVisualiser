@@ -1,10 +1,10 @@
-import '../../general/Position.dart';
-import '../../futuuure/grid/Direction.dart';
-import '../Grid.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
+import '../grid/Direction.dart';
 
 class JumpPointSearchJumpPoints
 {
-  static Set<Direction> cardinalJumpDirections(Grid grid, Position position, Direction direction)
+  static Set<Direction> cardinalJumpDirections(GridCache grid, Position position, Direction direction)
   {
     Direction direction180 = Directions.turn(direction, 180);
     Position wpBefore = position.go(direction180);
@@ -66,7 +66,7 @@ class JumpPointSearchJumpPoints
     return jumpDirections;
   }
 
-  static Set<Direction> diagonalJumpDirections(Grid grid, Position position, Direction direction, bool isJumpPoint(Position position, Direction direction))
+  static Set<Direction> diagonalJumpDirections(GridCache grid, Position position, Direction direction, bool isJumpPoint(Position position, Direction direction))
   {
     Direction direction180 = Directions.turn(direction,180);
     Position wpBefore = position.go(direction180);

@@ -506,7 +506,7 @@ g.blinking {
   display: flex;
 }
 
-.config.icon {
+.config.small {
     flex-basis: initial;
 }
 
@@ -525,10 +525,10 @@ g.blinking {
 
 .config .dropDown {
   flex-grow: 1;
-  margin-right: auto;
 }
 
-.button {
+.config .button {
+  flex-grow: 1;
   padding: 5px 8px 5px 30px;
   height: 29px;
 
@@ -538,34 +538,36 @@ g.blinking {
   cursor: pointer;
   color: #FFF;
   background-color: var(--color-blue);
-  background-image: url("images/run.svg");
   background-position: center left 8px;
   background-repeat: no-repeat;
   background-size: 15px;
-  margin: auto;
 }
 
-.button:hover {
+.config .button:hover {
   background-color: var(--color-blue-dark);
 }
 
-.button.icon {
+.config .button.icon {
   padding-left: 24px;
 }
 
-.button.icon.save {
+.config .button.run {
+  background-image: url("images/run.svg");
+}
+
+.config .button.save {
     background-image: url("images/cloud-download.svg");
 }
 
-.button.icon.load {
+.config .button.load {
     background-image: url("images/cloud-upload.svg");
 }
 
-.button.icon.minus {
+.config .button.minus {
     background-image: url("images/minus.svg");
 }
 
-.button.icon.plus {
+.config .button.plus {
     background-image: url("images/plus.svg");
 }
 

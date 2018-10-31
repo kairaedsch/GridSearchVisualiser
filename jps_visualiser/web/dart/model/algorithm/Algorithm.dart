@@ -1,14 +1,14 @@
-import '../../general/Position.dart';
-import '../Grid.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
 import '../history/SearchHistory.dart';
 import '../heuristics/Heuristic.dart';
 
-typedef AlgorithmFactory = Algorithm Function(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory);
+typedef AlgorithmFactory = Algorithm Function(GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory);
 
 abstract class Algorithm
 {
-   final Grid grid;
-   final Node start, target;
+   final GridCache grid;
+   final Position start, target;
    final Heuristic heuristic;
    final int _turnOfHistory;
 
@@ -18,10 +18,8 @@ abstract class Algorithm
 
    int nextTurn = 0;
 
-   Algorithm(this.grid, Position startPosition, Position targetPosition, this.heuristic, this._turnOfHistory)
-       : start = grid[startPosition],
-         target = grid[targetPosition],
-         searchHistory = new SearchHistory(grid)
+   Algorithm(this.grid, this.start, this.target, this.heuristic, this._turnOfHistory)
+       : searchHistory = new SearchHistory(grid.size)
    {
       searched = false;
    }

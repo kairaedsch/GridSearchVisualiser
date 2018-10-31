@@ -1,14 +1,14 @@
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/Data.dart';
-import '../../general/Position.dart';
-import 'ReactGrid.dart';
+import '../../../general/geo/Position.dart';
+import '../../../model/grid/Direction.dart';
+import '../../../model/store/Store.dart';
+import '../ReactGrid.dart';
 
 abstract class MouseMode
 {
   ReactGridComponent _reactGrid;
   ReactGridComponent get reactGrid => _reactGrid;
 
-  Data get data => reactGrid.props.data;
+  Store get store => reactGrid.props.store;
 
   String get name;
 
@@ -19,8 +19,8 @@ abstract class MouseMode
 
   StructureNodeType getStructureNodeType(Position position)
   {
-    if (data.startPosition == position) return StructureNodeType.START_NODE;
-    if (data.targetPosition == position) return StructureNodeType.TARGET_NODE;
+    if (store.startPosition == position) return StructureNodeType.START_NODE;
+    if (store.targetPosition == position) return StructureNodeType.TARGET_NODE;
     return StructureNodeType.NORMAL_NODE;
   }
 }

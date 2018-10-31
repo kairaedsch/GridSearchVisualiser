@@ -52,6 +52,27 @@ class HeuristicTypes
   static String popover = "Select the heuristic to be used by the algorithm";
 }
 
+enum AlgorithmUpdateMode
+{
+  DURING_EDITING, AFTER_EDITING, MANUALLY
+}
+
+class AlgorithmUpdateModes
+{
+  static String getTitle(AlgorithmUpdateMode algorithmUpdateMode)
+  {
+    switch (algorithmUpdateMode)
+    {
+      case AlgorithmUpdateMode.DURING_EDITING: return "During editing";
+      case AlgorithmUpdateMode.AFTER_EDITING: return "After editing";
+      case AlgorithmUpdateMode.MANUALLY: return "Manually";
+    }
+    return "Not Found";
+  }
+
+  static String popover = "Select when the algorithm should run on the grid";
+}
+
 enum GridMode
 {
   BASIC, ADVANCED

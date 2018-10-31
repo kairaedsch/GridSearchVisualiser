@@ -1,4 +1,4 @@
-import '../../general/Position.dart';
+import '../../general/geo/Position.dart';
 import 'Heuristic.dart';
 import 'dart:math';
 
@@ -7,7 +7,7 @@ class Chebyshev extends Heuristic
   const Chebyshev() : super("Chebyshev distance");
 
   @override
-  double calcP(Position p1, Position p2)
+  double calc(Position p1, Position p2)
   {
     int dx = (p1.x - p2.x).abs();
     int dy = (p1.y - p2.y).abs();
@@ -15,7 +15,7 @@ class Chebyshev extends Heuristic
   }
 
   @override
-  List<Position> getPathP(Position source, Position target)
+  List<Position> getPath(Position source, Position target)
   {
     int dx = (source.x - target.x).abs();
     int dy = (source.y - target.y).abs();

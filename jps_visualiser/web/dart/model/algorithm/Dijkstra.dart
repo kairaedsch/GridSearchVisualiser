@@ -1,5 +1,5 @@
-import '../../general/Position.dart';
-import '../Grid.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
@@ -9,32 +9,32 @@ import 'package:tuple/tuple.dart';
 
 class Dijkstra extends BasicSearchAlgorithm
 {
-   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new Dijkstra("Dijkstra", grid, startPosition, targetPosition, heuristic, turnOfHistory);
+   static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new Dijkstra("Dijkstra", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-   Dijkstra(String name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+   Dijkstra(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
        : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
    @override
-   Node findNextActiveNode()
+   Position findNextActiveNode()
    {
-      Node nStar = open.reduce((n1, n2) => getDistance(n1).length() <= getDistance(n2).length() ? n1 : n2);
+      Position nStar = open.reduce((n1, n2) => getDistance(n1).length() <= getDistance(n2).length() ? n1 : n2);
 
       if (createHistory())
       {
-         List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+         List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
          searchHistory..newExplanation(new Explanation())
             ..addES_("First we look at all nodes which are ")
-            ..addESM("marked open", "green", new CircleHighlight(), open.map((n) => n.position))
+            ..addESM("marked open", "green", new CircleHighlight(), open.map((n) => n))
             ..addES_(". From all these nodes we know a ")
             ..addEMS("path", "green", pathsOfOpen, null)
             ..addES_(" from the source node to them. ")
             ..addES_("Therefore we also know the ")
-            ..addEM_("distance", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(open.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on.position]))))
+            ..addEM_("distance", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(open.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on]))))
             ..addES_(" between them. ")
             ..addES_("We will now take the node of them, which has the ")
-            ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).map((n) => n.position).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar.position])])
+            ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).map((n) => n).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the source node and make him to the ")
-            ..addESS("active node", "yellow", new CircleHighlight(), nStar.position)
+            ..addESS("active node", "yellow", new CircleHighlight(), nStar)
             ..addES_(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
       }
 
@@ -42,7 +42,7 @@ class Dijkstra extends BasicSearchAlgorithm
    }
 
    @override
-   Iterable<Node> findNeighbourNodes(Node node)
+   Iterable<Position> findNeighbourNodes(Position node)
    {
       var neighbours = grid.neighbours(node);
 
@@ -50,7 +50,7 @@ class Dijkstra extends BasicSearchAlgorithm
       {
          searchHistory..newExplanation(new Explanation())
             ..addES_("After we have choosen our active node, we will take a look at all of his ")
-            ..addESM("neighbour nodes", "blue", new CircleHighlight(), neighbours.map((n) => n.position))
+            ..addESM("neighbour nodes", "blue", new CircleHighlight(), neighbours.map((n) => n))
             ..addES_(": ");
       }
 

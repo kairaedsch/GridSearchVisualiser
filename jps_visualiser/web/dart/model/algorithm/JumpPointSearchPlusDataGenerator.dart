@@ -1,8 +1,8 @@
-import '../../general/Array2D.dart';
-import '../../general/Position.dart';
-import '../../general/Size.dart';
-import '../../futuuure/grid/Direction.dart';
-import '../Grid.dart';
+import '../../general/geo/Array2D.dart';
+import '../../general/geo/Position.dart';
+import '../../general/geo/Size.dart';
+import '../store/GridCache.dart';
+import '../grid/Direction.dart';
 import '../heuristics/Heuristic.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
@@ -12,12 +12,12 @@ import 'package:tuple/tuple.dart';
 
 class JumpPointSearchPlusDataGenerator extends Algorithm
 {
-  static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   final JumpPointSearchData data;
 
-  JumpPointSearchPlusDataGenerator(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
-      : data = new JumpPointSearchData(grid),
+  JumpPointSearchPlusDataGenerator(GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+      : data = new JumpPointSearchData(grid.size),
         super(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
@@ -62,7 +62,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
         return highlights;
       }
 
-      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> paths = grid.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> paths = grid.size.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
 
       searchHistory.addHM("background", paths);
     }
@@ -75,7 +75,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       searchHistory..newExplanation(new Explanation())
         ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
 
-      List<PathHighlight> paths = grid
+      List<PathHighlight> paths = grid.size
           .positions()
           .expand((position) =>
           Direction.values.map((direction)
@@ -103,7 +103,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       searchHistory..newExplanation(new Explanation())
         ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
 
-      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid.size
           .positions()
           .expand((position) =>
           Direction.values.map((direction)
@@ -140,12 +140,12 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     int deltaX = (countDirectionX == CountDirection.COUNT_UP) ? 1 : -1;
     int deltaY = (countDirectionY == CountDirection.COUNT_UP) ? 1 : -1;
 
-    int startX = (countDirectionX == CountDirection.COUNT_UP) ? 0 : (grid.width - 1);
-    int startY = (countDirectionY == CountDirection.COUNT_UP) ? 0 : (grid.height - 1);
+    int startX = (countDirectionX == CountDirection.COUNT_UP) ? 0 : (grid.size.width - 1);
+    int startY = (countDirectionY == CountDirection.COUNT_UP) ? 0 : (grid.size.height - 1);
 
-    for (int y = startY; (countDirectionY == CountDirection.COUNT_UP) ? y < grid.height : y >= 0; y += deltaY)
+    for (int y = startY; (countDirectionY == CountDirection.COUNT_UP) ? y < grid.size.height : y >= 0; y += deltaY)
     {
-      for (int x = startX; (countDirectionX == CountDirection.COUNT_UP) ? x < grid.width : x >= 0; x += deltaX)
+      for (int x = startX; (countDirectionX == CountDirection.COUNT_UP) ? x < grid.size.width : x >= 0; x += deltaX)
       {
         recomputeBox(new Position(x, y), direction);
       }

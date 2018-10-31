@@ -1,5 +1,5 @@
-import '../../../general/Position.dart';
-import '../../../general/Size.dart';
+import '../../../general/geo/Position.dart';
+import '../../../general/geo/Size.dart';
 import 'package:over_react/over_react.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';

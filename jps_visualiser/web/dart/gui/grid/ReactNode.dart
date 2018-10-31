@@ -1,12 +1,12 @@
-import '../../futuuure/general/DataTransferAble.dart';
-import '../../futuuure/general/Util.dart';
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/Data.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/MouseTracker.dart';
-import '../../general/Position.dart';
+import '../../general/general/Util.dart';
+import '../../general/transfer/StoreTransferAble.dart';
+import '../../model/grid/Barrier.dart';
+import '../../model/grid/Direction.dart';
+import '../../model/store/Store.dart';
+import '../../model/store/GridSettings.dart';
+import '../../general/gui/MouseTracker.dart';
+import '../../general/geo/Position.dart';
 import '../../model/history/Highlight.dart';
-import '../../futuuure/grid/Barrier.dart';
 import 'ReactGrid.dart';
 import 'ReactNodePart.dart';
 import 'arrows/ReactArrow.dart';
@@ -20,7 +20,7 @@ UiFactory<ReactNodeProps> ReactNode;
 @Props()
 class ReactNodeProps extends UiProps
 {
-  Data data;
+  Store store;
   ReactGridComponent grid;
   Position position;
 }
@@ -35,12 +35,12 @@ class ReactNodeState extends UiState
 @Component()
 class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeState>
 {
-  SimpleListener listener;
+  EqualListener listener;
 
-  Barrier get barrier => props.data.getBarrier(props.position);
+  Barrier get barrier => props.store.getBarrier(props.position);
 
-  List<Highlight> get backgroundHighlights => props.data.getCurrentStepHighlights(props.position, "background");
-  List<Highlight> get foregroundHighlights => props.data.getCurrentStepHighlights(props.position, props.data.currentStepDescriptionHoverId);
+  List<Highlight> get backgroundHighlights => props.store.getCurrentStepHighlights(props.position, "background");
+  List<Highlight> get foregroundHighlights => props.store.getCurrentStepHighlights(props.position, props.store.currentStepDescriptionHoverId);
 
   Iterable<Highlight> get highlights => backgroundHighlights..addAll(foregroundHighlights);
 
@@ -64,19 +64,19 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     super.componentWillMount();
 
     listener = () => redraw();
-    props.data.addSimpleListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
+    props.store.addEqualListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"], listener);
   }
 
   @override
   ReactElement render()
   {
-    Util.print("render Node ${props.position}");
+    //Util.print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"
-            " ${props.data.gridMode == GridMode.BASIC ? (barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
-            " ${props.data.gridMode == GridMode.ADVANCED ? (barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
-            " ${props.data.startPosition == props.position ? "SOURCE_NODE" : (props.data.targetPosition == props.position ? "TARGET_NODE" : "NORMAL_NODE")}"
+            " ${props.store.gridMode == GridMode.BASIC ? (barrier.isAnyBlocked() ? "anyBlocked totalBlocked" : "totalUnblocked") : ""}"
+            " ${props.store.gridMode == GridMode.ADVANCED ? (barrier.isAnyBlocked() ? "anyBlocked" : "totalUnblocked") : ""}"
+            " ${props.store.startPosition == props.position ? "SOURCE_NODE" : (props.store.targetPosition == props.position ? "TARGET_NODE" : "NORMAL_NODE")}"
             " ${state.mouseIsOver ? "hover" : "noHover"}"
             " ${state.mouseIsDown ? "mouseDown" : "mouseUp"}"
             " ${state.mouseIsOver && props.grid.mouseMode.isPresent ? props.grid.mouseMode.value.name : ""}"
@@ -135,15 +135,15 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
 
   ReactElement _renderInner()
   {
-    if (directionTextHighlights.isEmpty && (props.data.startPosition != props.position && props.data.targetPosition != props.position))
+    if (directionTextHighlights.isEmpty && (props.store.startPosition != props.position && props.store.targetPosition != props.position))
     {
-      if (props.data.gridMode == GridMode.BASIC)
+      if (props.store.gridMode == GridMode.BASIC)
       {
         return null;
       }
       else
       {
-        if (props.data.gridBarrierManager.somethingToDisplay(props.position) && !state.mouseIsOver)
+        if (props.store.gridBarrierManager.somethingToDisplay(props.position) && !state.mouseIsOver)
         {
           return null;
         }
@@ -170,7 +170,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     return
       (ReactNodePart()
         ..grid = props.grid
-        ..data = props.data
+        ..store = props.store
         ..key = direction
         ..direction = new Optional.fromNullable(direction)
         ..position = props.position
@@ -193,8 +193,8 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
 
   ReactElement _renderArrowToGo(Direction direction)
   {
-    bool leaveAble = props.data.gridBarrierManager.leaveAble(props.position, direction);
-    bool enterAble = props.data.gridBarrierManager.enterAble(props.position, direction);
+    bool leaveAble = props.store.gridBarrierManager.leaveAble(props.position, direction);
+    bool enterAble = props.store.gridBarrierManager.enterAble(props.position, direction);
 
     if (!enterAble && !leaveAble)
     {
@@ -204,7 +204,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     return
       (ReactArrow()
         ..key = direction
-        ..size = props.data.size
+        ..size = props.store.size
         ..path = [props.position, props.position.go(direction)]
         ..showEnd = leaveAble && !(enterAble && leaveAble)
         ..showStart = enterAble && !(enterAble && leaveAble)
@@ -221,7 +221,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
     return
       (Dom.div()
         ..className = "pathHighlights")(
-          pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.data.size, true)).toList()
+          pathHighlights.map((highlight) => ReactPathsComponent.renderPathHighlight(highlight, props.store.size, true)).toList()
       );
   }
 
@@ -271,6 +271,6 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   {
     super.componentWillUnmount();
 
-    props.data.removeSimpleListener(listener);
+    props.store.removeEqualListener(listener);
   }
 }

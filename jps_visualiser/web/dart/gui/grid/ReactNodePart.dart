@@ -1,8 +1,8 @@
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/Data.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/MouseTracker.dart';
-import '../../general/Position.dart';
+import '../../model/grid/Direction.dart';
+import '../../model/store/Store.dart';
+import '../../model/store/GridSettings.dart';
+import '../../general/gui/MouseTracker.dart';
+import '../../general/geo/Position.dart';
 import '../../model/history/Highlight.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
@@ -14,7 +14,7 @@ UiFactory<ReactNodePartProps> ReactNodePart;
 @Props()
 class ReactNodePartProps extends UiProps
 {
-  Data data;
+  Store store;
   ReactGridComponent grid;
   Optional<Direction> direction;
   Position position;
@@ -54,9 +54,9 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
             "part outer"
             " ${Enums.toName(props.direction.value)}"
             " ${Directions.isDiagonal(direction.value) ? "diagonal" : "cardinal"}"
-            " ${position.go(direction.value).legal(props.data.size) ? "legal" : "illegal"}"
-            " ${props.data.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
-            " ${props.data.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
+            " ${position.go(direction.value).legal(props.store.size) ? "legal" : "illegal"}"
+            " ${props.store.gridBarrierManager.leaveAble(position, direction.value) ? "leaveUnblocked" : "leaveBlocked"}"
+            " ${props.store.gridBarrierManager.enterAble(position, direction.value) ? "enterUnblocked" : "enterBlocked"}"
         )
         ..onMouseDown = ((_) => _handleMouseDown())
         ..onMouseEnter = ((_) => _handleMouseEnter())

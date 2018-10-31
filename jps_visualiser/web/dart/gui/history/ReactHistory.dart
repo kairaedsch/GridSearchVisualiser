@@ -1,5 +1,5 @@
-import '../../futuuure/general/DataTransferAble.dart';
-import '../../futuuure/transfer/Data.dart';
+import '../../general/transfer/StoreTransferAble.dart';
+import '../../model/store/Store.dart';
 import '../../model/history/Explanation.dart';
 import 'ReactExplanationPart.dart';
 import 'package:over_react/over_react.dart';
@@ -10,13 +10,13 @@ UiFactory<ReactHistoryProps> ReactHistory;
 @Props()
 class ReactHistoryProps extends UiProps
 {
-  Data data;
+  Store store;
 }
 
 @Component()
 class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
 {
-  SimpleListener listener;
+  EqualListener listener;
 
   @override
   void componentWillMount()
@@ -24,13 +24,13 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
     super.componentWillMount();
 
     listener = () => redraw();
-    props.data.addSimpleListener(["title", "stepCount", "currentStepId", "currentStepTitle", "currentStepDescription"], listener);
+    props.store.addEqualListener(["title", "stepCount", "currentStepId", "currentStepTitle", "currentStepDescription"], listener);
   }
 
   @override
   ReactElement render()
   {
-    if (props.data.title == "")
+    if (props.store.title == "")
     {
       return (Dom.div()..className = "history")();
     }
@@ -38,14 +38,14 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
     return
       (Dom.div()..className = "history")(
         (Dom.div()..className = "title")(
-            props.data.title
+            props.store.title
         ),
         (Dom.div()..className = "parts"
-          " ${props.data.stepCount == 0 ? "turnOverviewEmpty" : ""}"
+          " ${props.store.stepCount == 0 ? "turnOverviewEmpty" : ""}"
         )(
-          new List<ReactElement>.generate(props.data.stepCount, (i) => _renderPart(i))
+          new List<ReactElement>.generate(props.store.stepCount, (i) => _renderPart(i))
         ),
-          props.data.currentStepId == -1
+          props.store.currentStepId == -1
           ?
         (Dom.div()..className = "turnOverview")(
             (Dom.div()..className = "title")(
@@ -55,10 +55,10 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
           :
         (Dom.div()..className = "turnOverview")(
             (Dom.div()..className = "title")(
-                props.data.currentStepTitle
+                props.store.currentStepTitle
             ),
             (Dom.div()..className = "description")(
-                _renderExplanations(props.data.currentStepDescription)
+                _renderExplanations(props.store.currentStepDescription)
             )
         )
       );
@@ -66,13 +66,13 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
 
   ReactElement _renderPart(int stepId)
   {
-    bool selected = props.data.currentStepId == stepId;
+    bool selected = props.store.currentStepId == stepId;
     return
       (Dom.div()
         ..key = stepId
         ..className = "part"
             " ${selected ? "selected" : ""}"
-        ..onClick = ((_) => props.data.currentStepId = selected ? -1 : stepId)
+        ..onClick = ((_) => props.store.currentStepId = selected ? -1 : stepId)
       )(stepId);
   }
 
@@ -98,7 +98,7 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
               (ReactExplanationPart()
                 ..explanationPart = ep
                 ..key = ep.hashCode
-                ..data = props.data
+                ..store = props.store
               )();
           }).toList()
       );
@@ -109,6 +109,6 @@ class ReactHistoryComponent extends UiComponent<ReactHistoryProps>
   {
     super.componentWillUnmount();
 
-    props.data.removeSimpleListener(listener);
+    props.store.removeEqualListener(listener);
   }
 }

@@ -1,6 +1,6 @@
-import '../../general/Distance.dart';
-import '../../general/Position.dart';
-import '../Grid.dart';
+import '../../general/geo/Distance.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
 import '../history/Explanation.dart';
 import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
@@ -12,39 +12,39 @@ abstract class BasicSearchAlgorithm extends Algorithm
 {
   final String name;
 
-  Map<Node, Distance> distance;
-  Map<Node, Node> parent;
+  Map<Position, Distance> distance;
+  Map<Position, Position> parent;
 
-  Set<Node> open;
-  Set<Node> closed;
+  Set<Position> open;
+  Set<Position> closed;
 
-  BasicSearchAlgorithm(this.name, Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) : super(grid, startPosition, targetPosition, heuristic, turnOfHistory)
+  BasicSearchAlgorithm(this.name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) : super(grid, startPosition, targetPosition, heuristic, turnOfHistory)
   {
-    distance = new Map<Node, Distance>();
-    parent = new Map<Node, Node>();
+    distance = new Map<Position, Distance>();
+    parent = new Map<Position, Position>();
     open = new Set();
     closed = new Set();
   }
 
-  Node findNextActiveNode();
+  Position findNextActiveNode();
 
-  Iterable<Node> findNeighbourNodes(Node node);
+  Iterable<Position> findNeighbourNodes(Position position);
 
-  Distance getDistance(Node n)
+  Distance getDistance(Position n)
   {
     return distance.containsKey(n) ? distance[n] : Distance.INFINITY;
   }
 
-  List<Node> getPath(Node n)
+  List<Position> getPath(Position n)
   {
     if (parent[n] == null)
     {
       return [];
     }
-    List<Node> path = [];
+    List<Position> path = [];
     {
       path.add(n);
-      Node intermediateNode = n;
+      Position intermediateNode = n;
       while (intermediateNode != start)
       {
         intermediateNode = parent[intermediateNode];
@@ -75,14 +75,14 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
       searchHistory..newExplanation(new Explanation.styled("enumeration"))
         ..addES_("Set the distance from our ")
-        ..addESS("start node", "green", new CircleHighlight(), start.position)
+        ..addESS("start node", "green", new CircleHighlight(), start)
         ..addES_(" to our ")
-        ..addESS("start node", "green", new CircleHighlight(), start.position)
+        ..addESS("start node", "green", new CircleHighlight(), start)
         ..addES_(" to 0.0.");
 
       searchHistory..newExplanation(new Explanation.styled("enumeration"))
         ..addES_("Mark our ")
-        ..addESS("start node open", "green", new BoxHighlight(), start.position)
+        ..addESS("start node open", "green", new BoxHighlight(), start)
         ..addES_(".");
     }
 
@@ -95,34 +95,34 @@ abstract class BasicSearchAlgorithm extends Algorithm
       {
         searchHistory.stepTitle = "Turn $turn";
       }
-      Node nStar = findNextActiveNode();
+      Position nStar = findNextActiveNode();
 
       if (createHistory())
       {
-        searchHistory.addH_("background", [new BoxHighlight.styled("green")], open.map((n) => n.position));
-        searchHistory.addH_("background", [new BoxHighlight.styled("grey")], closed.map((n) => n.position));
+        searchHistory.addH_("background", [new BoxHighlight.styled("green")], open.map((n) => n));
+        searchHistory.addH_("background", [new BoxHighlight.styled("grey")], closed.map((n) => n));
       }
 
-      Set<Node> updatedNodes = new Set();
+      Set<Position> updatedNodes = new Set();
 
       if (nStar == target)
       {
         if (createHistory())
         {
-          var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).map((n) => n.position).toList(), showEnd: true);
+          var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).map((n) => n).toList(), showEnd: true);
           searchHistory..newExplanation(new Explanation())
             ..addES_("As our active node is our ")
-            ..addESS("target node", "red", new CircleHighlight(), target.position)
+            ..addESS("target node", "red", new CircleHighlight(), target)
             ..addES_(", the algorithm can finish and we have found an ")
             ..addESS("optimal path", "blue", optimalPath, null)
             ..addES_(" from the ")
-            ..addESS("source node", "green", new CircleHighlight(), start.position)
+            ..addESS("source node", "green", new CircleHighlight(), start)
             ..addES_(" to the ")
-            ..addESS("target node", "red", new CircleHighlight(), target.position)
+            ..addESS("target node", "red", new CircleHighlight(), target)
             ..addES_(".");
 
           searchHistory.addH_("foreground", [optimalPath], [null]);
-          searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar.position]);
+          searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar]);
         }
         searchHistory.foundPath = true;
         break;
@@ -138,11 +138,11 @@ abstract class BasicSearchAlgorithm extends Algorithm
         {
           if (createHistory())
           {
-            List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+            List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
 
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
               ..addES_("All neighbour nodes which are ")
-              ..addESM("marked closed", "grey", new CircleHighlight(), neighboursMarkedClosed.map((n) => n.position))
+              ..addESM("marked closed", "grey", new CircleHighlight(), neighboursMarkedClosed.map((n) => n))
               ..addES_(" are ignored as we have already found ")
               ..addEMS("optimal paths", "grey", pathsOfClosed, null)
               ..addES_(" from the source node to them. ");
@@ -153,20 +153,20 @@ abstract class BasicSearchAlgorithm extends Algorithm
         {
           if (createHistory())
           {
-            List<PathHighlight> pathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
-            List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar).map((n) => n.position))..add(on.position), showEnd: true)).toList();
+            List<PathHighlight> pathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
+            List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar).map((n) => n))..add(on), showEnd: true)).toList();
 
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
               ..addES_("All neighbour nodes which are ")
-              ..addESM("marked open", "green", new CircleHighlight(), neighboursMarkedOpen.map((n) => n.position))
+              ..addESM("marked open", "green", new CircleHighlight(), neighboursMarkedOpen.map((n) => n))
               ..addES_(" are checked, if we can have an maybe more optimal ")
-              ..addEM_("new path", "blue", [new Tuple2(maybeNewPathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight((getDistance(nStar) + nStar.distanceTo(on)).length().toStringAsPrecision(3))], [on.position]))))
+              ..addEM_("new path", "blue", [new Tuple2(maybeNewPathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight((getDistance(nStar) + new Distance.calc(nStar, on)).length().toStringAsPrecision(3))], [on]))))
               ..addES_(" from our source node to them over the active node than the ")
-              ..addEM_("current path", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on.position]))))
+              ..addEM_("current path", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on]))))
               ..addES_(" which we have already found for them. ");
           }
 
-          var neighboursMarkedOpenBetterPath = neighboursMarkedOpen.where((n) => getDistance(nStar) + nStar.distanceTo(n) < getDistance(n)).toList();
+          var neighboursMarkedOpenBetterPath = neighboursMarkedOpen.where((n) => getDistance(nStar) + new Distance.calc(nStar, n) < getDistance(n)).toList();
 
           if (neighboursMarkedOpenBetterPath.isEmpty)
           {
@@ -181,19 +181,19 @@ abstract class BasicSearchAlgorithm extends Algorithm
             neighboursMarkedOpenBetterPath.forEach((n)
             {
               parent[n] = nStar;
-              distance[n] = getDistance(nStar) + nStar.distanceTo(n);
+              distance[n] = getDistance(nStar) + new Distance.calc(nStar, n);
               updatedNodes.add(n);
             });
 
             if (createHistory())
             {
-              List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+              List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
 
               searchHistory
                 ..addES_("And we also found some ")
                 ..addEMS("better paths", "blue", newPathsOfOpen, null)
                 ..addES_(" for these ")
-                ..addESM("nodes", "green", new CircleHighlight(), neighboursMarkedOpenBetterPath.map((n) => n.position))
+                ..addESM("nodes", "green", new CircleHighlight(), neighboursMarkedOpenBetterPath.map((n) => n))
                 ..addES_(". ");
             }
           }
@@ -205,14 +205,14 @@ abstract class BasicSearchAlgorithm extends Algorithm
           {
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
               ..addES_("All neighbour nodes which are ")
-              ..addESM("unmarked", "blue", new CircleHighlight(), neighboursUnmarked.map((n) => n.position))
+              ..addESM("unmarked", "blue", new CircleHighlight(), neighboursUnmarked.map((n) => n))
               ..addES_(" are marked as open ");
           }
-          neighboursUnmarked.forEach((Node n)
+          neighboursUnmarked.forEach((Position n)
           {
             open.add(n);
 
-            distance[n] = getDistance(nStar) + nStar.distanceTo(n);
+            distance[n] = getDistance(nStar) + new Distance.calc(nStar, n);
             parent[n] = nStar;
 
             updatedNodes.add(n);
@@ -220,7 +220,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
           if (createHistory())
           {
-            List<PathHighlight> pathsOfUnmarked = neighboursUnmarked.map((on) => new PathHighlight(getPath(on).map((n) => n.position).toList(), showEnd: true)).toList();
+            List<PathHighlight> pathsOfUnmarked = neighboursUnmarked.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
 
             searchHistory
               ..addES_("and we set the new ")
@@ -235,9 +235,9 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
       if (createHistory())
       {
-        searchHistory.addHM("forground", updatedNodes.map((un) => new Tuple2([new PathHighlight.styled("black", [nStar.position, un.position], showEnd: true)], [null])));
-        searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar.position]);
-        //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n.position).toSet()));
+        searchHistory.addHM("forground", updatedNodes.map((un) => new Tuple2([new PathHighlight.styled("black", [nStar, un], showEnd: true)], [null])));
+        searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar]);
+        //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.map((n) => n).toSet()));
       }
     }
 

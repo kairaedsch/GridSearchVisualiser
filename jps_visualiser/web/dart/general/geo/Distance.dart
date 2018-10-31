@@ -1,6 +1,4 @@
-import 'Direction.dart';
 import 'Position.dart';
-import 'Size.dart';
 import 'dart:math';
 
 class Distance

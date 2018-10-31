@@ -1,14 +1,15 @@
-import '../../general/Position.dart';
-import '../../general/Size.dart';
+import '../../general/general/Util.dart';
+import '../../general/geo/Position.dart';
+import '../../general/geo/Size.dart';
+import '../../general/transfer/StoreTransferAble.dart';
 import '../../model/history/Explanation.dart';
 import '../../model/history/Highlight.dart';
-import '../general/Util.dart';
+import 'GridCache.dart';
 import '../grid/Barrier.dart';
-import '../general/DataTransferAble.dart';
 import '../grid/GridBarrierManager.dart';
 import 'GridSettings.dart';
 
-class Data extends DataTransferAble
+class Store extends StoreTransferAble
 {
   static final bool useMultiThreading = true;
   static final Size maxSize = new Size(20, 20);
@@ -17,7 +18,10 @@ class Data extends DataTransferAble
   GridBarrierManager _gridBarrierManager;
   GridBarrierManager get gridBarrierManager => _gridBarrierManager;
 
-  Data()
+  GridCache _gridCache;
+  GridCache get gridCache => _gridCache;
+
+  Store()
   {
     _gridBarrierManager = new GridBarrierManager(this);
     startPosition = new Position(5, 5);
@@ -27,6 +31,7 @@ class Data extends DataTransferAble
 
     algorithmType = AlgorithmType.JPSP;
     heuristicType = HeuristicType.OCTILE;
+    algorithmUpdateMode = AlgorithmUpdateMode.AFTER_EDITING;
     gridMode = GridMode.BASIC;
     directionMode = DirectionMode.ALL;
     cornerMode = CornerMode.CROSS;
@@ -41,6 +46,8 @@ class Data extends DataTransferAble
     setCurrentStepHighlights(null, []);
 
     currentStepDescriptionHoverId = "foreground";
+
+    _gridCache = new GridCache(this);
   }
 
   // GRID #####################################################################
@@ -70,7 +77,6 @@ class Data extends DataTransferAble
       set("size", newSize.toMap());
       startPosition = newStartPosition;
       targetPosition = newTargetPosition;
-      autoTriggerListeners = true;
     }
   }
 
@@ -89,6 +95,9 @@ class Data extends DataTransferAble
 
   HeuristicType get heuristicType => HeuristicType.values[getA<int>("heuristicType")];
   void set heuristicType(HeuristicType newHeuristicType) => set("heuristicType", newHeuristicType.index);
+
+  AlgorithmUpdateMode get algorithmUpdateMode => AlgorithmUpdateMode.values[getA<int>("algorithmUpdateMode")];
+  void set algorithmUpdateMode(AlgorithmUpdateMode newAlgorithmUpdateMode) => set("algorithmUpdateMode", newAlgorithmUpdateMode.index);
 
   // GRID SETTINGS ############################################################
   GridMode get gridMode => GridMode.values[getA<int>("gridMode")];

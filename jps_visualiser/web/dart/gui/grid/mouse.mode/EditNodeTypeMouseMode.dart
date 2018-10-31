@@ -1,8 +1,8 @@
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/Position.dart';
+import '../../../general/geo/Position.dart';
+import '../../../model/grid/Direction.dart';
+import '../../../model/store/GridSettings.dart';
+import '../ReactGrid.dart';
 import 'MouseMode.dart';
-import 'ReactGrid.dart';
 
 class EditNodeTypeMouseMode extends MouseMode
 {
@@ -15,24 +15,26 @@ class EditNodeTypeMouseMode extends MouseMode
 
   String get name => "EditNodeTypeMouseMode";
 
+  @override
   void evaluateNode(Position position)
   {
-    var barrier = data.getBarrier(position);
+    var barrier = store.getBarrier(position);
     var structureNodeType = getStructureNodeType(position);
 
-    if (structureNodeType == StructureNodeType.NORMAL_NODE && (!barrier.isAnyBlocked() || data.gridMode != GridMode.BASIC))
+    if (structureNodeType == StructureNodeType.NORMAL_NODE && (!barrier.isAnyBlocked() || store.gridMode != GridMode.BASIC))
     {
       if (_structureTypeChanging == StructureNodeType.START_NODE)
       {
-        data.startPosition = position;
+        store.startPosition = position;
       }
       if (_structureTypeChanging == StructureNodeType.TARGET_NODE)
       {
-        data.targetPosition = position;
+        store.targetPosition = position;
       }
     }
   }
 
+  @override
   void evaluateNodePart(Position position, {Direction direction})
   {
     evaluateNode(position);

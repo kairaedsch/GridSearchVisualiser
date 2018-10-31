@@ -1,4 +1,4 @@
-import '../futuuure/grid/Direction.dart';
+import '../../model/grid/Direction.dart';
 import 'Size.dart';
 
 class Position
@@ -11,6 +11,10 @@ class Position
   Position.fromMap(Map map)
       : x = map["x"] as int,
         y = map["y"] as int;
+
+  Position.fromString(String string)
+      : x = int.parse(string.substring(string.indexOf("(") + 1, string.indexOf(","))),
+        y = int.parse(string.substring(string.indexOf(",") + 1, string.indexOf(")")));
 
   Map toMap() => new Map<dynamic, dynamic>()
       ..["x"] = x

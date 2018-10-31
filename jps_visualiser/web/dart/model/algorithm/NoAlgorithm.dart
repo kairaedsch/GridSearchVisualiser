@@ -1,13 +1,13 @@
-import '../../general/Position.dart';
-import '../Grid.dart';
+import '../../general/geo/Position.dart';
+import '../store/GridCache.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 
 class NoAlgorithm extends Algorithm
 {
-   static AlgorithmFactory factory = (Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new NoAlgorithm(grid, startPosition, targetPosition, heuristic, turnOfHistory);
+   static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new NoAlgorithm(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-   NoAlgorithm(Grid grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) : super(grid, startPosition, targetPosition, heuristic, turnOfHistory);
+   NoAlgorithm(GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) : super(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()

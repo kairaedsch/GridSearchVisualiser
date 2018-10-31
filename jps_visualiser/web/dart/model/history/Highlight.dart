@@ -1,5 +1,5 @@
-import '../../general/Position.dart';
-import '../../futuuure/grid/Direction.dart';
+import '../../general/geo/Position.dart';
+import '../grid/Direction.dart';
 
 class Highlights
 {

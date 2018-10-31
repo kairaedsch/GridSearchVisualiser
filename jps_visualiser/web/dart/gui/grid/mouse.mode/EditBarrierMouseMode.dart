@@ -1,8 +1,8 @@
-import '../../futuuure/grid/Direction.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/Position.dart';
+import '../../../general/geo/Position.dart';
+import '../../../model/grid/Direction.dart';
+import '../../../model/store/GridSettings.dart';
+import '../ReactGrid.dart';
 import 'MouseMode.dart';
-import 'ReactGrid.dart';
 import 'package:quiver/core.dart';
 
 class EditBarrierMouseMode extends MouseMode
@@ -13,33 +13,35 @@ class EditBarrierMouseMode extends MouseMode
 
   String get name => "EditBarrierMouseMode";
 
+  @override
   void evaluateNode(Position position)
   {
-    var barrier = data.getBarrier(position);
+    var barrier = store.getBarrier(position);
     var structureNodeType = getStructureNodeType(position);
 
-    if (data.gridMode == GridMode.BASIC && (structureNodeType == StructureNodeType.NORMAL_NODE || barrier.isAnyBlocked()))
+    if (store.gridMode == GridMode.BASIC && (structureNodeType == StructureNodeType.NORMAL_NODE || barrier.isAnyBlocked()))
     {
       bool maybeNewEasyFillMode = !barrier.isAnyBlocked();
       bool easyFillMode = _getAndUpdateEasyFillMode(maybeNewEasyFillMode);
       if (maybeNewEasyFillMode == easyFillMode)
       {
-        data.gridBarrierManager.setTotal(position, easyFillMode);
+        store.gridBarrierManager.setTotal(position, easyFillMode);
       }
     }
   }
 
+  @override
   void evaluateNodePart(Position position, {Direction direction})
   {
     if (direction != null)
     {
-      if (data.gridMode == GridMode.ADVANCED)
+      if (store.gridMode == GridMode.ADVANCED)
       {
-        bool maybeNewEasyFillModus =  data.gridBarrierManager.enterAble(position, direction);
+        bool maybeNewEasyFillModus =  store.gridBarrierManager.enterAble(position, direction);
         bool easyFillModus = _getAndUpdateEasyFillMode(maybeNewEasyFillModus);
         if (maybeNewEasyFillModus == easyFillModus)
         {
-          data.gridBarrierManager.set(position, direction, easyFillModus);
+          store.gridBarrierManager.set(position, direction, easyFillModus);
         }
       }
     }

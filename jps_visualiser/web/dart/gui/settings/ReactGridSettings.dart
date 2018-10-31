@@ -1,9 +1,7 @@
-import '../../futuuure/general/DataTransferAble.dart';
-import '../../futuuure/general/Util.dart';
-import '../../futuuure/transfer/Data.dart';
-import '../../futuuure/transfer/GridSettings.dart';
-import '../../general/Position.dart';
-import '../../general/Size.dart';
+import '../../general/transfer/StoreTransferAble.dart';
+import '../../model/store/Store.dart';
+import '../../model/store/GridSettings.dart';
+import '../../general/geo/Size.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'dart:html';
@@ -16,7 +14,7 @@ UiFactory<ReactGridSettingsProps> ReactGridSettings;
 @Props()
 class ReactGridSettingsProps extends UiProps
 {
-  Data data;
+  Store store;
   Function download;
   Function load;
 }
@@ -24,7 +22,7 @@ class ReactGridSettingsProps extends UiProps
 @Component()
 class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
 {
-  SimpleListener listener;
+  EqualListener listener;
 
   @override
   void componentWillMount()
@@ -32,7 +30,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
     super.componentWillMount();
 
     listener = () => redraw();
-    props.data.addSimpleListener(["gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
+    props.store.addEqualListener(["gridMode", "directionMode", "cornerMode", "directionalMode"], listener);
   }
 
   @override
@@ -49,10 +47,10 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
               (Dom.div()..className = "title")("Mode:"),
               (ReactDropDown()
-                ..value = props.data.gridMode
+                ..value = props.store.gridMode
                 ..values = GridMode.values
                 ..getTitle = GridModes.getTitle
-                ..selectListener = ((dynamic newValue) => props.data.gridMode = newValue as GridMode)
+                ..selectListener = ((dynamic newValue) => props.store.gridMode = newValue as GridMode)
               )()
           ),
           (ReactPopover()
@@ -62,13 +60,13 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
               (Dom.div()..className = "title")("Directions:"),
               (ReactDropDown()
-                ..value = props.data.directionMode
+                ..value = props.store.directionMode
                 ..values = DirectionMode.values
                 ..getTitle = DirectionModes.getTitle
-                ..selectListener = ((dynamic newValue) => props.data.directionMode = newValue as DirectionMode)
+                ..selectListener = ((dynamic newValue) => props.store.directionMode = newValue as DirectionMode)
               )()
           ),
-          props.data.gridMode != GridMode.BASIC ?
+          props.store.gridMode != GridMode.BASIC ?
           (ReactPopover()
             ..className = "config"
             ..popover = DirectionalModes.popover
@@ -76,13 +74,13 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
               (Dom.div()..className = "title")("Directional:"),
               (ReactDropDown()
-                ..value = props.data.directionalMode
+                ..value = props.store.directionalMode
                 ..values = DirectionalMode.values
                 ..getTitle = DirectionalModes.getTitle
-                ..selectListener = ((dynamic newValue) => props.data.directionalMode = newValue as DirectionalMode)
+                ..selectListener = ((dynamic newValue) => props.store.directionalMode = newValue as DirectionalMode)
               )()
           ) : null,
-          props.data.directionMode != DirectionMode.ONLY_CARDINAL ?
+          props.store.directionMode != DirectionMode.ONLY_CARDINAL ?
           (ReactPopover()
             ..className = "config"
             ..popover = CornerModes.popover
@@ -90,41 +88,41 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
               (Dom.div()..className = "title")("Cross Corners:"),
               (ReactDropDown()
-                ..value = props.data.cornerMode
+                ..value = props.store.cornerMode
                 ..values = CornerMode.values
                 ..getTitle = CornerModes.getTitle
-                ..selectListener = ((dynamic newValue) => props.data.cornerMode = newValue as CornerMode)
+                ..selectListener = ((dynamic newValue) => props.store.cornerMode = newValue as CornerMode)
               )()
           ) : null,
           (ReactPopover()
-            ..className = "config icon"
+            ..className = "config small"
             ..popover = "Shrink grid"
           )(
             (Dom.div()
               ..className = "button icon minus"
               ..onClick = ((_)
               {
-                props.data.autoTriggerListeners = false;
-                props.data.size = new Size(max(props.data.size.width - 1, 2), max(props.data.size.height - 1, 2));
-                props.data.autoTriggerListeners = true;
-                props.data.triggerListeners();
+                props.store.autoTriggerListeners = false;
+                props.store.size = new Size(max(props.store.size.width - 1, 2), max(props.store.size.height - 1, 2));
+                props.store.autoTriggerListeners = true;
+                props.store.triggerListeners();
               })
             )(" "),
           ),
           (ReactPopover()
-            ..className = "config icon"
+            ..className = "config small"
             ..popover = "Enlarge grid"
           )(
             (Dom.div()
               ..className = "button icon plus"
               ..onClick = ((_)
               {
-                props.data.size = new Size(min(props.data.size.width + 1, 20), min(props.data.size.height + 1, 20));
+                props.store.size = new Size(min(props.store.size.width + 1, 20), min(props.store.size.height + 1, 20));
               })
             )(" "),
           ),
           (ReactPopover()
-            ..className = "config icon"
+            ..className = "config small"
             ..popover = "Download grid"
           )(
             (Dom.div()
@@ -133,7 +131,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
             )(" "),
           ),
           (ReactPopover()
-            ..className = "config icon"
+            ..className = "config small"
             ..popover = "Load grid"
           )(
             (Dom.label()
@@ -169,6 +167,6 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
   {
     super.componentWillUnmount();
 
-    props.data.removeSimpleListener(listener);
+    props.store.removeEqualListener(listener);
   }
 }

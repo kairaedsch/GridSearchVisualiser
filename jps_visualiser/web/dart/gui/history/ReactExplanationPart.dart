@@ -1,5 +1,5 @@
-import '../../futuuure/general/Util.dart';
-import '../../futuuure/transfer/Data.dart';
+import '../../general/general/Util.dart';
+import '../../model/store/Store.dart';
 import '../../model/history/Explanation.dart';
 import 'package:over_react/over_react.dart';
 
@@ -10,7 +10,7 @@ UiFactory<ReactExplanationPartProps> ReactExplanationPart;
 class ReactExplanationPartProps extends UiProps
 {
   ExplanationPart explanationPart;
-  Data data;
+  Store store;
 }
 
 @Component()
@@ -27,13 +27,15 @@ class ReactExplanationPartComponent extends UiComponent<ReactExplanationPartProp
           " ${explanationPart.style != "" ? "styled highlight_${explanationPart.style}" : "unstyled"}"
           ..onMouseOver = (_) {
             Util.print("currentStepDescriptionHoverId = ${explanationPart.id}");
-            props.data.currentStepDescriptionHoverId = explanationPart.id;
+            props.store.currentStepDescriptionHoverId = explanationPart.id;
+            props.store.triggerTransferListeners();
           }
           ..onMouseLeave = (_) {
-            if (props.data.currentStepDescriptionHoverId == explanationPart.id)
+            if (props.store.currentStepDescriptionHoverId == explanationPart.id)
             {
               Util.print("currentStepDescriptionHoverId = foreground");
-              props.data.currentStepDescriptionHoverId = "foreground";
+              props.store.currentStepDescriptionHoverId = "foreground";
+              props.store.triggerTransferListeners();
             }
           }
       )(

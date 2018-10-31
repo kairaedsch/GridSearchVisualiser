@@ -1,24 +1,47 @@
-import '../futuuure/transfer/Data.dart';
-import '../general/Save.dart';
+import '../model/store/GridSettings.dart';
+import '../model/store/Store.dart';
+import '../model/store/Save.dart';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
 
 import 'package:over_react/react_dom.dart' as react_dom;
 import 'package:over_react/over_react.dart' as over_react;
 
-import 'nodes/ReactGrid.dart';
-import 'nodes/arrows/ReactPaths.dart';
-import 'menu/ReactGridSettings.dart';
-import 'menu/ReactAlgorithmSettings.dart';
+import 'grid/ReactGrid.dart';
+import 'grid/arrows/ReactPaths.dart';
+import 'settings/ReactGridSettings.dart';
+import 'settings/ReactAlgorithmSettings.dart';
 import 'history/ReactHistory.dart';
 
-void initGUI(Data data)
+void initGUI(Store store)
 {
   over_react.setClientConfiguration();
 
+  window.document.onMouseUp.listen((event)
+  {
+    if (store.algorithmUpdateMode == AlgorithmUpdateMode.AFTER_EDITING)
+    {
+      store.triggerTransferListeners();
+    }
+  });
+  var algorithmUpdateModeChanged = ()
+  {
+    if (store.algorithmUpdateMode == AlgorithmUpdateMode.AFTER_EDITING || store.algorithmUpdateMode == AlgorithmUpdateMode.MANUALLY)
+    {
+      store.autoTriggerTransferListener = false;
+    }
+    else
+    {
+      store.autoTriggerTransferListener = true;
+    }
+  };
+  store.addEqualListener(["algorithmUpdateMode"], algorithmUpdateModeChanged);
+  algorithmUpdateModeChanged();
+  store.addEqualListener(["size", "algorithmType", "heuristicType", "gridMode", "directionMode", "cornerMode", "directionalMode", "currentStepId"], () => store.triggerTransferListeners());
+
   react_dom.render(
       (ReactMain()
-        ..data = data
+        ..store = store
       )(),
       querySelector('#contentContainer')
   );
@@ -30,7 +53,7 @@ UiFactory<ReactMainProps> ReactMain;
 @Props()
 class ReactMainProps extends UiProps
 {
-  Data data;
+  Store store;
 }
 
 @Component()
@@ -43,28 +66,28 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
     Dom.div()..className = "content")(
       (Dom.div()..className = "leftContent")(
         (ReactGrid()
-          ..data = props.data
+          ..store = props.store
         )(),
         (ReactPaths()
-          ..data = props.data
+          ..store = props.store
         )()
       ),
       (Dom.div()..className = "rightContent")(
         (Dom.div()..className = "gridSettingsContainer")(
             (ReactGridSettings()
-              ..data = props.data
+              ..store = props.store
               ..download = _download
               ..load = _load
             )()
         ),
         (Dom.div()..className = "algorithmSettingsContainer")(
             (ReactAlgorithmSettings()
-              ..data = props.data
+              ..store = props.store
             )()
         ),
         (Dom.div()..className = "historyContainer")(
             (ReactHistory()
-              ..data = props.data
+              ..store = props.store
             )()
         )
       )
@@ -73,7 +96,7 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
 
   void _download()
   {
-    Save save = new Save(props.data);
+    Save save = new Save(props.store);
 
     AnchorElement link = new AnchorElement();
     link.href = save.downloadLink();
@@ -85,6 +108,6 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
 
   void _load(String imageData)
   {
-    new Save.load(imageData, props.data);
+    new Save.load(imageData, props.store);
   }
 }
