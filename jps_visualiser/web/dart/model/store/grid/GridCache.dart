@@ -7,13 +7,13 @@ import '../Store.dart';
 class GridCache
 {
   final Store _store;
-  final Array2D<Map<Direction, bool>> _grid;
+  Array2D<Map<Direction, bool>> _grid;
 
   Size get size => _store.size;
 
   GridCache(this._store)
-      : _grid = new Array2D(_store.size, (p) => new Map.fromIterable(Direction.values, value: (Direction d) => false))
   {
+    rebuild();
     _store.addEqualListener(["size", "gridMode", "directionMode", "cornerMode", "directionalMode"], rebuild);
     _store.addStartsWithListener(["barrier_"], (ids)
     {
@@ -23,7 +23,6 @@ class GridCache
         update(position);
       }
     });
-    rebuild();
   }
 
   bool leaveAble(Position pos, Direction direction)
@@ -33,6 +32,7 @@ class GridCache
 
   void rebuild()
   {
+    _grid = new Array2D(_store.size, (p) => new Map.fromIterable(Direction.values, value: (Direction d) => false));
     for (Position position in _store.size.positions())
     {
       _updateOne(position);
