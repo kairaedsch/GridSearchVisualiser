@@ -100,13 +100,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
             (Dom.div()
               ..className = "button icon minus"
-              ..onClick = ((_)
-              {
-                props.store.autoTriggerListeners = false;
-                props.store.size = new Size(max(props.store.size.width - 1, 2), max(props.store.size.height - 1, 2));
-                props.store.autoTriggerListeners = true;
-                props.store.triggerListeners();
-              })
+              ..onClick = ((_) => props.store.gridManager.setSize(new Size(props.store.size.width - 1, props.store.size.height - 1)))
             )(" "),
           ),
           (ReactPopover()
@@ -115,10 +109,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
           )(
             (Dom.div()
               ..className = "button icon plus"
-              ..onClick = ((_)
-              {
-                props.store.size = new Size(min(props.store.size.width + 1, 20), min(props.store.size.height + 1, 20));
-              })
+              ..onClick = ((_) => props.store.gridManager.setSize(new Size(props.store.size.width + 1, props.store.size.height + 1)))
             )(" "),
           ),
           (ReactPopover()
