@@ -25,13 +25,18 @@ class Store extends StoreTransferAble
   {
     _gridManager = new GridManager(this);
     _gridBarrierManager = new BarrierManager(this);
-    startPosition = new Position(5, 5);
-    targetPosition = new Position(10, 5);
-    size = new Size(20, 20);
+    size = new Size(15, 15);
+    startPosition = new Position(2, 7);
+    targetPosition = new Position(12, 7);
+    setBarrier(new Position(7, 5), Barrier.totalBlocked);
+    setBarrier(new Position(7, 6), Barrier.totalBlocked);
+    setBarrier(new Position(7, 7), Barrier.totalBlocked);
+    setBarrier(new Position(7, 8), Barrier.totalBlocked);
+    setBarrier(new Position(7, 9), Barrier.totalBlocked);
 
     algorithmType = AlgorithmType.JPSP;
     heuristicType = HeuristicType.OCTILE;
-    algorithmUpdateMode = AlgorithmUpdateMode.AFTER_EDITING;
+    algorithmUpdateMode = AlgorithmUpdateMode.DURING_EDITING;
     gridMode = GridMode.BASIC;
     directionMode = DirectionMode.ALL;
     cornerMode = CornerMode.CROSS;

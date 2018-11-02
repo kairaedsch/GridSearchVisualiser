@@ -6,6 +6,7 @@ import '../history/Highlight.dart';
 import '../heuristics/Heuristic.dart';
 import 'Algorithm.dart';
 import 'Dijkstra.dart';
+import 'dart:collection';
 import 'package:tuple/tuple.dart';
 
 abstract class BasicSearchAlgorithm extends Algorithm
@@ -22,7 +23,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
   {
     distance = new Map<Position, Distance>();
     parent = new Map<Position, Position>();
-    open = new Set();
+    open = new LinkedHashSet();
     closed = new Set();
   }
 

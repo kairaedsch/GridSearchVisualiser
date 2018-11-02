@@ -12,8 +12,8 @@ class Transfer
 
   void receive(dynamic jsonDatas)
   {
+    var start = new DateTime.now();
     List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
-    Util.print('$name: got  ${datas.map((data) => data["id"] as String)}');
     store.autoTriggerListeners = false;
     for (Map data in datas)
     {
@@ -21,12 +21,14 @@ class Transfer
     }
     store.autoTriggerListeners = true;
     store.triggerListeners();
+    Util.print("$name: got  in ${new DateTime.now().difference(start).inMilliseconds}ms: ${datas.map((data) => data["id"] as String)}");
   }
 
   String send(Iterable<String> ids, SendPort sender)
   {
+    var start = new DateTime.now();
     var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = store.getA<dynamic>(id)).toList();
-    Util.print('$name: send $ids');
     sender.send(JSON.encode(data));
+    Util.print("$name: send in ${new DateTime.now().difference(start).inMilliseconds}ms: $ids");
   }
 }

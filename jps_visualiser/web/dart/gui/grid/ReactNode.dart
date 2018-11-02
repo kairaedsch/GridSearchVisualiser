@@ -1,3 +1,4 @@
+import '../../general/general/Util.dart';
 import '../../general/geo/Direction.dart';
 import '../../general/transfer/StoreTransferAble.dart';
 import '../../model/store/grid/Barrier.dart';
@@ -64,13 +65,13 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
 
     listener = () => redraw();
     var neighbourBarriers = props.position.neighbours(props.store.size).map((p) => "barrier_${p}");
-    props.store.addEqualListener(["barrier_${props.position}", "currentStepHighlights_${props.position}"]..addAll(neighbourBarriers), listener);
+    props.store.addEqualListener(["barrier_${props.position}", "currentStepHighlights_${props.position}", "position_${props.position}"]..addAll(neighbourBarriers), listener);
   }
 
   @override
   ReactElement render()
   {
-    //Util.print("render Node ${props.position}");
+    Util.print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"

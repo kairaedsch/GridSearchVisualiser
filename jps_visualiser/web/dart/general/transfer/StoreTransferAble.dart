@@ -29,27 +29,37 @@ class StoreTransferAble
     {
       _store[id] = newValue;
 
-      changes.add(id);
-      if (toTransfer)
-      {
-        changesToTransfer.add(id);
-      }
+      addChange(id, toTransfer);
+    }
+  }
 
-      if (autoTriggerListeners)
-      {
-        triggerListeners();
-      }
+  void addChange(String id, bool toTransfer)
+  {
+    changes.add(id);
+    if (toTransfer)
+    {
+      changesToTransfer.add(id);
+    }
+
+    if (autoTriggerListeners)
+    {
+      triggerListeners();
     }
   }
 
   void triggerListeners()
   {
+    Set<EqualListener> equalListenerCalled = new Set();
     for (String changedId in changes)
     {
-      if (_equalListeners.containsKey(changedId))
+      var changedIdStart = new DateTime.now();
+      _equalListeners[changedId]?.where((el) => !equalListenerCalled.contains(el))?.forEach((equalListener)
       {
-        _equalListeners[changedId].forEach((equalListener) => equalListener());
-      }
+        equalListener();
+        equalListenerCalled.add(equalListener);
+      });
+      var changedIdFinish = new DateTime.now();
+      Util.print("triggerLis: changedId $changedId ${changedIdFinish.difference(changedIdStart).inMilliseconds}ms (${_equalListeners[changedId]?.length})");
     }
 
     _startsWithListener.forEach((startsWithListener, startsOfIds)
@@ -60,6 +70,7 @@ class StoreTransferAble
         startsWithListener(matchingIds);
       }
     });
+
     changes.clear();
 
     if (autoTriggerTransferListener)

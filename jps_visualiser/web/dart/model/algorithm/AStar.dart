@@ -16,7 +16,7 @@ class AStar extends Dijkstra
    @override
    Position findNextActiveNode()
    {
-      Position nStar = open.reduce((n1, n2) => (getDistance(n1).length() + heuristic.calc(n1, target)) <= (getDistance(n2).length() + heuristic.calc(n2, target)) ? n1 : n2);
+      Position nStar = open.reduce((n1, n2) => (getDistance(n1).length() + heuristic.calc(n1, target)) < (getDistance(n2).length() + heuristic.calc(n2, target)) ? n1 : n2);
 
       if (createHistory())
       {

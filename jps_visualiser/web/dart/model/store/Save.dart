@@ -59,6 +59,7 @@ class Save
 
     writeEnum(10, store.algorithmType.index);
     writeEnum(11, store.heuristicType.index);
+    writeEnum(12, store.algorithmUpdateMode.index);
   }
 
   Save.load(String imageSrc, Store store)
@@ -103,6 +104,7 @@ class Save
 
     store.algorithmType = readEnum(10, AlgorithmType.values);
     store.heuristicType = readEnum(11, HeuristicType.values);
+    store.algorithmUpdateMode = readEnum(12, AlgorithmUpdateMode.values);
     store.autoTriggerListeners = true;
     store.triggerListeners();
   }

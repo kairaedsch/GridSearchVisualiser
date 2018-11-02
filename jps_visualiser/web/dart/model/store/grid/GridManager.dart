@@ -42,7 +42,10 @@ class GridManager
   {
     if (newStartPosition.legal(_store.size) && newStartPosition != _store.targetPosition)
     {
+      Position oldStartPosition = _store.startPosition;
       _store.startPosition = newStartPosition;
+      _store.addChange("position_${newStartPosition}", false);
+      _store.addChange("position_${oldStartPosition}", false);
     }
   }
 
@@ -50,7 +53,10 @@ class GridManager
   {
     if (newTargetPosition.legal(_store.size) && newTargetPosition != _store.startPosition)
     {
+      Position oldTargetPosition = _store.targetPosition;
       _store.targetPosition = newTargetPosition;
+      _store.addChange("position_${newTargetPosition}", false);
+      _store.addChange("position_${oldTargetPosition}", false);
     }
   }
 }

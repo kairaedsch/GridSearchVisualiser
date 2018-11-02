@@ -17,6 +17,18 @@ void initGUI(Store store)
 {
   over_react.setClientConfiguration();
 
+  setupAlgorithmRunner(store);
+
+  react_dom.render(
+      (ReactMain()
+        ..store = store
+      )(),
+      querySelector('#contentContainer')
+  );
+}
+
+void setupAlgorithmRunner(Store store)
+{
   window.document.onMouseUp.listen((event)
   {
     if (store.algorithmUpdateMode == AlgorithmUpdateMode.AFTER_EDITING)
@@ -38,13 +50,6 @@ void initGUI(Store store)
   store.addEqualListener(["algorithmUpdateMode"], algorithmUpdateModeChanged);
   algorithmUpdateModeChanged();
   store.addEqualListener(["size", "algorithmType", "heuristicType", "gridMode", "directionMode", "cornerMode", "directionalMode", "currentStepId"], () => store.triggerTransferListeners());
-
-  react_dom.render(
-      (ReactMain()
-        ..store = store
-      )(),
-      querySelector('#contentContainer')
-  );
 }
 
 @Factory()

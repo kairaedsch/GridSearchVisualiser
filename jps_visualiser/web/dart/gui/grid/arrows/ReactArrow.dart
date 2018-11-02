@@ -62,8 +62,10 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
     vP90 = (vP90 + v.normalized()) * arrowSize;
     vM90 = (vM90 + v.normalized()) * arrowSize;
 
-    Vector2 start = startOrg + (v * arrowInset) * props.startIntermediate;
-    Vector2 end = endOrg + (vB * arrowInset) *  props.endIntermediate;
+    Vector2 start = startOrg + (v * (arrowInset + (props.showStart ? 0.05 : 0.0))) * props.startIntermediate;
+    Vector2 startArrow = startOrg + (v * arrowInset) * props.startIntermediate;
+    Vector2 end = endOrg + (vB * (arrowInset + (props.showEnd ? 0.05 : 0.0))) *  props.endIntermediate;
+    Vector2 endArrow = endOrg + (vB * arrowInset) *  props.endIntermediate;
 
     List<Position> intermediatePath = props.path.sublist(1)..removeLast();
 
@@ -82,9 +84,9 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
       (Dom.polygon()
         ..key = "arrowEnd"
         ..points = ""
-        " ${end.x},${end.y}"
-        " ${end.x + vBP90.x},${end.y + vBP90.y}"
-        " ${end.x + vBM90.x},${end.y + vBM90.y}"
+        " ${endArrow.x},${endArrow.y}"
+        " ${endArrow.x + vBP90.x},${endArrow.y + vBP90.y}"
+        " ${endArrow.x + vBM90.x},${endArrow.y + vBM90.y}"
         ..className = "end"
       )()
           :
@@ -94,9 +96,9 @@ class ReactArrowComponent extends UiComponent<ReactArrowProps>
       (Dom.polygon()
         ..key = "arrowStart"
         ..points = ""
-        " ${start.x},${start.y}"
-        " ${start.x + vP90.x},${start.y + vP90.y}"
-        " ${start.x + vM90.x},${start.y + vM90.y}"
+        " ${startArrow.x},${startArrow.y}"
+        " ${startArrow.x + vP90.x},${startArrow.y + vP90.y}"
+        " ${startArrow.x + vM90.x},${startArrow.y + vM90.y}"
         ..className = "end"
       )()
           :

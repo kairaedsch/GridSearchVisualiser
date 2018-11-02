@@ -1,7 +1,6 @@
 import '../general/general/Util.dart';
 import '../general/geo/Position.dart';
 import '../general/transfer/TransferSlave.dart';
-import 'store/grid/GridCache.dart';
 import 'algorithm/Dijkstra.dart';
 import 'algorithm/AStar.dart';
 import 'algorithm/Algorithm.dart';
@@ -27,20 +26,22 @@ void main(List<String> args, SendPort sendPort)
 
 class PathfinderWorker
 {
-  Store _store;
+  Store _store = new Store();
   Timer _timerToRun = new Timer(new Duration(days: 1), () => null);
 
   PathfinderWorker.isolate(SendPort sendPort)
   {
     Util.print('Worker created');
 
-    _store = new Store();
     new TransferSlave(sendPort, _store);
     _setup();
   }
 
-  PathfinderWorker.noIsolate(this._store)
+  PathfinderWorker.noIsolate(Store other_store)
   {
+    other_store.transferListener = (Iterable<String> ids) => ids.forEach((id) => _store.set(id, other_store.getA<dynamic>(id), toTransfer: false));
+    _store.transferListener = (Iterable<String> ids) => ids.forEach((id) => other_store.set(id, _store.getA<dynamic>(id), toTransfer: false));
+
     _setup();
   }
 
@@ -51,6 +52,7 @@ class PathfinderWorker
       _timerToRun.cancel();
       _timerToRun = new Timer(new Duration(milliseconds: 1), _run);
     });
+    _run();
   }
 
   void _run()
