@@ -21,10 +21,10 @@ class Dijkstra extends BasicSearchAlgorithm
 
       if (createHistory())
       {
-         List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).map((n) => n).toList(), showEnd: true)).toList();
+         List<PathHighlight> pathsOfOpen = open.map((on) => new PathHighlight(getPath(on).toList(), showEnd: true)).toList();
          searchHistory..newExplanation(new Explanation())
             ..addES_("First we look at all nodes which are ")
-            ..addESM("marked open", "green", new CircleHighlight(), open.map((n) => n))
+            ..addESM("marked open", "green", new CircleHighlight(), open)
             ..addES_(". From all these nodes we know a ")
             ..addEMS("path", "green", pathsOfOpen, null)
             ..addES_(" from the source node to them. ")
@@ -32,7 +32,7 @@ class Dijkstra extends BasicSearchAlgorithm
             ..addEM_("distance", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(open.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on]))))
             ..addES_(" between them. ")
             ..addES_("We will now take the node of them, which has the ")
-            ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).map((n) => n).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar])])
+            ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the source node and make him to the ")
             ..addESS("active node", "yellow", new CircleHighlight(), nStar)
             ..addES_(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
@@ -50,7 +50,7 @@ class Dijkstra extends BasicSearchAlgorithm
       {
          searchHistory..newExplanation(new Explanation())
             ..addES_("After we have choosen our active node, we will take a look at all of his ")
-            ..addESM("neighbour nodes", "blue", new CircleHighlight(), neighbours.map((n) => n))
+            ..addESM("neighbour nodes", "blue", new CircleHighlight(), neighbours)
             ..addES_(": ");
       }
 

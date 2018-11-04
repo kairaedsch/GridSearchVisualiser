@@ -20,11 +20,11 @@ class AStar extends Dijkstra
 
       if (createHistory())
       {
-         List<Highlight> pathsOfOpen = open.map((on) => new PathHighlight.styled("green", getPath(on).map((n) => n).toList(), showEnd: true)).toList();
+         List<Highlight> pathsOfOpen = open.map((on) => new PathHighlight.styled("green", getPath(on).toList(), showEnd: true)).toList();
          List<Highlight> pathsOfOpenHeuristic = open.map((on) => new PathHighlight.styled("yellow dotted", heuristic.getPath(on, target), showEnd: true)).toList();
          searchHistory..newExplanation(new Explanation())
             ..addES_("First we look at all nodes which are ")
-            ..addESM("marked open", "green", new CircleHighlight(), open.map((n) => n))
+            ..addESM("marked open", "green", new CircleHighlight(), open)
             ..addES_(". From all these nodes we know a ")
             ..addEMS("path", "green", pathsOfOpen, null)
             ..addES_(" from the source node to them. ")
@@ -38,7 +38,7 @@ class AStar extends Dijkstra
             ..addEM_("approximate the total distance", "yellow", [new Tuple2(pathsOfOpen, [null])]..add(new Tuple2(pathsOfOpenHeuristic, [null]))..addAll(open.map((on) => new Tuple2([new TextHighlight((heuristic.calc(on, target) + getDistance(on).length()).toStringAsPrecision(3))], [on]))))
             ..addES_(" from the source node to our target node over the open marked nodes. ")
             ..addES_("We will now take the node of them, which has the ")
-            ..addEM_("shortest approximated total distance", "green", [new Tuple2([new PathHighlight(getPath(nStar).map((n) => n).toList(), showEnd: true), new PathHighlight.styled("yellow dotted", heuristic.getPath(nStar, target), showEnd: true)], [null]), new Tuple2([new TextHighlight((heuristic.calc(nStar, target) + getDistance(nStar).length()).toStringAsPrecision(3))], [nStar])])
+            ..addEM_("shortest approximated total distance", "green", [new Tuple2([new PathHighlight(getPath(nStar).toList(), showEnd: true), new PathHighlight.styled("yellow dotted", heuristic.getPath(nStar, target), showEnd: true)], [null]), new Tuple2([new TextHighlight((heuristic.calc(nStar, target) + getDistance(nStar).length()).toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the target node and make him to the ")
             ..addESS("active node", "yellow", new CircleHighlight(), nStar)
             ..addES_(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");

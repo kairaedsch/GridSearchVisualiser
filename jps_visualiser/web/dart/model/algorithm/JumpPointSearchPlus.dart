@@ -105,6 +105,10 @@ class JumpPointSearchPlus extends AStar
 
   Optional<Tuple2<Position, Direction>> canReachTarget(Position node, Optional<Direction> lastDirection)
   {
+    if (node == target)
+    {
+      return new Optional.of(new Tuple2(target, lastDirection.value));
+    }
     Direction directionToTarget = node.firstDirectionTo(target);
     if (lastDirection.isEmpty || directionToTarget != Directions.turn(lastDirection.value, 180))
     {
