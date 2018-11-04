@@ -78,18 +78,18 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       List<PathHighlight> paths = grid.size
           .positions()
           .expand((position) =>
-          Direction.values.map((direction)
+          Direction.values.expand((direction)
           {
             var dataPointDirection = data[position].signposts[direction];
 
             if (dataPointDirection.isWallAhead)
             {
-              return null;
+              return <PathHighlight>[];
             }
 
             List<Position> path = new List<Position>.generate(dataPointDirection.distance + 1, (d) => position.goMulti(direction, d));
 
-            return new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), path, showEnd: true);
+            return [new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), path, showEnd: true)];
           })).toList();
 
       searchHistory.addH_("background", paths, [null]);
@@ -116,6 +116,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
       searchHistory.addHM("background", texts);
     }
 
+    searchHistory.stepCount = nextTurn;
     searchHistory.title = "Generated JPS+ Data";
   }
 

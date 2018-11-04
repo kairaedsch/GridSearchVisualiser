@@ -1,3 +1,4 @@
+import '../general/general/Util.dart';
 import '../model/store/Enums.dart';
 import '../model/store/Store.dart';
 import '../model/store/Save.dart';
@@ -18,6 +19,7 @@ void initGUI(Store store)
   over_react.setClientConfiguration();
 
   setupAlgorithmRunner(store);
+  setupArrowKeys(store);
 
   react_dom.render(
       (ReactMain()
@@ -50,6 +52,21 @@ void setupAlgorithmRunner(Store store)
   store.addEqualListener(["algorithmUpdateMode"], algorithmUpdateModeChanged);
   algorithmUpdateModeChanged();
   store.addEqualListener(["size", "algorithmType", "heuristicType", "gridMode", "directionMode", "cornerMode", "directionalMode", "currentStepId"], () => store.triggerTransferListeners());
+}
+
+void setupArrowKeys(Store store)
+{
+  window.document.onKeyDown.listen((event)
+  {
+    if (event.keyCode == KeyCode.RIGHT)
+    {
+      store.currentStepId = Util.range(store.currentStepId + 1, 0, store.stepCount - 1);
+    }
+    if (event.keyCode == KeyCode.LEFT)
+    {
+      store.currentStepId = Util.range(store.currentStepId - 1, 0, store.stepCount - 1);
+    }
+  });
 }
 
 @Factory()

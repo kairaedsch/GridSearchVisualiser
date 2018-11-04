@@ -46,7 +46,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
 
   Optional<BoxHighlight> get boxHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is BoxHighlight, orElse: () => null) as BoxHighlight);
   Optional<DirectionTextHighlight> get directionTextHighlights => new Optional.fromNullable(highlights.lastWhere((h) => h is DirectionTextHighlight, orElse: () => null) as DirectionTextHighlight);
-  Iterable<PathHighlight> get pathHighlights => [];
+  Iterable<PathHighlight> get pathHighlights => highlights.where((h) => h is PathHighlight).map((h) => h as PathHighlight);
   Optional<TextHighlight> get textHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is TextHighlight, orElse: () => null) as TextHighlight);
   Optional<CircleHighlight> get circleHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is CircleHighlight, orElse: () => null) as CircleHighlight);
   Optional<DotHighlight> get dotHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is DotHighlight, orElse: () => null) as DotHighlight);

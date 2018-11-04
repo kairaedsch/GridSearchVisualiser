@@ -1,5 +1,6 @@
 import '../../general/geo/Distance.dart';
 import '../../general/geo/Position.dart';
+import '../history/Highlight.dart';
 import '../store/grid/GridCache.dart';
 import '../../general/geo/Direction.dart';
 import '../history/Explanation.dart';
@@ -8,6 +9,7 @@ import 'AStar.dart';
 import 'Algorithm.dart';
 import 'JumpPointSearchPlusDataGenerator.dart';
 import 'package:quiver/core.dart';
+import 'package:tuple/tuple.dart';
 
 class JumpPointSearchPlus extends AStar
 {
@@ -47,27 +49,11 @@ class JumpPointSearchPlus extends AStar
 
     List<Position> neighbours = [];
 
-    Direction directionToTarget = node.firstDirectionTo(target);
-    if (lastDirection.isEmpty || directionToTarget != Directions.turn(lastDirection.value, 180))
+    var reachAble = canReachTarget(node, lastDirection);
+    if (reachAble.isPresent)
     {
-      var directionToTargetData = _data[node].signposts[directionToTarget];
-      var distanceToTarget = new Distance.calc(node, target);
-      if (Directions.isCardinal(directionToTarget))
-      {
-        if (distanceToTarget.cardinal <= directionToTargetData.distance)
-        {
-          neighbours.add(target);
-          relevantDirections.remove(directionToTarget);
-        }
-      }
-      else
-      {
-        if (distanceToTarget.diagonal <= directionToTargetData.distance)
-        {
-          neighbours.add(node.goMulti(directionToTarget, distanceToTarget.diagonal));
-          relevantDirections.remove(directionToTarget);
-        }
-      }
+      neighbours.add(reachAble.value.item1);
+      relevantDirections.remove(reachAble.value.item2);
     }
 
     for (Direction relevantDirection in relevantDirections)
@@ -90,9 +76,72 @@ class JumpPointSearchPlus extends AStar
 
     if (createHistory())
     {
+      List<Highlight> pathsOfRelevantDirections = relevantDirections
+          .map((relevantDirection)
+          {
+            JumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
+            return new PathHighlight.styled(directionData.isJumpPointAhead ? "green" : "red" , [node, node.goMulti(relevantDirection, directionData.distance)], showEnd: true);
+          }).toList();
+
+      List<Highlight> newSignPosts = relevantDirections
+          .where((relevantDirection) =>_data[node].signposts[relevantDirection].isJumpPointAhead)
+          .expand((relevantDirection)
+          {
+            JumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
+            Position newNeighbourNode = node.goMulti(relevantDirection, directionData.distance);
+            return visualiseDirectionAdviserDirect(newNeighbourNode, relevantDirection);
+          }).toList();
+
+      List<Highlight> openDirectionAdviser = open.where((o) => o != node).expand(visualiseDirectionAdviser).toList();
+
+      searchHistory.addH_("foreground", pathsOfRelevantDirections, [null]);
+      searchHistory.addH_("foreground", newSignPosts, [null]);
+      searchHistory.addH_("foreground", openDirectionAdviser, [null]);
       searchHistory..newExplanation(new Explanation())
         ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
     }
     return neighbours;
+  }
+
+  Optional<Tuple2<Position, Direction>> canReachTarget(Position node, Optional<Direction> lastDirection)
+  {
+    Direction directionToTarget = node.firstDirectionTo(target);
+    if (lastDirection.isEmpty || directionToTarget != Directions.turn(lastDirection.value, 180))
+    {
+      var directionToTargetData = _data[node].signposts[directionToTarget];
+      var distanceToTarget = new Distance.calc(node, target);
+      if (Directions.isCardinal(directionToTarget))
+      {
+        if (distanceToTarget.cardinal <= directionToTargetData.distance)
+        {
+          return new Optional.of(new Tuple2(target, directionToTarget));
+        }
+      }
+      else
+      {
+        if (distanceToTarget.diagonal <= directionToTargetData.distance)
+        {
+          Position intermediate = node.goMulti(directionToTarget, distanceToTarget.diagonal);
+          if (canReachTarget(intermediate, new Optional.of(directionToTarget)).isNotEmpty)
+          {
+            return new Optional.of(new Tuple2(intermediate, directionToTarget));
+          }
+        }
+      }
+    }
+    return const Optional.absent();
+  }
+
+  Iterable<PathHighlight> visualiseDirectionAdviser(Position node)
+  {
+    return parent[node] == null ? [] : visualiseDirectionAdviserDirect(node, parent[node].lastDirectionTo(node));
+  }
+
+  Iterable<PathHighlight> visualiseDirectionAdviserDirect(Position newNeighbourNode, Direction relevantDirection) {
+     var newNeighbourNodeDirectionAdviser = _data[newNeighbourNode].directionAdvisers[relevantDirection];
+    return newNeighbourNodeDirectionAdviser.jumpDirections.map((newNeighbourRelevantDirection)
+    {
+      return new PathHighlight.styled("green dotted", [newNeighbourNode, newNeighbourNode.go(newNeighbourRelevantDirection)], showEnd: true);
+    });
   }
 }
