@@ -13,16 +13,12 @@ class JumpPointSearch extends AStar
 {
   static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearch("JPS", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-  Map<Tuple2<Position, Direction>, JumpPointSearchDirectionAdviser> _directionAdvisers;
-
   JumpPointSearch(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
       : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
   {
-    _directionAdvisers = new Map();
-
     super.runInner();
   }
 
@@ -36,9 +32,9 @@ class JumpPointSearch extends AStar
     }
     else
     {
-      var lastDirection = new Optional.of(parent[node].lastDirectionTo(node));
-      var directionAdviser = _directionAdvisers[new Tuple2(node, lastDirection.value)];
-      relevantDirections = new Set.from(directionAdviser.jumpDirections)..add(lastDirection.value);
+      var lastDirection = parent[node].lastDirectionTo(node);
+      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
+      relevantDirections = new Set.from(jumpDirections)..add(lastDirection);
     }
 
     List<Position> neighbours = [];
@@ -66,23 +62,15 @@ class JumpPointSearch extends AStar
     }
     else
     {
-      Set<Direction> jumpDirections;
       var positionAfter = node.go(direction);
       if (positionAfter == target)
       {
         return new Optional.of(positionAfter);
       }
-      if (Directions.isCardinal(direction))
-      {
-        jumpDirections = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, positionAfter, direction);
-      }
-      else
-      {
-        jumpDirections = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
-      }
+      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
+
       if (jumpDirections.length > 0)
       {
-        _directionAdvisers[new Tuple2(positionAfter, direction)] = new JumpPointSearchDirectionAdviser()..jumpDirections = jumpDirections;
         return new Optional.of(positionAfter);
       }
       else

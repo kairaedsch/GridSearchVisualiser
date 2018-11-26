@@ -4,7 +4,19 @@ import '../../general/geo/Direction.dart';
 
 class JumpPointSearchJumpPoints
 {
-  static Set<Direction> cardinalJumpDirections(GridCache grid, Position position, Direction direction)
+  static Set<Direction> jumpDirections(GridCache grid, Position position, Direction direction, bool hasNextCardinalPointOfInterest(Position position, Direction direction))
+  {
+    if (Directions.isDiagonal(direction))
+    {
+      return _diagonalJumpDirections(grid, position, direction, hasNextCardinalPointOfInterest);
+    }
+    else
+    {
+      return _cardinalJumpDirections(grid, position, direction);
+    }
+  }
+
+  static Set<Direction> _cardinalJumpDirections(GridCache grid, Position position, Direction direction)
   {
     Direction direction180 = Directions.turn(direction, 180);
     Position wpBefore = position.go(direction180);
@@ -66,7 +78,7 @@ class JumpPointSearchJumpPoints
     return jumpDirections;
   }
 
-  static Set<Direction> diagonalJumpDirections(GridCache grid, Position position, Direction direction, bool isJumpPoint(Position position, Direction direction))
+  static Set<Direction> _diagonalJumpDirections(GridCache grid, Position position, Direction direction, bool hasNextCardinalPointOfInterest(Position position, Direction direction))
   {
     Direction direction180 = Directions.turn(direction,180);
     Position wpBefore = position.go(direction180);
@@ -86,7 +98,7 @@ class JumpPointSearchJumpPoints
 
       if (grid.leaveAble(position, direction45))
       {
-        bool jumpPointAhead = isJumpPoint(position, direction45);
+        bool jumpPointAhead = hasNextCardinalPointOfInterest(position, direction45);
         if (jumpPointAhead)
         {
           jumpDirections.add(direction45);
@@ -117,8 +129,8 @@ class JumpPointSearchJumpPoints
           //bool canNotGoDiagonalBefore3 = !grid.leaveAble(wpBefore, direction_45) || !grid.leaveAble(wpBefore.go(direction_45), direction90);
           if (side == 1 || canNotGoDiagonalBefore1)
           {
-            bool jumpPointAhead = isJumpPoint(position, direction135);
-            if (jumpPointAhead)
+            //bool jumpPointAhead = hasNextCardinalPointOfInterest(position, direction135);
+            //if (jumpPointAhead)
             {
               jumpDirections.add(direction135);
             }

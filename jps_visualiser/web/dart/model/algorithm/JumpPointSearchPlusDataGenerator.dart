@@ -175,15 +175,8 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     }
     else
     {
-      Set<Direction> jumpDirectionsAhead;
-      if (Directions.isCardinal(direction))
-      {
-        jumpDirectionsAhead = JumpPointSearchJumpPoints.cardinalJumpDirections(grid, prePosition, direction);
-      }
-      else
-      {
-        jumpDirectionsAhead = JumpPointSearchJumpPoints.diagonalJumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead);
-      }
+      Set<Direction> jumpDirectionsAhead = JumpPointSearchJumpPoints.jumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead);
+
       if (jumpDirectionsAhead.length > 0)
       {
         data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.JUMP_POINT;

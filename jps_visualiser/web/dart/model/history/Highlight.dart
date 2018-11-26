@@ -146,12 +146,12 @@ class DirectionTextHighlight extends Highlight
   DirectionTextHighlight.styled(String style, this.text, this.direction) : super.styled(style);
 
   DirectionTextHighlight.fromMap(Map map)
-      : direction = map["direction"] as Direction,
+      : direction = Direction.values[map["direction"] as int],
         text = map["text"] as String,
         super.fromMap(map);
 
   Map toMap() => super.toMap()
     ..["highlight"] = "DirectionTextHighlight"
-    ..["direction"] = direction
+    ..["direction"] = direction.index
     ..["text"] = text;
 }
