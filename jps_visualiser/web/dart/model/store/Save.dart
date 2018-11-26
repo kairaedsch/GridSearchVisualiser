@@ -77,25 +77,28 @@ class Save
   void loadTo(Store store)
   {
     store.autoTriggerListeners = false;
-    store.size = _gridSize;
+    store.gridManager.setSize(_gridSize);
 
     for (Position position in store.size.positions())
     {
-      var barrierMap = new Map<Direction, bool>.fromIterable(
-          Direction.values,
-          key: (Direction d) => d,
-          value: (Direction d) => readBarrier(position, d));
+      if (position.legal(_gridSize))
+      {
+        var barrierMap = new Map<Direction, bool>.fromIterable(
+            Direction.values,
+            key: (Direction d) => d,
+            value: (Direction d) => readBarrier(position, d));
 
-      store.setBarrier(position, new Barrier(barrierMap));
+        store.setBarrier(position, new Barrier(barrierMap));
+      }
     }
 
     int sourceX = readInt(0);
     int sourceY = readInt(1);
-    store.startPosition = new Position(sourceX, sourceY);
+    store.gridManager.setStartPosition(new Position(sourceX, sourceY));
 
     int targetX = readInt(2);
     int targetY = readInt(3);
-    store.targetPosition = new Position(targetX, targetY);
+    store.gridManager.setTargetPosition(new Position(targetX, targetY));
 
     store.gridMode = readEnum(5, GridMode.values);
     store.directionMode = readEnum(6, DirectionMode.values);

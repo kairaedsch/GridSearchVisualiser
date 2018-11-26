@@ -132,6 +132,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
             (Dom.input()
               ..id = "load"
               ..type = "file"
+              ..accept="image/png"
               ..style =
               <String, String>{
                 "display": "none",
