@@ -5,7 +5,6 @@ import '../../general/geo/Size.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'dart:html';
-import 'dart:math';
 import 'package:over_react/over_react.dart';
 
 @Factory()
@@ -149,6 +148,15 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
                 event.target.value = null;
               }
             )(),
+          ),
+          (ReactPopover()
+            ..className = "config small"
+            ..popover = "Clear grid"
+          )(
+            (Dom.div()
+              ..className = "button icon clear"
+              ..onClick = ((_) => props.store.gridManager.clear())
+            )(" "),
           ),
         )
     );

@@ -3,6 +3,7 @@ import '../../../general/general/Util.dart';
 import '../../../general/geo/Size.dart';
 import '../Store.dart';
 import '../../../general/geo/Position.dart';
+import 'Barrier.dart';
 
 class GridManager
 {
@@ -57,6 +58,21 @@ class GridManager
       _store.targetPosition = newTargetPosition;
       _store.addChange("position_${newTargetPosition}", false);
       _store.addChange("position_${oldTargetPosition}", false);
+    }
+  }
+
+  void clear()
+  {
+    if (_store.autoTriggerListeners)
+    {
+      _store.autoTriggerListeners = false;
+      Settings.maxSize.positions().forEach((p) => _store.setBarrier(p, Barrier.totalUnblocked));
+      _store.autoTriggerListeners = true;
+      _store.triggerListeners();
+    }
+    else
+    {
+      Settings.maxSize.positions().forEach((p) => _store.setBarrier(p, Barrier.totalUnblocked));
     }
   }
 }

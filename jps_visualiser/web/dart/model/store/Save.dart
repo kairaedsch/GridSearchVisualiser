@@ -7,17 +7,20 @@ import 'Store.dart';
 import 'dart:html';
 import 'package:quiver/core.dart';
 import 'package:vector_math/vector_math.dart';
+import 'dart:math';
 
 class Save
 {
   static int scaleWithOutGrid = 27;
   static int scale = scaleWithOutGrid + 1;
-  static int header = 1;
+  static int top = 1;
+  static int left = 1;
   static List<int> colorBlocked = [0, 149, 255, 1];
   static List<int> colorUnblocked = [255, 255, 255, 1];
   static List<int> colorGrid = [200, 200, 200, 1];
   static List<int> colorSource = [47, 193, 60, 1];
   static List<int> colorTarget = [202, 4, 4, 1];
+  static const List<int> colorTransparent = const [0, 0, 0, 0];
 
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
@@ -27,10 +30,10 @@ class Save
   Save(Store store)
   {
     _gridSize = store.size;
-    _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
+    _canvas = new CanvasElement(width: gridSize.width * scale + left, height: gridSize.height * scale + top);
     _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
     _context.setFillColorRgb(colorGrid[0], colorGrid[1], colorGrid[2], colorGrid[3]);
-    _context.fillRect(0, 0, gridSize.width * scale, gridSize.height * scale);
+    _context.fillRect(0, 0, gridSize.width * scale + left, gridSize.height * scale + top);
     saveTo(store);
   }
 
@@ -66,8 +69,8 @@ class Save
   {
     ImageElement image = new ImageElement(src: imageSrc);
     image.onLoad.listen((e) {
-      _gridSize = new Size((image.width / scale).round(), ((image.height - header) / scale).round());
-      _canvas = new CanvasElement(width: gridSize.width * scale, height: gridSize.height * scale + header);
+      _gridSize = new Size(((image.width - left) / scale).round(), ((image.height - top) / scale).round());
+      _canvas = new CanvasElement(width: gridSize.width * scale + left, height: gridSize.height * scale + top);
       _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
       _context.drawImage(image, 0, 0);
       loadTo(store);
@@ -77,6 +80,7 @@ class Save
   void loadTo(Store store)
   {
     store.autoTriggerListeners = false;
+    store.gridManager.clear();
     store.gridManager.setSize(_gridSize);
 
     for (Position position in store.size.positions())
@@ -130,15 +134,13 @@ class Save
 
   void writeInt(int x, int value)
   {
-    List<int> color = [value, 255, 255, 1];
-    _context.setFillColorRgb(color[0], color[1], color[2], color[3]);
+    _context.setFillColorRgb(value, colorGrid[1], colorGrid[2], colorGrid[3]);
     _context.fillRect(x, 0, 1, 1);
   }
 
   int readInt(int x)
   {
     ImageData imageData = _context.getImageData(x, 0, 1, 1);
-
     return imageData.data[0];
   }
 
@@ -149,19 +151,19 @@ class Save
 
   void writeTarget(Position position)
   {
-    _writeBarrier(position, new Optional.absent(), colorTarget);
+    _writeBarrier(position, new Optional.absent(), colorUnblocked, circleColor: colorTarget);
   }
 
   void writeSource(Position position)
   {
-    _writeBarrier(position, new Optional.absent(), colorSource);
+    _writeBarrier(position, new Optional.absent(), colorUnblocked, circleColor: colorSource);
   }
 
-  void _writeBarrier(Position position, Optional<Direction> direction, List<int> color)
+  void _writeBarrier(Position position, Optional<Direction> direction, List<int> color, {List<int> circleColor = colorTransparent})
   {
     Vector2 pos = new Vector2(position.x + 0.0, position.y + 0.0)..scale(scale + 0.0);
     Vector2 dir;
-    if (!direction.isPresent)
+    if (direction.isEmpty)
     {
       dir = new Vector2(1.0, 1.0);
     }
@@ -182,9 +184,18 @@ class Save
     dir.scale(scaleWithOutGrid / 3.0);
 
     Vector2 recPosTopLeft = pos.clone()..add(dir);
+    Vector2 drawLeftTop = new Vector2(left + recPosTopLeft.x, top + recPosTopLeft.y);
+    double drawSize = scaleWithOutGrid / 3.0;
 
     _context.setFillColorRgb(color[0], color[1], color[2], color[3]);
-    _context.fillRect(recPosTopLeft.x, header + recPosTopLeft.y, scaleWithOutGrid / 3.0, scaleWithOutGrid / 3.0);
+    _context.fillRect(drawLeftTop.x, drawLeftTop.y, drawSize, drawSize);
+
+    double drawRadius = drawSize / 2;
+
+    _context.setFillColorRgb(circleColor[0], circleColor[1], circleColor[2], circleColor[3]);
+    _context.beginPath();
+    _context.arc(drawLeftTop.x + drawRadius, drawLeftTop.y + drawRadius, drawRadius, 0, PI * 2);
+    _context.fill();
   }
 
   bool readBarrier(Position position, Direction direction)
@@ -203,12 +214,13 @@ class Save
 
   List<int> _readBarrier(Position position, Direction direction, List<List<int>> colorToFind)
   {
-    Vector2 pos = new Vector2(position.x + 0.5, position.y + 0.5)..scale(scale + 0.0);
-    Vector2 dir = new Vector2(Directions.getDx(direction) + 0.0, Directions.getDy(direction) + 0.0)..scale(scale * 0.35);
+    Vector2 pos = new Vector2(position.x + 0.0, position.y + 0.0)..scale(scale + 0.0);
+    Vector2 middle = new Vector2(0.5, 0.5)..scale(scaleWithOutGrid + 0.0)..add(new Vector2(left + 0.0, top + 0.0));
+    Vector2 dir = new Vector2(Directions.getDx(direction) + 0.0, Directions.getDy(direction) + 0.0)..scale(scaleWithOutGrid * 0.35);
 
-    Vector2 recPosMiddlePix = pos.clone()..add(dir);
+    Vector2 recPosMiddlePix = pos.clone()..add(middle)..add(dir);
 
-    ImageData imageData = _context.getImageData(recPosMiddlePix.x, header + recPosMiddlePix.y, 1, 1);
+    ImageData imageData = _context.getImageData(recPosMiddlePix.x, recPosMiddlePix.y, 1, 1);
 
     var pixel = imageData.data;
     for(List<int> color in colorToFind)

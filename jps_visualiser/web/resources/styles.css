@@ -567,6 +567,10 @@ g.blinking {
     background-image: url("images/minus.svg");
 }
 
+.config .button.clear {
+    background-image: url("images/trash.svg");
+}
+
 .config .button.plus {
     background-image: url("images/plus.svg");
 }

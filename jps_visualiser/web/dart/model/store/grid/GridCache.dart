@@ -20,7 +20,10 @@ class GridCache
       for (String id in ids)
       {
         Position position = new Position.fromString(id.substring(id.indexOf("(")));
-        update(position);
+        if (position.legal(size))
+        {
+          update(position);
+        }
       }
     });
   }
