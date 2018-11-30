@@ -7,10 +7,20 @@ class MouseTracker
 
   bool _mouseIsDown = false;
   bool get mouseIsDown => _mouseIsDown;
+  DateTime lastMouseEvent;
 
   MouseTracker()
   {
-    window.document.onMouseDown.listen((event) => this._mouseIsDown = true);
-    window.document.onMouseUp.listen((event) => _mouseIsDown = false);
+    lastMouseEvent = new DateTime.now();
+    window.document.onMouseDown.listen((event)
+    {
+      this._mouseIsDown = true;
+      lastMouseEvent = new DateTime.now();
+    });
+    window.document.onMouseUp.listen((event)
+    {
+      _mouseIsDown = false;
+      lastMouseEvent = new DateTime.now();
+    });
   }
 }

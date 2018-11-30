@@ -34,10 +34,10 @@ class Save
     _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
     _context.setFillColorRgb(colorGrid[0], colorGrid[1], colorGrid[2], colorGrid[3]);
     _context.fillRect(0, 0, gridSize.width * scale + left, gridSize.height * scale + top);
-    saveTo(store);
+    _draw(store);
   }
 
-  void saveTo(Store store)
+  void _draw(Store store)
   {
     for (Position position in gridSize.positions())
     {
@@ -65,7 +65,37 @@ class Save
     writeEnum(12, store.algorithmUpdateMode.index);
   }
 
-  Save.load(String imageSrc, Store store)
+  void saveToCookie()
+  {
+    window.localStorage["image"] = _canvas.toDataUrl("image/png", 100);
+  }
+
+  Save.loadFromCookie(Store store)
+  {
+    try
+    {
+      String imageSrc = window.localStorage["image"];
+      if (imageSrc != null && imageSrc != "")
+      {
+        ImageElement image = new ImageElement(src: imageSrc);
+        image.onLoad.listen((e) {
+          _gridSize = new Size(((image.width - left) / scale).round(),
+              ((image.height - top) / scale).round());
+          _canvas = new CanvasElement(width: gridSize.width * scale + left,
+              height: gridSize.height * scale + top);
+          _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
+          _context.drawImage(image, 0, 0);
+          _loadIntoStore(store);
+        });
+      }
+    }
+    catch (e)
+    {
+
+    }
+  }
+
+  Save.loadFromSrc(String imageSrc, Store store)
   {
     ImageElement image = new ImageElement(src: imageSrc);
     image.onLoad.listen((e) {
@@ -73,11 +103,11 @@ class Save
       _canvas = new CanvasElement(width: gridSize.width * scale + left, height: gridSize.height * scale + top);
       _context = _canvas.getContext('2d') as CanvasRenderingContext2D;
       _context.drawImage(image, 0, 0);
-      loadTo(store);
+      _loadIntoStore(store);
     });
   }
 
-  void loadTo(Store store)
+  void _loadIntoStore(Store store)
   {
     store.autoTriggerListeners = false;
     store.gridManager.clear();

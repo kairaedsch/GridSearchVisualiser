@@ -8,8 +8,9 @@ class TransferMaster extends Transfer
   String _webworker;
   ReceivePort _masterReceiver;
   SendPort _slaveSender = null;
+  final Function _afterSetup;
 
-  TransferMaster(this._webworker, StoreTransferAble store) : super("Master", store)
+  TransferMaster(this._webworker, StoreTransferAble store, this._afterSetup) : super("Master", store)
   {
     _masterReceiver = new ReceivePort();
     Future<Isolate> future = Isolate.spawnUri(Uri.parse(identical(1, 1.0) ? "dart/$_webworker.js" : _webworker), [], _masterReceiver.sendPort);
@@ -23,6 +24,7 @@ class TransferMaster extends Transfer
       if (_slaveSender == null)
       {
         _slaveSender = jsonDatas as SendPort;
+        _afterSetup();
         return;
       }
       receive(jsonDatas);

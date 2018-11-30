@@ -130,6 +130,6 @@ class ReactMainComponent extends UiComponent<ReactMainProps>
 
   void _load(String imageData)
   {
-    new Save.load(imageData, props.store);
+    new Save.loadFromSrc(imageData, props.store);
   }
 }
