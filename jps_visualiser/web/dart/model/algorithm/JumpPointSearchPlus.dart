@@ -100,7 +100,7 @@ class JumpPointSearchPlus extends AStar
       searchHistory..newExplanation(new Explanation())
         ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
     }
-    return neighbours;
+    return neighbours.reversed;
   }
 
   Optional<Tuple2<Position, Direction>> canReachTarget(Position node, Optional<Direction> lastDirection)
