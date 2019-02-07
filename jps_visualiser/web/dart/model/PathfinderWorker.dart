@@ -12,6 +12,7 @@ import 'heuristics/Chebyshev.dart';
 import 'heuristics/Euclidean.dart';
 import 'heuristics/Heuristic.dart';
 import 'heuristics/Manhattan.dart';
+import 'heuristics/NullHeuristic.dart';
 import 'heuristics/Octile.dart';
 import 'history/Highlight.dart';
 import 'dart:async';
@@ -75,6 +76,7 @@ class PathfinderWorker
     switch(_store.heuristicType)
     {
       case HeuristicType.CHEBYSHEV: heuristic = new Chebyshev(); break;
+      case HeuristicType.ZERO: heuristic = new ConstantZeroHeuristic(); break;
       case HeuristicType.EUCLIDEAN: heuristic = new Euclidean(); break;
       case HeuristicType.MANHATTEN: heuristic = new Manhattan(); break;
       case HeuristicType.OCTILE: heuristic = new Octile(); break;

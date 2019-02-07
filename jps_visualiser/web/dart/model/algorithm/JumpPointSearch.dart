@@ -1,10 +1,12 @@
 import '../../general/geo/Position.dart';
+import '../history/Highlight.dart';
 import '../store/grid/GridCache.dart';
 import '../../general/geo/Direction.dart';
 import '../history/Explanation.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
+import 'JumpPointSearchHighlights.dart';
 import 'JumpPointSearchJumpPoints.dart';
 import 'package:quiver/core.dart';
 import 'package:tuple/tuple.dart';
@@ -22,6 +24,8 @@ class JumpPointSearch extends AStar
     super.runInner();
   }
 
+  List<Tuple2<Iterable<Highlight>, Iterable<Position>>> nextJumpPointHighlights = [];
+
   @override
   Iterable<Position> findNeighbourNodes(Position node)
   {
@@ -37,46 +41,90 @@ class JumpPointSearch extends AStar
       relevantDirections = new Set.from(jumpDirections)..add(lastDirection);
     }
 
+    if (createHistory())
+    {
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("The JPS Algorithm will search in every ")
+        ..addEMS("relevant direction", "green", JumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+        ..addES_(":");
+    }
+
     List<Position> neighbours = [];
+
+    nextJumpPointHighlights.clear();
+    var allNextJumpPointHighlights = nextJumpPointHighlights.toList();
 
     for (Direction direction in relevantDirections)
     {
       var jumpPoint = getNextJumpPoint(node, direction);
 
       jumpPoint.ifPresent((p) => neighbours.add(p));
+
+      if (createHistory())
+      {
+        nextJumpPointHighlights.add(new Tuple2([new DotHighlight.styled("blue")], jumpPoint));
+        searchHistory..newExplanation(new Explanation())
+          ..addES_(" - The ")
+          ..addEM_("search", jumpPoint.isPresent ? "green" : "red", nextJumpPointHighlights.toList())
+          ..addES_(" in to the ${direction.toString()} found ${jumpPoint.isPresent ? "a" : "no"} jump point.");
+      }
+
+      allNextJumpPointHighlights.addAll(nextJumpPointHighlights);
+      nextJumpPointHighlights.clear();
     }
 
     if (createHistory())
     {
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("So ")
+        ..addEM_("totally", "green", allNextJumpPointHighlights)
+        ..addES_(" we found ${neighbours.length} neighbour${neighbours.length == 1 ? "" : "s"}");
     }
+
     return neighbours;
   }
 
-  Optional<Position> getNextJumpPoint(Position node, Direction direction)
-  {
+  Optional<Position> getNextJumpPoint(Position node, Direction direction) {
     if (!grid.leaveAble(node, direction))
     {
+      //nextJumpPointHighlights.add(new Tuple2([new DotHighlight.styled("red")], [node]));
       return const Optional.absent();
     }
     else
     {
+      Optional<Position> result;
+
       var positionAfter = node.go(direction);
       if (positionAfter == target)
       {
-        return new Optional.of(positionAfter);
-      }
-      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, positionAfter, direction, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
-
-      if (jumpDirections.length > 0)
-      {
-        return new Optional.of(positionAfter);
+        result = new Optional.of(positionAfter);
       }
       else
       {
-        return getNextJumpPoint(positionAfter, direction);
+        Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(
+          grid, positionAfter, direction, (position,
+          direction) => getNextJumpPoint(position, direction).isNotEmpty);
+
+        if (jumpDirections.length > 0)
+        {
+          result = new Optional.of(positionAfter);
+          if (createHistory())
+          {
+            nextJumpPointHighlights.add(new Tuple2(JumpPointSearchHighlights.forcedDirections(positionAfter, jumpDirections), [null]));
+          }
+        }
+        else
+        {
+          result = getNextJumpPoint(positionAfter, direction);
+        }
       }
+
+      if (createHistory())
+      {
+        nextJumpPointHighlights.add(new Tuple2(JumpPointSearchHighlights.recursiveStep(node, direction, result.isPresent), [null]));
+      }
+
+      return result;
     }
   }
 }

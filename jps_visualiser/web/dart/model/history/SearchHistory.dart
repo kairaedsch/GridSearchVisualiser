@@ -55,7 +55,18 @@ class SearchHistory
   void addEM_(String text, String style, List<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
   {
     _stepDescription.last.explanation.add(new ExplanationPart(highlightsMap.isNotEmpty ? "${_id++}" : "foreground", text, style));
+    appendHM(highlightsMap);
+  }
+
+  void appendH_(Iterable<Highlight> highlights, Iterable<Position> positions)
+  {
+    appendHM([new Tuple2(highlights, positions)]);
+  }
+
+  void appendHM(List<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
+  {
     var explanationPart = _stepDescription.last.explanation.last;
+    print(explanationPart.id);
     highlightsMap.forEach((tuple) => tuple.item1.forEach((h) => h.setDefaultStyle(explanationPart.style)));
     addHM(explanationPart.id, highlightsMap);
   }
@@ -67,6 +78,6 @@ class SearchHistory
 
   void addHM(String id, Iterable<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
   {
-    highlightsMap.forEach((tuple) =>  tuple.item2.forEach((position) => _stepHighlights[position].putIfAbsent(id, () => new List()).addAll(tuple.item1)));
+    highlightsMap.forEach((tuple) => tuple.item2.forEach((position) => _stepHighlights[position].putIfAbsent(id, () => new List()).addAll(tuple.item1)));
   }
 }

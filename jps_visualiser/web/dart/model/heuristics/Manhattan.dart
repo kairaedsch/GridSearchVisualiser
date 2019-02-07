@@ -1,5 +1,4 @@
 import '../../general/geo/Position.dart';
-import '../store/grid/GridCache.dart';
 import 'Heuristic.dart';
 
 class Manhattan extends Heuristic
