@@ -48,9 +48,11 @@ class Dijkstra extends BasicSearchAlgorithm
 
       if (createHistory())
       {
+         String __s = neighbours.length == 1 ? "" : "s";
+
          searchHistory..newExplanation(new Explanation())
-            ..addES_("After we have choosen our active node, we will take a look at all of his ")
-            ..addESM("neighbour nodes", "blue", new CircleHighlight(), neighbours)
+            ..addES_("After we have choosen our active node, we will take a look at his ")
+            ..addESM("${neighbours.length} neighbour node$__s", "blue", new CircleHighlight(), neighbours)
             ..addES_(": ");
       }
 

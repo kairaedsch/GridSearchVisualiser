@@ -34,7 +34,7 @@ class Directions
       case Direction.WEST      : return -1;
       case Direction.NORTH_WEST: return -1;
     }
-
+    throw new Exception("Invalid");
   }
 
   static int getDy(Direction direction)
@@ -49,6 +49,23 @@ class Directions
       case Direction.SOUTH_WEST: return  1;
       case Direction.WEST      : return  0;
       case Direction.NORTH_WEST: return -1;
+    }
+    throw new Exception("Invalid");
   }
+
+  static String getName(Direction direction)
+  {
+    switch (direction)
+    {
+      case Direction.NORTH     : return "north";
+      case Direction.NORTH_EAST: return "northeast";
+      case Direction.EAST      : return "east";
+      case Direction.SOUTH_EAST: return "southeast";
+      case Direction.SOUTH     : return "south";
+      case Direction.SOUTH_WEST: return "southwest";
+      case Direction.WEST      : return "west";
+      case Direction.NORTH_WEST: return "northwest";
+    }
+    return "Not Found";
   }
 }

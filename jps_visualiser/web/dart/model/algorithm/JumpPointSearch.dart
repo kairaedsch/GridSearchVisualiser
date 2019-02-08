@@ -64,9 +64,18 @@ class JumpPointSearch extends AStar
       {
         nextJumpPointHighlights.add(new Tuple2([new DotHighlight.styled("blue")], jumpPoint));
         searchHistory..newExplanation(new Explanation())
-          ..addES_(" - The ")
+          ..addES_(" - We ")
           ..addEM_("search", jumpPoint.isPresent ? "green" : "red", nextJumpPointHighlights.toList())
-          ..addES_(" in to the ${direction.toString()} found ${jumpPoint.isPresent ? "a" : "no"} jump point.");
+          ..addES_(" in to the ${Directions.getName(direction)} direction and find ");
+        if (jumpPoint.isEmpty)
+        {
+          searchHistory.addES_("no jump point");
+        }
+        else
+        {
+          searchHistory.addESS("a jump point", "blue", new CircleHighlight(), jumpPoint.value);
+        }
+        searchHistory.addES_(".");
       }
 
       allNextJumpPointHighlights.addAll(nextJumpPointHighlights);
@@ -78,7 +87,9 @@ class JumpPointSearch extends AStar
       searchHistory..newExplanation(new Explanation())
         ..addES_("So ")
         ..addEM_("totally", "green", allNextJumpPointHighlights)
-        ..addES_(" we found ${neighbours.length} neighbour${neighbours.length == 1 ? "" : "s"}");
+        ..addES_(" we found ")
+        ..addESM("${neighbours.length} neighbour${neighbours.length == 1 ? "" : "s"}", "blue", new CircleHighlight(), neighbours)
+        ..addES_(":");
     }
 
     return neighbours;

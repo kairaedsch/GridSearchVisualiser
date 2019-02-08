@@ -141,12 +141,17 @@ abstract class BasicSearchAlgorithm extends Algorithm
           {
             List<PathHighlight> pathsOfClosed = neighboursMarkedClosed.map((on) => new PathHighlight(getPath(on).toList(), showEnd: true)).toList();
 
+            String __s = neighboursMarkedClosed.length == 1 ? "" : "s";
+            String is_are = neighboursMarkedClosed.length == 1 ? "is" : "are";
+            String a__ = neighboursMarkedClosed.length == 1 ? "a " : "";
+            String it_them = neighboursMarkedClosed.length == 1 ? "it" : "them";
+
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
-              ..addES_("All neighbour nodes which are ")
+              ..addES_("${neighboursMarkedClosed.length} neighbour node$__s which $is_are ")
               ..addESM("marked closed", "grey", new CircleHighlight(), neighboursMarkedClosed)
-              ..addES_(" are ignored as we have already found ")
-              ..addEMS("optimal paths", "grey", pathsOfClosed, null)
-              ..addES_(" from the source node to them. ");
+              ..addES_(" $is_are ignored as we have already found $a__")
+              ..addEMS("optimal path$__s", "grey", pathsOfClosed, null)
+              ..addES_(" from the source node to $it_them. ");
           }
         }
 
@@ -157,14 +162,18 @@ abstract class BasicSearchAlgorithm extends Algorithm
             List<PathHighlight> pathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(getPath(on).toList(), showEnd: true)).toList();
             List<PathHighlight> maybeNewPathsOfOpen = neighboursMarkedOpen.map((on) => new PathHighlight(new List()..addAll(getPath(nStar))..add(on), showEnd: true)).toList();
 
+            String __s = neighboursMarkedOpen.length == 1 ? "" : "s";
+            String is_are = neighboursMarkedOpen.length == 1 ? "is" : "are";
+            String it_them = neighboursMarkedOpen.length == 1 ? "it" : "them";
+
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
-              ..addES_("All neighbour nodes which are ")
+              ..addES_("${neighboursMarkedOpen.length} neighbour node$__s which $is_are ")
               ..addESM("marked open", "green", new CircleHighlight(), neighboursMarkedOpen)
-              ..addES_(" are checked, if we can have an maybe more optimal ")
+              ..addES_(" $is_are checked, if we can have an maybe more optimal ")
               ..addEM_("new path", "blue", [new Tuple2(maybeNewPathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight((getDistance(nStar) + new Distance.calc(nStar, on)).length().toStringAsPrecision(3))], [on]))))
-              ..addES_(" from our source node to them over the active node than the ")
+              ..addES_(" from our source node to $it_them over the active node than the ")
               ..addEM_("current path", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on]))))
-              ..addES_(" which we have already found for them. ");
+              ..addES_(" which we have already found for $it_them. ");
           }
 
           var neighboursMarkedOpenBetterPath = neighboursMarkedOpen.where((n) => getDistance(nStar) + new Distance.calc(nStar, n) < getDistance(n)).toList();
@@ -173,8 +182,12 @@ abstract class BasicSearchAlgorithm extends Algorithm
           {
             if (createHistory())
             {
+              String __s = neighboursMarkedOpen.length == 1 ? "" : "s";
+              String has_have = neighboursMarkedOpen.length == 1 ? "has" : "have";
+              String this_these = neighboursMarkedOpen.length == 1 ? "this" : "all ${neighboursMarkedOpen.length}";
+
               searchHistory
-                ..addES_("But all these nodes already have an good path. ");
+                ..addES_("But $this_these node$__s already $has_have a good path. ");
             }
           }
           else
@@ -190,11 +203,14 @@ abstract class BasicSearchAlgorithm extends Algorithm
             {
               List<PathHighlight> newPathsOfOpen = neighboursMarkedOpenBetterPath.map((on) => new PathHighlight(getPath(on).toList(), showEnd: true)).toList();
 
+              String __s = neighboursMarkedOpenBetterPath.length == 1 ? "" : "s";
+              String a__ = neighboursMarkedOpenBetterPath.length == 1 ? "a " : "";
+
               searchHistory
-                ..addES_("And we also found some ")
-                ..addEMS("better paths", "blue", newPathsOfOpen, null)
-                ..addES_(" for these ")
-                ..addESM("nodes", "green", new CircleHighlight(), neighboursMarkedOpenBetterPath)
+                ..addES_("And we also found $a__")
+                ..addEMS("better path$__s", "blue", newPathsOfOpen, null)
+                ..addES_(" for ")
+                ..addESM("${neighboursMarkedOpenBetterPath.length} node$__s", "green", new CircleHighlight(), neighboursMarkedOpenBetterPath)
                 ..addES_(". ");
             }
           }
@@ -204,10 +220,13 @@ abstract class BasicSearchAlgorithm extends Algorithm
         {
           if (createHistory())
           {
+            String __s = neighboursUnmarked.length == 1 ? "" : "s";
+            String is_are = neighboursUnmarked.length == 1 ? "is" : "are";
+
             searchHistory..newExplanation(new Explanation.styled("enumeration"))
-              ..addES_("All neighbour nodes which are ")
+              ..addES_("${neighboursUnmarked.length} neighbour node$__s which $is_are ")
               ..addESM("unmarked", "blue", new CircleHighlight(), neighboursUnmarked)
-              ..addES_(" are marked as open ");
+              ..addES_(" $is_are marked as open ");
           }
           neighboursUnmarked.forEach((Position n)
           {
@@ -223,10 +242,12 @@ abstract class BasicSearchAlgorithm extends Algorithm
           {
             List<PathHighlight> pathsOfUnmarked = neighboursUnmarked.map((on) => new PathHighlight(getPath(on).toList(), showEnd: true)).toList();
 
+            String it_them = neighboursUnmarked.length == 1 ? "it" : "them";
+
             searchHistory
               ..addES_("and we set the new ")
               ..addEMS("best path", "blue", pathsOfUnmarked, null)
-              ..addES_(" from the source node to them over our active node. ");
+              ..addES_(" from the source node to $it_them over our active node. ");
           }
         }
       }
@@ -236,7 +257,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
       if (createHistory())
       {
-        searchHistory.addHM("forground", updatedNodes.map((un) => new Tuple2([new PathHighlight.styled("black", [nStar, un], showEnd: true)], [null])));
+        searchHistory.addHM("foreground", updatedNodes.map((un) => new Tuple2([new PathHighlight.styled("green", [nStar, un], showEnd: true)], [null])));
         searchHistory.addH_("foreground", [new DotHighlight.styled("yellow")], [nStar]);
         searchHistory.addH_("foreground", [new PathHighlight.styled("yellow", getPath(nStar), showEnd: true)], [null]);
         //searchState.defaultHighlights.add(new CircleHighlight.styled("green", updatedNodes.toSet()));
