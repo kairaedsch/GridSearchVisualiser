@@ -175,7 +175,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     }
     else
     {
-      Set<Direction> jumpDirectionsAhead = JumpPointSearchJumpPoints.jumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead);
+      Set<Direction> jumpDirectionsAhead = JumpPointSearchJumpPoints.jumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead, true);
 
       if (jumpDirectionsAhead.length > 0)
       {

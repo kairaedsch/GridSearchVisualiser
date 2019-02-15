@@ -37,7 +37,7 @@ class JumpPointSearch extends AStar
     else
     {
       var lastDirection = parent[node].lastDirectionTo(node);
-      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty);
+      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
       relevantDirections = new Set.from(jumpDirections)..add(lastDirection);
     }
 
@@ -114,7 +114,7 @@ class JumpPointSearch extends AStar
       {
         Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(
           grid, positionAfter, direction, (position,
-          direction) => getNextJumpPoint(position, direction).isNotEmpty);
+          direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
 
         if (jumpDirections.length > 0)
         {

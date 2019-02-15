@@ -32,7 +32,7 @@ class AlgorithmTypes
 
 enum HeuristicType
 {
-  MANHATTEN, EUCLIDEAN, OCTILE, CHEBYSHEV, ZERO
+  ZERO, CHEBYSHEV, EUCLIDEAN, OCTILE, MANHATTEN
 }
 
 class HeuristicTypes
