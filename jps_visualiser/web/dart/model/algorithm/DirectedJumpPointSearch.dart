@@ -33,22 +33,31 @@ class DirectedJumpPointSearch extends AStar
     if (node == start)
     {
       relevantDirections = new Set.from(Direction.values);
+
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("In the first iteration, the DJPS Algorithm will search in ")
+        ..addEMS("every direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+        ..addES_(":");
     }
     else
     {
       var lastDirection = parent[node].lastDirectionTo(node);
       Set<Direction> jumpDirections = DirectedJumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
       relevantDirections = new Set.from(jumpDirections)..add(lastDirection);
-    }
 
-    if (createHistory())
-    {
-      searchHistory..newExplanation(new Explanation())
-        ..addES_("The DJPS Algorithm will search in every ")
-        ..addEMS("relevant direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
-        ..addES_(":");
-    }
+      if (createHistory())
+      {
+        searchHistory..newExplanation(new Explanation())
+          ..addES_("The DJPS Algorithm will search in every ")
+          ..addEMS("relevant direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+          ..addES_(", which consist of ")
+          ..addEMS("all forced directions", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, jumpDirections), null)
+          ..addES_(" of the current selected node in the ")
+          ..addEMS("direction from its parent to it", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, [lastDirection]), null)
+          ..addES_(" and the direction from its parent:");
+      }
 
+    }
     List<Position> neighbours = [];
 
     nextJumpPointHighlights.clear();

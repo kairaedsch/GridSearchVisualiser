@@ -112,7 +112,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
         {
           var optimalPath = new PathHighlight.styled("blue blinking", getPath(target).toList(), showEnd: true);
           searchHistory..newExplanation(new Explanation())
-            ..addES_("As our active node is our ")
+            ..addES_("As our current selected node is our ")
             ..addESS("target node", "red", new CircleHighlight(), target)
             ..addES_(", the algorithm can finish and we have found an ")
             ..addESS("optimal path", "blue", optimalPath, null)
@@ -171,7 +171,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
               ..addESM("marked open", "green", new CircleHighlight(), neighboursMarkedOpen)
               ..addES_(" $is_are checked, if we can have an maybe more optimal ")
               ..addEM_("new path", "blue", [new Tuple2(maybeNewPathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight((getDistance(nStar) + new Distance.calc(nStar, on)).length().toStringAsPrecision(3))], [on]))))
-              ..addES_(" from our source node to $it_them over the active node than the ")
+              ..addES_(" from our source node to $it_them over the current selected node than the ")
               ..addEM_("current path", "green", [new Tuple2(pathsOfOpen, [null])]..addAll(neighboursMarkedOpen.map((on) => new Tuple2([new TextHighlight(getDistance(on).length().toStringAsPrecision(3))], [on]))))
               ..addES_(" which we have already found for $it_them. ");
           }
@@ -247,7 +247,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
             searchHistory
               ..addES_("and we set the new ")
               ..addEMS("best path", "blue", pathsOfUnmarked, null)
-              ..addES_(" from the source node to $it_them over our active node. ");
+              ..addES_(" from the source node to $it_them over our current selected node. ");
           }
         }
       }

@@ -34,7 +34,7 @@ class Dijkstra extends BasicSearchAlgorithm
             ..addES_("We will now take the node of them, which has the ")
             ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the source node and make him to the ")
-            ..addESS("active node", "yellow", new CircleHighlight(), nStar)
+            ..addESS("current selected node", "yellow", new CircleHighlight(), nStar)
             ..addES_(" of this iteration. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
       }
 
@@ -51,7 +51,7 @@ class Dijkstra extends BasicSearchAlgorithm
          String __s = neighbours.length == 1 ? "" : "s";
 
          searchHistory..newExplanation(new Explanation())
-            ..addES_("After we have choosen our active node, we will take a look at his ")
+            ..addES_("After we have choosen our current selected node, we will take a look at his ")
             ..addESM("${neighbours.length} neighbour node$__s", "blue", new CircleHighlight(), neighbours)
             ..addES_(": ");
       }

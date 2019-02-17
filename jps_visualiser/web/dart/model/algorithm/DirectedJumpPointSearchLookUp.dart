@@ -8,6 +8,7 @@ import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
 import 'DirectedJumpPointSearchPreCalculator.dart';
+import 'JumpPointSearchHighlights.dart';
 import 'package:quiver/core.dart';
 import 'package:tuple/tuple.dart';
 
@@ -39,12 +40,32 @@ class DirectedJumpPointSearchLookUp extends AStar
     {
       lastDirection = new Optional.absent();
       relevantDirections = new Set.from(Direction.values);
+
+      if (createHistory())
+      {
+        searchHistory..newExplanation(new Explanation())
+          ..addES_("In the first iteration, the DJPS Algorithm will search in ")
+          ..addEMS("every direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+          ..addES_(":");
+      }
     }
     else
     {
       lastDirection = new Optional.of(parent[node].lastDirectionTo(node));
       var directionAdviser = _data[node].directionAdvisers[lastDirection.value];
       relevantDirections = new Set.from(directionAdviser.jumpDirections)..add(lastDirection.value);
+
+      if (createHistory())
+      {
+        searchHistory..newExplanation(new Explanation())
+          ..addES_("The DJPS Lookup Algorithm will search in every ")
+          ..addEMS("relevant direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+          ..addES_(", which consist of ")
+          ..addEMS("all forced directions", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, directionAdviser.jumpDirections), null)
+          ..addES_(" of the current selected node in the ")
+          ..addEMS("direction from its parent to it", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, [lastDirection.value]), null)
+          ..addES_(" and the direction from its parent.");
+      }
     }
 
     List<Position> neighbours = [];
