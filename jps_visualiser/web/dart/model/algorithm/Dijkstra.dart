@@ -35,7 +35,7 @@ class Dijkstra extends BasicSearchAlgorithm
             ..addEM_("shortest path", "green", [new Tuple2([new PathHighlight(getPath(nStar).toList(), showEnd: true)], [null]), new Tuple2([new TextHighlight(getDistance(nStar).length().toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the source node and make him to the ")
             ..addESS("active node", "yellow", new CircleHighlight(), nStar)
-            ..addES_(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
+            ..addES_(" of this iteration. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
       }
 
       return nStar;

@@ -41,7 +41,7 @@ class AStar extends Dijkstra
             ..addEM_("shortest approximated total distance", "green", [new Tuple2([new PathHighlight(getPath(nStar).toList(), showEnd: true), new PathHighlight.styled("yellow dotted", heuristic.getPath(nStar, target), showEnd: true)], [null]), new Tuple2([new TextHighlight((heuristic.calc(nStar, target) + getDistance(nStar).length()).toStringAsPrecision(3))], [nStar])])
             ..addES_(" to the target node and make him to the ")
             ..addESS("active node", "yellow", new CircleHighlight(), nStar)
-            ..addES_(" of this turn. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
+            ..addES_(" of this iteration. We will also mark him closed, so we can say for sure, that we have found the shortest way from the source node to him. ");
       }
 
       return nStar;

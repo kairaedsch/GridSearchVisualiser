@@ -94,7 +94,7 @@ abstract class BasicSearchAlgorithm extends Algorithm
 
       if (createHistory())
       {
-        searchHistory.stepTitle = "Turn $turn";
+        searchHistory.stepTitle = "Iteration $turn";
       }
       Position nStar = findNextActiveNode();
 
@@ -267,11 +267,11 @@ abstract class BasicSearchAlgorithm extends Algorithm
     searchHistory.stepCount = nextTurn;
     if (searchHistory.foundPath)
     {
-      searchHistory.title = "The $name Algorithm took $turn turns to find a ${getDistance(target).length().toStringAsPrecision(3)} long path";
+      searchHistory.title = "The $name Algorithm took $turn iterations to find a ${getDistance(target).length().toStringAsPrecision(3)} long path";
     }
     else
     {
-      searchHistory.title = "The $name Algorithm took $turn turns to find no path";
+      searchHistory.title = "The $name Algorithm took $turn iterations to find no path";
     }
   }
 }

@@ -371,7 +371,9 @@ html, body {
   height: var(--node-part-size);
 
   color: var(--color-highlight);
+  display: grid;
   text-align: center;
+  align-content: center;
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.outer.enterBlocked .directionTextHighlight {
