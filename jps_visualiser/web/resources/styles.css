@@ -254,9 +254,8 @@ html, body {
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.outer {
-  opacity: 0;
   cursor: pointer;
-  background-size: var(--node-part-size-inner);
+  background-size: 0;
   background-repeat: no-repeat;
   background-position: var(--node-part-size-inner-padding) var(--node-part-size-inner-padding);
 }
@@ -281,7 +280,15 @@ html, body {
   transform: rotate(90deg);
 }
 
+.grid.GRID_MODE_ADVANCED .node .part.EAST .directionTextHighlight {
+  transform: rotate(-90deg);
+}
+
 .grid.GRID_MODE_ADVANCED .node .part.SOUTH_EAST {
+  transform: scaleY(-1);
+}
+
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH_EAST .directionTextHighlight {
   transform: scaleY(-1);
 }
 
@@ -289,7 +296,15 @@ html, body {
   transform: scaleY(-1);
 }
 
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH .directionTextHighlight {
+  transform: scaleY(-1);
+}
+
 .grid.GRID_MODE_ADVANCED .node .part.SOUTH_WEST {
+  transform: scale(-1);
+}
+
+.grid.GRID_MODE_ADVANCED .node .part.SOUTH_WEST .directionTextHighlight {
   transform: scale(-1);
 }
 
@@ -297,20 +312,29 @@ html, body {
   transform: scaleX(-1) rotate(90deg);
 }
 
+.grid.GRID_MODE_ADVANCED .node .part.WEST .directionTextHighlight {
+  transform: rotate(-90deg) scaleX(-1);
+}
+
 .grid.GRID_MODE_ADVANCED .node .part.NORTH_WEST {
   transform: scaleX(-1);
 }
 
+.grid.GRID_MODE_ADVANCED .node .part.NORTH_WEST .directionTextHighlight {
+  transform: scaleX(-1);
+}
+
 .grid.GRID_MODE_ADVANCED .node.mouseUp .part.outer.enterUnblocked:hover {
+  background-size: var(--node-part-size-inner);
   animation: nodeHover 1s linear infinite;
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.outer.enterBlocked {
-  opacity: 1;
+  background-size: var(--node-part-size-inner);
 }
 
 .grid.GRID_MODE_ADVANCED .node .part.illegal, .grid.DIRECTION_MODE_ONLY_CARDINAL .node .part.diagonal, .grid.DIRECTION_MODE_ONLY_DIAGONAL .node .part.cardinal {
-  opacity: 0 !important;
+  background-size: 0 !important;
   cursor: auto;
 }
 
@@ -348,6 +372,10 @@ html, body {
 
   color: var(--color-highlight);
   text-align: center;
+}
+
+.grid.GRID_MODE_ADVANCED .node .part.outer.enterBlocked .directionTextHighlight {
+  color: var(--color-highlight-darker);
 }
 
 .nodeArrow {

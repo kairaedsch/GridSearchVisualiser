@@ -4,9 +4,9 @@ import '../general/transfer/TransferSlave.dart';
 import 'algorithm/Dijkstra.dart';
 import 'algorithm/AStar.dart';
 import 'algorithm/Algorithm.dart';
-import 'algorithm/JumpPointSearch.dart';
-import 'algorithm/JumpPointSearchPlus.dart';
-import 'algorithm/JumpPointSearchPlusDataGenerator.dart';
+import 'algorithm/DirectedJumpPointSearch.dart';
+import 'algorithm/DirectedJumpPointSearchLookUp.dart';
+import 'algorithm/DirectedJumpPointSearchPreCalculator.dart';
 import 'algorithm/NoAlgorithm.dart';
 import 'heuristics/Chebyshev.dart';
 import 'heuristics/Euclidean.dart';
@@ -88,9 +88,9 @@ class PathfinderWorker
       case AlgorithmType.NO_ALGORITHM: algorithmFactory = NoAlgorithm.factory; break;
       case AlgorithmType.DIJKSTRA: algorithmFactory = Dijkstra.factory; break;
       case AlgorithmType.A_STAR: algorithmFactory = AStar.factory; break;
-      case AlgorithmType.JPS: algorithmFactory = JumpPointSearch.factory; break;
-      case AlgorithmType.JPSP: algorithmFactory = JumpPointSearchPlus.factory; break;
-      case AlgorithmType.JPSP_DATA: algorithmFactory = JumpPointSearchPlusDataGenerator.factory; break;
+      case AlgorithmType.DJPS: algorithmFactory = DirectedJumpPointSearch.factory; break;
+      case AlgorithmType.DJPS_LU: algorithmFactory = DirectedJumpPointSearchLookUp.factory; break;
+      case AlgorithmType.DJPS_PC: algorithmFactory = DirectedJumpPointSearchPreCalculator.factory; break;
     }
 
     Algorithm algorithm = algorithmFactory(_store.gridCache, startPosition, targetPosition, heuristic, currentStepId);

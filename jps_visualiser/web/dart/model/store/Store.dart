@@ -34,7 +34,7 @@ class Store extends StoreTransferAble
     setBarrier(new Position(7, 8), Barrier.totalBlocked);
     setBarrier(new Position(7, 9), Barrier.totalBlocked);
 
-    algorithmType = AlgorithmType.JPSP;
+    algorithmType = AlgorithmType.DJPS_LU;
     heuristicType = HeuristicType.OCTILE;
     algorithmUpdateMode = AlgorithmUpdateMode.DURING_EDITING;
     gridMode = GridMode.BASIC;

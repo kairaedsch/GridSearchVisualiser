@@ -10,14 +10,14 @@ import 'Algorithm.dart';
 import 'JumpPointSearchJumpPoints.dart';
 import 'package:tuple/tuple.dart';
 
-class JumpPointSearchPlusDataGenerator extends Algorithm
+class DirectedJumpPointSearchPreCalculator extends Algorithm
 {
-  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlusDataGenerator(grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new DirectedJumpPointSearchPreCalculator(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-  final JumpPointSearchData data;
+  final DirectedJumpPointSearchData data;
 
-  JumpPointSearchPlusDataGenerator(GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
-      : data = new JumpPointSearchData(grid.size),
+  DirectedJumpPointSearchPreCalculator(GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+      : data = new DirectedJumpPointSearchData(grid.size),
         super(grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
@@ -29,10 +29,10 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     tunIsOver();
     if (createHistory())
     {
-      searchHistory.stepTitle = "Interaktive arrows";
+      searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Interaktive Arrow Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
 
       Tuple2<Iterable<Highlight>, Iterable<Position>> pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
@@ -62,7 +62,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
         return highlights;
       }
 
-      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> paths = grid.size.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 3)).toList();
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> paths = grid.size.positions().expand((position) => pathHighlightsGenerator(position, position, Direction.values, 1)).toList();
 
       searchHistory.addHM("background", paths);
     }
@@ -70,26 +70,26 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     tunIsOver();
     if (createHistory())
     {
-      searchHistory.stepTitle = "Static arrows";
+      searchHistory.stepTitle = "Lookup Data - Forced Directions - Arrow Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
 
       List<PathHighlight> paths = grid.size
           .positions()
           .expand((position) =>
           Direction.values.expand((direction)
           {
-            var dataPointDirection = data[position].signposts[direction];
+            var directionAdvisers = data[position].directionAdvisers[direction];
 
-            if (dataPointDirection.isWallAhead)
+            if (directionAdvisers.jumpDirections.isEmpty)
             {
-              return <PathHighlight>[];
+              return const <PathHighlight>[];
             }
 
-            List<Position> path = new List<Position>.generate(dataPointDirection.distance + 1, (d) => position.goMulti(direction, d));
+            List<PathHighlight> forcedDirections = directionAdvisers.jumpDirections.map((d) => new PathHighlight.styled("green dotted", [position, position.go(d)], showEnd: true, startIntermediate: 0.0, endIntermediate: Directions.isDiagonal(d) ? 3.0 : 2.0)).toList();
 
-            return [new PathHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), path, showEnd: true)];
+            return [new PathHighlight.styled("black", [position.go(Directions.turn(direction, 180)), position], showEnd: true, startIntermediate: Directions.isDiagonal(direction) ? 3.0 : 2.0, endIntermediate: 0.0)]..addAll(forcedDirections);
           })).toList();
 
       searchHistory.addH_("background", paths, [null]);
@@ -98,10 +98,10 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     tunIsOver();
     if (createHistory())
     {
-      searchHistory.stepTitle = "Static numbers";
+      searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Number Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The JPS+ Data Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
 
       List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid.size
           .positions()
@@ -117,7 +117,7 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     }
 
     searchHistory.stepCount = nextTurn;
-    searchHistory.title = "Generated JPS+ Data";
+    searchHistory.title = "Generated DJPS Lookup Data";
   }
 
   void _computeAllCardinal()
@@ -170,16 +170,16 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
     */
     if (!grid.leaveAble(position, direction))
     {
-      data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.WALL;
+      data[position].signposts[direction].type = DirectedJumpPointSearchDataPointDirectionType.WALL;
       data[position].signposts[direction].distance = 0;
     }
     else
     {
-      Set<Direction> jumpDirectionsAhead = JumpPointSearchJumpPoints.jumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead, true);
+      Set<Direction> jumpDirectionsAhead = DirectedJumpPointSearchJumpPoints.jumpDirections(grid, prePosition, direction, (position, direction) => data[position].signposts[direction].isJumpPointAhead, true);
 
       if (jumpDirectionsAhead.length > 0)
       {
-        data[position].signposts[direction].type = JumpPointSearchDataPointDirectionType.JUMP_POINT;
+        data[position].signposts[direction].type = DirectedJumpPointSearchDataPointDirectionType.JUMP_POINT;
         data[prePosition].directionAdvisers[direction].jumpDirections = jumpDirectionsAhead;
         data[position].signposts[direction].distance = 1;
       }
@@ -203,40 +203,40 @@ class JumpPointSearchPlusDataGenerator extends Algorithm
   }
 }
 
-class JumpPointSearchData extends Array2D<JumpPointSearchDataPoint>
+class DirectedJumpPointSearchData extends Array2D<DirectedJumpPointSearchDataPoint>
 {
-  JumpPointSearchData(Size size) : super(size, (_) => new JumpPointSearchDataPoint());
+  DirectedJumpPointSearchData(Size size) : super(size, (_) => new DirectedJumpPointSearchDataPoint());
 }
 
-class JumpPointSearchDataPoint
+class DirectedJumpPointSearchDataPoint
 {
-  final Map<Direction, JumpPointSearchDataSignpost> signposts;
-  final Map<Direction, JumpPointSearchDataDirectionAdviser> directionAdvisers;
+  final Map<Direction, DirectedJumpPointSearchDataSignpost> signposts;
+  final Map<Direction, DirectedJumpPointSearchDataDirectionAdviser> directionAdvisers;
 
-  JumpPointSearchDataPoint()
-      : signposts = new Map.fromIterables(Direction.values, Direction.values.map((_) => new JumpPointSearchDataSignpost())),
-        directionAdvisers = new Map.fromIterables(Direction.values, Direction.values.map((_) => new JumpPointSearchDataDirectionAdviser()));
+  DirectedJumpPointSearchDataPoint()
+      : signposts = new Map.fromIterables(Direction.values, Direction.values.map((_) => new DirectedJumpPointSearchDataSignpost())),
+        directionAdvisers = new Map.fromIterables(Direction.values, Direction.values.map((_) => new DirectedJumpPointSearchDataDirectionAdviser()));
 }
 
-class JumpPointSearchDataSignpost
+class DirectedJumpPointSearchDataSignpost
 {
   bool generated = false;
-  JumpPointSearchDataPointDirectionType type = JumpPointSearchDataPointDirectionType.WALL;
+  DirectedJumpPointSearchDataPointDirectionType type = DirectedJumpPointSearchDataPointDirectionType.WALL;
   int distance = 0;
 
-  bool get isWallAhead => type == JumpPointSearchDataPointDirectionType.WALL;
+  bool get isWallAhead => type == DirectedJumpPointSearchDataPointDirectionType.WALL;
 
-  bool get isJumpPointAhead => type == JumpPointSearchDataPointDirectionType.JUMP_POINT || type == JumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
+  bool get isJumpPointAhead => type == DirectedJumpPointSearchDataPointDirectionType.JUMP_POINT || type == DirectedJumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
 
-  bool get isIntermediateJumpPointAhead => type == JumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
+  bool get isIntermediateJumpPointAhead => type == DirectedJumpPointSearchDataPointDirectionType.INTERMEDIATE_JUMP_POINT;
 }
 
-class JumpPointSearchDataDirectionAdviser
+class DirectedJumpPointSearchDataDirectionAdviser
 {
   Set<Direction> jumpDirections = new Set();
 }
 
-enum JumpPointSearchDataPointDirectionType
+enum DirectedJumpPointSearchDataPointDirectionType
 {
   WALL, JUMP_POINT, INTERMEDIATE_JUMP_POINT
 }

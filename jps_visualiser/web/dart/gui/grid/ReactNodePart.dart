@@ -17,6 +17,7 @@ class ReactNodePartProps extends UiProps
   Store store;
   ReactGridComponent grid;
   Optional<Direction> direction;
+  Optional<DirectionTextHighlight> directionTextHighlight;
   Position position;
 }
 
@@ -31,7 +32,7 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
 {
   Optional<Direction> get direction => props.direction;
   Position get position => props.position;
-  List<DirectionTextHighlight> get directionTextHighlight => [];
+  Optional<DirectionTextHighlight> get directionTextHighlight => props.directionTextHighlight;
 
   @override
   Map getInitialState() =>
@@ -62,13 +63,13 @@ class ReactNodePartComponent extends UiStatefulComponent<ReactNodePartProps, Rea
         ..onMouseEnter = ((_) => _handleMouseEnter())
         ..onMouseLeave = ((_) => _handleMouseLeave())
       )(
-          direction.isNotEmpty && directionTextHighlight.where((d) => d.direction == direction.value).isNotEmpty
+          direction.isNotEmpty && directionTextHighlight.isNotEmpty
               ?
           (Dom.div()
             ..className = "directionTextHighlight"
-                " highlight_${directionTextHighlight.where((d) => d.direction == direction.value).first.style}"
+                " highlight_${directionTextHighlight.value.style}"
           )(
-              directionTextHighlight.where((d) => d.direction == direction.value).first.text
+            directionTextHighlight.value.text
           )
               :
           null

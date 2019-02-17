@@ -69,6 +69,8 @@ class ReactPathsComponent extends UiComponent<ReactPathsProps>
         ..size = size
         ..showStart = highlight.showStart
         ..showEnd = highlight.showEnd
+        ..startIntermediate = highlight.startIntermediate
+        ..endIntermediate = highlight.endIntermediate
         ..path = highlight.path
         ..wrap = wrap
       )();

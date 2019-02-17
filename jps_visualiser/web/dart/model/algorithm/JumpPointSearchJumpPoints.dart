@@ -2,7 +2,7 @@ import '../../general/geo/Position.dart';
 import '../store/grid/GridCache.dart';
 import '../../general/geo/Direction.dart';
 
-class JumpPointSearchJumpPoints
+class DirectedJumpPointSearchJumpPoints
 {
   static Set<Direction> jumpDirections(GridCache grid, Position position, Direction direction, bool hasNextCardinalPointOfInterest(Position position, Direction direction), bool isForPreCalculation)
   {

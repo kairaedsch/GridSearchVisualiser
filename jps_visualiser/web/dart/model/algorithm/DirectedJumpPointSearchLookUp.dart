@@ -7,23 +7,23 @@ import '../history/Explanation.dart';
 import '../heuristics/Heuristic.dart';
 import 'AStar.dart';
 import 'Algorithm.dart';
-import 'JumpPointSearchPlusDataGenerator.dart';
+import 'DirectedJumpPointSearchPreCalculator.dart';
 import 'package:quiver/core.dart';
 import 'package:tuple/tuple.dart';
 
-class JumpPointSearchPlus extends AStar
+class DirectedJumpPointSearchLookUp extends AStar
 {
-  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearchPlus("JPS+", grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new DirectedJumpPointSearchLookUp("DJPS Lookup with Pre-Calculation", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-  JumpPointSearchData _data;
+  DirectedJumpPointSearchData _data;
 
-  JumpPointSearchPlus(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+  DirectedJumpPointSearchLookUp(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
       : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
   void runInner()
   {
-    var dataGenerator = new JumpPointSearchPlusDataGenerator(grid, start, target, heuristic, -1);
+    var dataGenerator = new DirectedJumpPointSearchPreCalculator(grid, start, target, heuristic, -1);
     dataGenerator.run();
     _data = dataGenerator.data;
 
@@ -58,7 +58,7 @@ class JumpPointSearchPlus extends AStar
 
     for (Direction relevantDirection in relevantDirections)
     {
-      JumpPointSearchDataSignpost directionData;
+      DirectedJumpPointSearchDataSignpost directionData;
       Position position = node;
 
       do
@@ -79,7 +79,7 @@ class JumpPointSearchPlus extends AStar
       List<Highlight> pathsOfRelevantDirections = relevantDirections
           .map((relevantDirection)
           {
-            JumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
+            DirectedJumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
             return new PathHighlight.styled(directionData.isJumpPointAhead ? "green" : "red" , [node, node.goMulti(relevantDirection, directionData.distance)], showEnd: true);
           }).toList();
 
@@ -87,7 +87,7 @@ class JumpPointSearchPlus extends AStar
           .where((relevantDirection) =>_data[node].signposts[relevantDirection].isJumpPointAhead)
           .expand((relevantDirection)
           {
-            JumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
+            DirectedJumpPointSearchDataSignpost directionData = _data[node].signposts[relevantDirection];
             Position newNeighbourNode = node.goMulti(relevantDirection, directionData.distance);
             return visualiseDirectionAdviserDirect(newNeighbourNode, relevantDirection);
           }).toList();
@@ -98,7 +98,7 @@ class JumpPointSearchPlus extends AStar
       searchHistory.addH_("foreground", newSignPosts, [null]);
       searchHistory.addH_("foreground", openDirectionAdviser, [null]);
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The JPS Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("<The DJPS Lookup Algorithm is working but the explanation for it has not been implemented yet>");
     }
     return neighbours.reversed;
   }

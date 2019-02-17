@@ -8,7 +8,7 @@ class Enums
 
 enum AlgorithmType
 {
-  NO_ALGORITHM, DIJKSTRA, A_STAR, JPS, JPSP, JPSP_DATA
+  NO_ALGORITHM, DIJKSTRA, A_STAR, DJPS, DJPS_LU, DJPS_PC
 }
 
 class AlgorithmTypes
@@ -20,9 +20,9 @@ class AlgorithmTypes
       case AlgorithmType.NO_ALGORITHM: return "None";
       case AlgorithmType.DIJKSTRA: return "Dijkstra";
       case AlgorithmType.A_STAR: return "A*";
-      case AlgorithmType.JPS: return "JPS";
-      case AlgorithmType.JPSP: return "JPS+";
-      case AlgorithmType.JPSP_DATA: return "JPS+ Data";
+      case AlgorithmType.DJPS: return "DJPS";
+      case AlgorithmType.DJPS_LU: return "DJPS Lookup with Pre-Calculation";
+      case AlgorithmType.DJPS_PC: return "DJPS Pre-Calculation";
     }
     return "Not Found";
   }

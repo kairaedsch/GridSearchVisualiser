@@ -96,27 +96,37 @@ class PathHighlight extends Highlight
   final List<Position> path;
   final bool showEnd;
   final bool showStart;
+  final double startIntermediate;
+  final double endIntermediate;
 
-  PathHighlight(this.path, {bool showStart, bool showEnd, Position origin})
-      : showEnd = showEnd != null ? showEnd : false,
-        showStart = showStart != null ? showStart : false;
-
-  PathHighlight.styled(String style, this.path, {bool showStart, bool showEnd, Position origin})
+  PathHighlight(this.path, {bool showStart, bool showEnd, double startIntermediate, double endIntermediate, Position origin})
       : showEnd = showEnd != null ? showEnd : false,
         showStart = showStart != null ? showStart : false,
+        startIntermediate = startIntermediate != null ? startIntermediate : 1.0,
+        endIntermediate = endIntermediate != null ? endIntermediate : 1.0;
+
+  PathHighlight.styled(String style, this.path, {bool showStart, bool showEnd, double startIntermediate, double endIntermediate, Position origin})
+      : showEnd = showEnd != null ? showEnd : false,
+        showStart = showStart != null ? showStart : false,
+        startIntermediate = startIntermediate != null ? startIntermediate : 1.0,
+        endIntermediate = endIntermediate != null ? endIntermediate : 1.0,
         super.styled(style);
 
   PathHighlight.fromMap(Map map) :
         path = (map["path"] as List).map((Map map) => new Position.fromMap(map)).toList(),
         showEnd = map["showEnd"] as bool,
         showStart = map["showStart"] as bool,
+        startIntermediate = map["startIntermediate"] as double,
+        endIntermediate = map["endIntermediate"] as double,
         super.fromMap(map);
 
   Map toMap() => super.toMap()
     ..["highlight"] = "PathHighlight"
     ..["path"] = path.map((p) => p.toMap()).toList()
     ..["showEnd"] = showEnd
-    ..["showStart"] = showStart;
+    ..["showStart"] = showStart
+    ..["startIntermediate"] = startIntermediate
+    ..["endIntermediate"] = endIntermediate;
 }
 
 class TextHighlight extends Highlight

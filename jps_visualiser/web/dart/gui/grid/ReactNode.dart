@@ -45,7 +45,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   Iterable<Highlight> get highlights => backgroundHighlights..addAll(foregroundHighlights);
 
   Optional<BoxHighlight> get boxHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is BoxHighlight, orElse: () => null) as BoxHighlight);
-  Optional<DirectionTextHighlight> get directionTextHighlights => new Optional.fromNullable(highlights.lastWhere((h) => h is DirectionTextHighlight, orElse: () => null) as DirectionTextHighlight);
+  Iterable<DirectionTextHighlight> get directionTextHighlights => highlights.where((h) => h is DirectionTextHighlight).map((h) => h as DirectionTextHighlight);
   Iterable<PathHighlight> get pathHighlights => highlights.where((h) => h is PathHighlight).map((h) => h as PathHighlight);
   Optional<TextHighlight> get textHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is TextHighlight, orElse: () => null) as TextHighlight);
   Optional<CircleHighlight> get circleHighlight => new Optional.fromNullable(highlights.lastWhere((h) => h is CircleHighlight, orElse: () => null) as CircleHighlight);
@@ -174,6 +174,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
         ..store = props.store
         ..key = direction
         ..direction = new Optional.fromNullable(direction)
+        ..directionTextHighlight = new Optional.fromNullable(directionTextHighlights.lastWhere((h) => h.direction == direction, orElse: () => null) as DirectionTextHighlight)
         ..position = props.position
       )();
   }

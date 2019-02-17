@@ -11,11 +11,11 @@ import 'JumpPointSearchJumpPoints.dart';
 import 'package:quiver/core.dart';
 import 'package:tuple/tuple.dart';
 
-class JumpPointSearch extends AStar
+class DirectedJumpPointSearch extends AStar
 {
-  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new JumpPointSearch("JPS", grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new DirectedJumpPointSearch("DJPS", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
-  JumpPointSearch(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
+  DirectedJumpPointSearch(String name, GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory)
       : super(name, grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   @override
@@ -37,15 +37,15 @@ class JumpPointSearch extends AStar
     else
     {
       var lastDirection = parent[node].lastDirectionTo(node);
-      Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
+      Set<Direction> jumpDirections = DirectedJumpPointSearchJumpPoints.jumpDirections(grid, node, lastDirection, (position, direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
       relevantDirections = new Set.from(jumpDirections)..add(lastDirection);
     }
 
     if (createHistory())
     {
       searchHistory..newExplanation(new Explanation())
-        ..addES_("The JPS Algorithm will search in every ")
-        ..addEMS("relevant direction", "green", JumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+        ..addES_("The DJPS Algorithm will search in every ")
+        ..addEMS("relevant direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
         ..addES_(":");
     }
 
@@ -112,7 +112,7 @@ class JumpPointSearch extends AStar
       }
       else
       {
-        Set<Direction> jumpDirections = JumpPointSearchJumpPoints.jumpDirections(
+        Set<Direction> jumpDirections = DirectedJumpPointSearchJumpPoints.jumpDirections(
           grid, positionAfter, direction, (position,
           direction) => getNextJumpPoint(position, direction).isNotEmpty, false);
 
@@ -121,7 +121,7 @@ class JumpPointSearch extends AStar
           result = new Optional.of(positionAfter);
           if (createHistory())
           {
-            nextJumpPointHighlights.add(new Tuple2(JumpPointSearchHighlights.forcedDirections(positionAfter, jumpDirections), [null]));
+            nextJumpPointHighlights.add(new Tuple2(DirectedJumpPointSearchHighlights.forcedDirections(positionAfter, jumpDirections), [null]));
           }
         }
         else
@@ -132,7 +132,7 @@ class JumpPointSearch extends AStar
 
       if (createHistory())
       {
-        nextJumpPointHighlights.add(new Tuple2(JumpPointSearchHighlights.recursiveStep(node, direction, result.isPresent), [null]));
+        nextJumpPointHighlights.add(new Tuple2(DirectedJumpPointSearchHighlights.recursiveStep(node, direction, result.isPresent), [null]));
       }
 
       return result;

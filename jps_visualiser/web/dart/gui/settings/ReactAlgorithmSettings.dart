@@ -31,7 +31,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
   @override
   ReactElement render()
   {
-    bool useHeuristic = (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.JPSP_DATA && props.store.algorithmType != AlgorithmType.NO_ALGORITHM);
+    bool useHeuristic = (props.store.algorithmType != AlgorithmType.DIJKSTRA && props.store.algorithmType != AlgorithmType.DJPS_PC && props.store.algorithmType != AlgorithmType.NO_ALGORITHM);
     bool algorithmSelected = props.store.algorithmType != AlgorithmType.NO_ALGORITHM;
     return
       (Dom.div()..className = "menu")(

@@ -1,6 +1,6 @@
-name: jps_visualiser
+name: GridSearchVisualiser
 version: 1.0.0
-description: Bringing JPS to the people
+description: Visualise and explain pathfinding on grids.
 
 environment:
   sdk: ">=1.20.1 <2.0.0"
