@@ -47,14 +47,15 @@ class DirectedJumpPointSearch extends AStar
 
       if (createHistory())
       {
+        List<Highlight> parentPath = [new PathHighlight.styled("yellow", [parent[node], node], showEnd: true)];
         searchHistory..newExplanation(new Explanation())
           ..addES_("The DJPS Algorithm will search in every ")
           ..addEMS("relevant direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
-          ..addES_(", which consist of ")
-          ..addEMS("all forced directions", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, jumpDirections), null)
-          ..addES_(" of the current selected node in the ")
-          ..addEMS("direction from its parent to it", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, [lastDirection]), null)
-          ..addES_(" and the direction from its parent:");
+          ..addES_(", which includes ")
+          ..addEMS("all forced directions", "green", parentPath.toList()..addAll(DirectedJumpPointSearchHighlights.forcedDirections(node, jumpDirections)), null)
+          ..addES_(" of the current selected node in the direction from its parent to it and the ")
+          ..addEMS("direction from its parent", "green", parentPath.toList()..addAll(DirectedJumpPointSearchHighlights.forcedDirections(node, [lastDirection])), null)
+          ..addES_(":");
       }
 
     }

@@ -32,7 +32,9 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
       searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Interaktive Arrow Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
+        ..addES_("By hovering with the mouse over a node, green arrows will point to the next point of interest of each direction. ")
+        ..addES_("Red arrows are shown, when there is no next point of interest but only a obstacle. ");
 
       Tuple2<Iterable<Highlight>, Iterable<Position>> pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
@@ -72,13 +74,12 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
     {
       searchHistory.stepTitle = "Lookup Data - Forced Directions - Arrow Visualisation";
 
-      searchHistory..newExplanation(new Explanation())
-        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
-
-      List<PathHighlight> paths = grid.size
+      Iterable<Highlight> getForcedDirectionsHighlights(List<Direction> sourceDirections)
+      {
+        return grid.size
           .positions()
           .expand((position) =>
-          Direction.values.expand((direction)
+          sourceDirections.expand((direction)
           {
             var directionAdvisers = data[position].directionAdvisers[direction];
 
@@ -91,8 +92,22 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
 
             return [new PathHighlight.styled("black", [position.go(Directions.turn(direction, 180)), position], showEnd: true, startIntermediate: Directions.isDiagonal(direction) ? 3.0 : 2.0, endIntermediate: 0.0)]..addAll(forcedDirections);
           })).toList();
+      }
 
-      searchHistory.addH_("background", paths, [null]);
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("At this view you can view the pre-calculated forced directions of each node. ")
+        ..addES_("Forced directions are shown as green dotted arrows with black arrows as their source direction. ")
+        ..addES_("Because the arrows tend to overlap each other, one can also only display the forced direction of one source direction: ");
+
+      for (Direction direction in Direction.values)
+      {
+        searchHistory..newExplanation(new Explanation())
+          ..addES_("For the ")
+          ..addEMS("${Directions.getName(direction)} direction", "green", getForcedDirectionsHighlights([direction]), null)
+          ..addES_(".");
+      }
+
+      searchHistory.addH_("foreground", getForcedDirectionsHighlights(Direction.values), [null]);
     }
 
     tunIsOver();
@@ -101,9 +116,13 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
       searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Number Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("<The DJPS pre-calculation Algorithm is working but the explanation for it has not been implemented yet>");
+        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
+        ..addES_("Green numbers show the distance of the next point of interest in a direection.")
+        ..addES_("Red numbers are shown, when there is no next point of interest in that direction but only a obstacle. ")
+        ..addES_("The direction of a number is relative to its position such that for instance a number in the bottom center of a node points south. ")
+        ..addES_("In my thesis and in the implementation, the green and red numbers were not distingished by colors but by making the red numbers negative. ");
 
-      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid.size
+  List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid.size
           .positions()
           .expand((position) =>
           Direction.values.map((direction)
