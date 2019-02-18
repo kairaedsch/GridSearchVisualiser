@@ -586,23 +586,23 @@ g.blinking {
 }
 
 .config .button.save {
-    background-image: url("images/cloud-download.svg");
+    background-image: url("images/open_iconic/cloud-download.svg");
 }
 
 .config .button.load {
-    background-image: url("images/cloud-upload.svg");
+    background-image: url("images/open_iconic/cloud-upload.svg");
 }
 
 .config .button.minus {
-    background-image: url("images/minus.svg");
+    background-image: url("images/open_iconic/minus.svg");
 }
 
 .config .button.clear {
-    background-image: url("images/trash.svg");
+    background-image: url("images/open_iconic/trash.svg");
 }
 
 .config .button.plus {
-    background-image: url("images/plus.svg");
+    background-image: url("images/open_iconic/plus.svg");
 }
 
 .historyContainer {

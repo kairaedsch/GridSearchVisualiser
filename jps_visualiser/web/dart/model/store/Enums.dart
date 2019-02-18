@@ -21,7 +21,7 @@ class AlgorithmTypes
       case AlgorithmType.DIJKSTRA: return "Dijkstra";
       case AlgorithmType.A_STAR: return "A*";
       case AlgorithmType.DJPS: return "DJPS";
-      case AlgorithmType.DJPS_LU: return "DJPS Lookup with Pre-Calculation";
+      case AlgorithmType.DJPS_LU: return "DJPS Lookup";
       case AlgorithmType.DJPS_PC: return "DJPS Pre-Calculation";
     }
     return "Not Found";

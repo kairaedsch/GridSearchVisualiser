@@ -72,6 +72,39 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
     tunIsOver();
     if (createHistory())
     {
+      searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Number Visualisation";
+
+      List<Tuple2<Iterable<Highlight>, Iterable<Position>>> getNumberHighlights(bool where(DirectedJumpPointSearchDataSignpost d))
+      {
+        return grid.size
+          .positions()
+          .expand((position) =>
+          Direction.values
+            .where((direction) => where(data[position].signposts[direction]))
+            .map((direction)
+          {
+            var dataPointDirection = data[position].signposts[direction];
+
+            return new Tuple2([new DirectionTextHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), "${dataPointDirection.distance}", direction)], [position]);
+          })).toList();
+      }
+
+      searchHistory..newExplanation(new Explanation())
+        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
+        ..addEM_("Green numbers", "green", getNumberHighlights((dataPointDirection) => !dataPointDirection.isWallAhead))
+        ..addES_(" show the distance of the next point of interest in a direection. ")
+        ..addEM_("Red numbers", "red", getNumberHighlights((dataPointDirection) => dataPointDirection.isWallAhead))
+        ..addES_(" are shown, when there is no next point of interest in that direction but only a obstacle. ")
+        ..addES_("The direction of a number is relative to its position such that for instance a number in the bottom center of a node points south. ")
+        ..addES_("In my thesis and in the implementation, the green and red numbers were not distingished by colors but by making the red numbers negative. ");
+
+
+      searchHistory.addHM("foreground", getNumberHighlights((d) => true));
+    }
+
+    tunIsOver();
+    if (createHistory())
+    {
       searchHistory.stepTitle = "Lookup Data - Forced Directions - Arrow Visualisation";
 
       Iterable<Highlight> getForcedDirectionsHighlights(List<Direction> sourceDirections)
@@ -110,33 +143,8 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
       searchHistory.addH_("foreground", getForcedDirectionsHighlights(Direction.values), [null]);
     }
 
-    tunIsOver();
-    if (createHistory())
-    {
-      searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Number Visualisation";
-
-      searchHistory..newExplanation(new Explanation())
-        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
-        ..addES_("Green numbers show the distance of the next point of interest in a direection.")
-        ..addES_("Red numbers are shown, when there is no next point of interest in that direction but only a obstacle. ")
-        ..addES_("The direction of a number is relative to its position such that for instance a number in the bottom center of a node points south. ")
-        ..addES_("In my thesis and in the implementation, the green and red numbers were not distingished by colors but by making the red numbers negative. ");
-
-  List<Tuple2<Iterable<Highlight>, Iterable<Position>>> texts = grid.size
-          .positions()
-          .expand((position) =>
-          Direction.values.map((direction)
-          {
-            var dataPointDirection = data[position].signposts[direction];
-
-            return new Tuple2([new DirectionTextHighlight.styled(dataPointDirection.isWallAhead ? "red" : (dataPointDirection.isIntermediateJumpPointAhead ? "yellow" : "green"), "${dataPointDirection.distance}", direction)], [position]);
-          })).toList();
-
-      searchHistory.addHM("background", texts);
-    }
-
     searchHistory.stepCount = nextTurn;
-    searchHistory.title = "Generated DJPS Lookup Data";
+    searchHistory.title = "Pre-Calculated DJPS Lookup Data";
   }
 
   void _computeAllCardinal()
