@@ -98,7 +98,6 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
         ..addES_("The direction of a number is relative to its position such that for instance a number in the bottom center of a node points south. ")
         ..addES_("In my thesis and in the implementation, the green and red numbers were not distingished by colors but by making the red numbers negative. ");
 
-
       searchHistory.addHM("foreground", getNumberHighlights((d) => true));
     }
 

@@ -78,7 +78,7 @@ class PathfinderWorker
       case HeuristicType.CHEBYSHEV: heuristic = new Chebyshev(); break;
       case HeuristicType.ZERO: heuristic = new ConstantZeroHeuristic(); break;
       case HeuristicType.EUCLIDEAN: heuristic = new Euclidean(); break;
-      case HeuristicType.MANHATTEN: heuristic = new Manhattan(); break;
+      case HeuristicType.MANHATTAN: heuristic = new Manhattan(); break;
       case HeuristicType.OCTILE: heuristic = new Octile(); break;
     }
     

@@ -32,7 +32,7 @@ class AlgorithmTypes
 
 enum HeuristicType
 {
-  ZERO, CHEBYSHEV, EUCLIDEAN, OCTILE, MANHATTEN
+  ZERO, CHEBYSHEV, EUCLIDEAN, OCTILE, MANHATTAN
 }
 
 class HeuristicTypes
@@ -41,7 +41,7 @@ class HeuristicTypes
   {
     switch (heuristicType)
     {
-      case HeuristicType.MANHATTEN: return "Manhattan";
+      case HeuristicType.MANHATTAN: return "Manhattan";
       case HeuristicType.EUCLIDEAN: return "Euclidean";
       case HeuristicType.OCTILE: return "Octile";
       case HeuristicType.CHEBYSHEV: return "Chebyshev";

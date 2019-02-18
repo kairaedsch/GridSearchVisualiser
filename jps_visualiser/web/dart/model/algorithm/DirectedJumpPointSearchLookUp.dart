@@ -15,7 +15,7 @@ import 'package:tuple/tuple.dart';
 
 class DirectedJumpPointSearchLookUp extends AStar
 {
-  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new DirectedJumpPointSearchLookUp("DJPS Lookup with Pre-Calculation", grid, startPosition, targetPosition, heuristic, turnOfHistory);
+  static AlgorithmFactory factory = (GridCache grid, Position startPosition, Position targetPosition, Heuristic heuristic, int turnOfHistory) => new DirectedJumpPointSearchLookUp("DJPS Lookup", grid, startPosition, targetPosition, heuristic, turnOfHistory);
 
   DirectedJumpPointSearchData _data;
 
