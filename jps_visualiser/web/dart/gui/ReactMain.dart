@@ -13,6 +13,8 @@ import 'grid/arrows/ReactPaths.dart';
 import 'settings/ReactGridSettings.dart';
 import 'settings/ReactAlgorithmSettings.dart';
 import 'history/ReactHistory.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactMain.over_react.g.dart';
 
 void initGUI(Store store)
 {
@@ -70,10 +72,10 @@ void setupArrowKeys(Store store)
 }
 
 @Factory()
-UiFactory<ReactMainProps> ReactMain;
+UiFactory<ReactMainProps> ReactMain = _$ReactMain;
 
 @Props()
-class ReactMainProps extends UiProps
+class _$ReactMainProps extends UiProps
 {
   Store store;
 }

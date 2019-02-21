@@ -3,12 +3,14 @@ import '../../../general/geo/Size.dart';
 import 'package:over_react/over_react.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';
+// ignore: uri_has_not_been_generated
+part 'ReactArrow.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactArrowProps> ReactArrow;
+UiFactory<ReactArrowProps> ReactArrow = _$ReactArrow;
 
 @Props()
-class ReactArrowProps extends UiProps
+class _$ReactArrowProps extends UiProps
 {
   Size size;
   List<Position> path;

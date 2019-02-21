@@ -13,10 +13,8 @@ void main()
 
   if (Settings.useMultiThreading)
   {
-    new TransferMaster('model/PathfinderWorker.dart', store, ()
-    {
-      new Save.loadFromCookie(store);
-    });
+    new TransferMaster('model/PathfinderWorker.dart', store);
+    new Save.loadFromCookie(store);
   }
   else
   {

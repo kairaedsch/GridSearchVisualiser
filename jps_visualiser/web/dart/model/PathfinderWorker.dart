@@ -16,13 +16,12 @@ import 'heuristics/NullHeuristic.dart';
 import 'heuristics/Octile.dart';
 import 'history/Highlight.dart';
 import 'dart:async';
-import 'dart:isolate';
 import 'store/Enums.dart';
 import 'store/Store.dart';
 
-void main(List<String> args, SendPort sendPort)
+void main()
 {
-  new PathfinderWorker.isolate(sendPort);
+  new PathfinderWorker.isolate();
 }
 
 class PathfinderWorker
@@ -30,11 +29,11 @@ class PathfinderWorker
   Store _store = new Store();
   Timer _timerToRun = new Timer(new Duration(days: 1), () => null);
 
-  PathfinderWorker.isolate(SendPort sendPort)
+  PathfinderWorker.isolate()
   {
     Util.print('Worker created');
 
-    new TransferSlave(sendPort, _store);
+    new TransferSlave(_store);
     _setup();
   }
 

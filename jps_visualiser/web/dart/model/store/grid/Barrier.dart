@@ -31,7 +31,7 @@ class Barrier
   const Barrier(this._blocked);
 
   Barrier.fromMap(Map map)
-    : _blocked = new Map<Direction, bool>.fromIterables(map.keys.map((String d) => Direction.values[int.parse(d)]), map.values as Iterable<bool>);
+    : _blocked = new Map<Direction, bool>.fromIterables(map.keys.map((d) => Direction.values[int.parse(d)]), map.values as Iterable<bool>);
 
   bool isAnyBlocked() => _blocked.values.any((blocked) => blocked);
 

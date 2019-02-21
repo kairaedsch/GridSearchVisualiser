@@ -119,8 +119,8 @@ class Save
       {
         var barrierMap = new Map<Direction, bool>.fromIterable(
             Direction.values,
-            key: (Direction d) => d,
-            value: (Direction d) => readBarrier(position, d));
+            key: (d) => d,
+            value: (d) => readBarrier(position, d));
 
         store.setBarrier(position, new Barrier(barrierMap));
       }
@@ -224,7 +224,7 @@ class Save
 
     _context.setFillColorRgb(circleColor[0], circleColor[1], circleColor[2], circleColor[3]);
     _context.beginPath();
-    _context.arc(drawLeftTop.x + drawRadius, drawLeftTop.y + drawRadius, drawRadius, 0, PI * 2);
+    _context.arc(drawLeftTop.x + drawRadius, drawLeftTop.y + drawRadius, drawRadius, 0, pi * 2);
     _context.fill();
   }
 
@@ -250,7 +250,7 @@ class Save
 
     Vector2 recPosMiddlePix = pos.clone()..add(middle)..add(dir);
 
-    ImageData imageData = _context.getImageData(recPosMiddlePix.x, recPosMiddlePix.y, 1, 1);
+    ImageData imageData = _context.getImageData(recPosMiddlePix.x.round(), recPosMiddlePix.y.round(), 1, 1);
 
     var pixel = imageData.data;
     for(List<int> color in colorToFind)

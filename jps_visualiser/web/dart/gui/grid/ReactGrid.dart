@@ -14,12 +14,14 @@ import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
 import 'dart:math';
 import 'dart:js';
+// ignore: uri_has_not_been_generated
+part 'ReactGrid.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactGridProps> ReactGrid;
+UiFactory<ReactGridProps> ReactGrid = _$ReactGrid;
 
 @Props()
-class ReactGridProps extends UiProps
+class _$ReactGridProps extends UiProps
 {
   Store store;
 }

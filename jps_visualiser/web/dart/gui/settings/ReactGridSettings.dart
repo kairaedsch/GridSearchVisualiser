@@ -6,12 +6,14 @@ import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'dart:html';
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactGridSettings.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactGridSettingsProps> ReactGridSettings;
+UiFactory<ReactGridSettingsProps> ReactGridSettings = _$ReactGridSettings;
 
 @Props()
-class ReactGridSettingsProps extends UiProps
+class _$ReactGridSettingsProps extends UiProps
 {
   Store store;
   Function download;
@@ -48,7 +50,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.gridMode
                 ..values = GridMode.values
-                ..getTitle = GridModes.getTitle
+                ..getTitle = ((e) => GridModes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.gridMode = newValue as GridMode)
               )()
           ),
@@ -61,7 +63,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.directionMode
                 ..values = DirectionMode.values
-                ..getTitle = DirectionModes.getTitle
+                ..getTitle = ((e) => DirectionModes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.directionMode = newValue as DirectionMode)
               )()
           ),
@@ -75,7 +77,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.directionalMode
                 ..values = DirectionalMode.values
-                ..getTitle = DirectionalModes.getTitle
+                ..getTitle = ((e) => DirectionalModes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.directionalMode = newValue as DirectionalMode)
               )()
           ) : null,
@@ -89,7 +91,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.cornerMode
                 ..values = CornerMode.values
-                ..getTitle = CornerModes.getTitle
+                ..getTitle = ((e) => CornerModes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.cornerMode = newValue as CornerMode)
               )()
           ) : null,
@@ -143,7 +145,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
                 reader.onLoadEnd.listen((fileEvent)
                 {
                   props.load(reader.result);
-                }, onError: (dynamic error) => window.alert("Could not read Grid: ${reader.error.code}"));
+                }, onError: (dynamic error) => window.alert("Could not read Grid: ${reader.error.hashCode}"));
                 reader.readAsDataUrl(file);
                 event.target.value = null;
               }

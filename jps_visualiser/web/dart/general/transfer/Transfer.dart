@@ -1,7 +1,6 @@
 import '../general/Util.dart';
 import 'StoreTransferAble.dart';
 import 'dart:convert';
-import 'dart:isolate';
 
 class Transfer
 {
@@ -12,23 +11,26 @@ class Transfer
 
   void receive(dynamic jsonDatas)
   {
+    Util.print("breforem conv. $jsonDatas");
     var start = new DateTime.now();
-    List<Map> datas = JSON.decode(jsonDatas as String) as List<Map<String, dynamic>>;
+    Util.print("during conv. ${jsonDecode(jsonDatas)}");
+    List<Map> datas = jsonDecode(jsonDatas);
+    Util.print("after conv. $datas");
     store.autoTriggerListeners = false;
     for (Map data in datas)
     {
-      store.set(data["id"] as String, data["data"], toTransfer: false);
+      store.set(data["id"], data["data"], toTransfer: false);
     }
     store.autoTriggerListeners = true;
     store.triggerListeners();
     Util.print("$name: got  in ${new DateTime.now().difference(start).inMilliseconds}ms: ${datas.map((data) => data["id"] as String)}");
   }
 
-  String send(Iterable<String> ids, SendPort sender)
+  String send(Iterable<String> ids, void postMessage(String))
   {
     var start = new DateTime.now();
     var data = ids.map((id) => new Map<String, dynamic>()..["id"] = id ..["data"] = store.getA<dynamic>(id)).toList();
-    sender.send(JSON.encode(data));
+    postMessage(jsonEncode(data));
     Util.print("$name: send in ${new DateTime.now().difference(start).inMilliseconds}ms: $ids");
   }
 }

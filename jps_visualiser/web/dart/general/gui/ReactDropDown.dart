@@ -1,13 +1,15 @@
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactDropDown.over_react.g.dart';
 
 typedef SelectListener = void Function(dynamic newValue);
 typedef GetTitle = String Function(dynamic newValue);
 
 @Factory()
-UiFactory<ReactDropDownProps> ReactDropDown;
+UiFactory<ReactDropDownProps> ReactDropDown = _$ReactDropDown;
 
 @Props()
-class ReactDropDownProps extends UiProps
+class _$ReactDropDownProps extends UiProps
 {
   dynamic value;
   List<dynamic> values;
@@ -16,7 +18,7 @@ class ReactDropDownProps extends UiProps
 }
 
 @State()
-class ReactDropDownState extends UiState
+class _$ReactDropDownState extends UiState
 {
   bool isOpen;
   int width;

@@ -1,19 +1,31 @@
+import 'dart:html';
+
+import '../general/Util.dart';
 import 'StoreTransferAble.dart';
 import 'Transfer.dart';
-import 'dart:isolate';
 
 class TransferSlave extends Transfer
 {
-  ReceivePort _slaveReceiver;
-  SendPort _masterSender;
+  DedicatedWorkerGlobalScope _slaveReceiver = DedicatedWorkerGlobalScope.instance;
+  MessagePort _masterSender = null;
 
-  TransferSlave(this._masterSender, StoreTransferAble store) : super("Slave", store)
+  TransferSlave(StoreTransferAble store) : super("Slave", store)
   {
-    _slaveReceiver = new ReceivePort();
-    _masterSender.send(_slaveReceiver.sendPort);
+    _slaveReceiver.onMessage.listen((MessageEvent message)
+    {
+      Util.print('_slaveReceiver.onMessage: ${message.data}');
+      if (_masterSender == null)
+      {
+        Util.print('_masterSender null');
+        _masterSender = message.data as MessagePort;
+      }
+      else
+      {
+        Util.print('_masterSender not null: $_masterSender');
+        receive(message.data);
+      }
+    });
 
-    _slaveReceiver.listen(receive);
-
-    store.transferListener = (Iterable<String> ids) => send(ids, _masterSender);
+    store.transferListener = (Iterable<String> ids) => send(ids, (message) => _masterSender.postMessage(message));
   }
 }

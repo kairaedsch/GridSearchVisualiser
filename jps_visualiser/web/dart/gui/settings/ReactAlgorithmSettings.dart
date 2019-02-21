@@ -4,12 +4,14 @@ import '../../model/store/Enums.dart';
 import '../../general/gui/ReactDropDown.dart';
 import '../../general/gui/ReactPopover.dart';
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactAlgorithmSettings.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactAlgorithmSettingsProps> ReactAlgorithmSettings;
+UiFactory<ReactAlgorithmSettingsProps> ReactAlgorithmSettings = _$ReactAlgorithmSettings;
 
 @Props()
-class ReactAlgorithmSettingsProps extends UiProps
+class _$ReactAlgorithmSettingsProps extends UiProps
 {
   Store store;
 }
@@ -46,7 +48,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.algorithmType
                 ..values = AlgorithmType.values
-                ..getTitle = AlgorithmTypes.getTitle
+                ..getTitle = ((e) => AlgorithmTypes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.algorithmType = newValue as AlgorithmType)
               )()
           ),
@@ -60,7 +62,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.heuristicType
                 ..values = HeuristicType.values
-                ..getTitle = HeuristicTypes.getTitle
+                ..getTitle = ((e) => HeuristicTypes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.heuristicType = newValue as HeuristicType)
               )()
           ) : (Dom.div()..className = "config")(),
@@ -74,7 +76,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.algorithmUpdateMode
                 ..values = AlgorithmUpdateMode.values
-                ..getTitle = AlgorithmUpdateModes.getTitle
+                ..getTitle = ((e) => AlgorithmUpdateModes.getTitle(e))
                 ..selectListener = ((dynamic newValue) => props.store.algorithmUpdateMode = newValue as AlgorithmUpdateMode)
               )()
           ) : null,

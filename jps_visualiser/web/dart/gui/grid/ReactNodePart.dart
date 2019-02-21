@@ -7,12 +7,14 @@ import '../../model/history/Highlight.dart';
 import 'ReactGrid.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactNodePart.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactNodePartProps> ReactNodePart;
+UiFactory<ReactNodePartProps> ReactNodePart = _$ReactNodePart;
 
 @Props()
-class ReactNodePartProps extends UiProps
+class _$ReactNodePartProps extends UiProps
 {
   Store store;
   ReactGridComponent grid;
@@ -22,7 +24,7 @@ class ReactNodePartProps extends UiProps
 }
 
 @State()
-class ReactNodePartState extends UiState
+class _$ReactNodePartState extends UiState
 {
   bool mouseIsOver;
 }

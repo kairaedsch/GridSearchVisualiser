@@ -4,12 +4,14 @@ import '../../../model/history/Highlight.dart';
 import '../../../model/store/Store.dart';
 import '../arrows/ReactArrow.dart';
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactPaths.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactPathsProps> ReactPaths;
+UiFactory<ReactPathsProps> ReactPaths = _$ReactPaths;
 
 @Props()
-class ReactPathsProps extends UiProps
+class _$ReactPathsProps extends UiProps
 {
   Store store;
 }

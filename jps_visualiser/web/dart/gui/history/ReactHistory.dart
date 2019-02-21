@@ -3,12 +3,14 @@ import '../../model/store/Store.dart';
 import '../../model/history/Explanation.dart';
 import 'ReactExplanationPart.dart';
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactHistory.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactHistoryProps> ReactHistory;
+UiFactory<ReactHistoryProps> ReactHistory = _$ReactHistory;
 
 @Props()
-class ReactHistoryProps extends UiProps
+class _$ReactHistoryProps extends UiProps
 {
   Store store;
 }

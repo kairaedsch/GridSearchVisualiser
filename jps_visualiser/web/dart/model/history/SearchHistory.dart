@@ -20,7 +20,7 @@ class SearchHistory
   Map<Position, Map<String, List<Highlight>>> get stepHighlights => _stepHighlights;
 
   SearchHistory(Size size)
-    : _stepHighlights = new Map.fromIterable(size.positions(), value: (Position p) => new Map()..["background"] = [] ..["foreground"] = [])..[null] = (new Map()..["background"] = [] ..["foreground"] = []);
+    : _stepHighlights = new Map.fromIterable(size.positions(), value: (p) => new Map()..["background"] = [] ..["foreground"] = [])..[null] = (new Map()..["background"] = [] ..["foreground"] = []);
 
   void newExplanation(Explanation explanation)
   {
@@ -66,7 +66,6 @@ class SearchHistory
   void appendHM(List<Tuple2<Iterable<Highlight>, Iterable<Position>>> highlightsMap)
   {
     var explanationPart = _stepDescription.last.explanation.last;
-    print(explanationPart.id);
     highlightsMap.forEach((tuple) => tuple.item1.forEach((h) => h.setDefaultStyle(explanationPart.style)));
     addHM(explanationPart.id, highlightsMap);
   }

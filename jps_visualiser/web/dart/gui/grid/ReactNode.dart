@@ -13,12 +13,14 @@ import 'arrows/ReactArrow.dart';
 import 'arrows/ReactPaths.dart';
 import 'package:over_react/over_react.dart';
 import 'package:quiver/core.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactNode.over_react.g.dart';
 
 @Factory()
-UiFactory<ReactNodeProps> ReactNode;
+UiFactory<ReactNodeProps> ReactNode = _$ReactNode;
 
 @Props()
-class ReactNodeProps extends UiProps
+class _$ReactNodeProps extends UiProps
 {
   Store store;
   ReactGridComponent grid;
@@ -26,7 +28,7 @@ class ReactNodeProps extends UiProps
 }
 
 @State()
-class ReactNodeState extends UiState
+class _$ReactNodeState extends UiState
 {
   bool mouseIsOver;
   bool mouseIsDown;
@@ -71,7 +73,7 @@ class ReactNodeComponent extends UiStatefulComponent<ReactNodeProps, ReactNodeSt
   @override
   ReactElement render()
   {
-    Util.print("render Node ${props.position}");
+    // Util.print("render Node ${props.position}");
     return
       (Dom.div()
         ..className = "node"

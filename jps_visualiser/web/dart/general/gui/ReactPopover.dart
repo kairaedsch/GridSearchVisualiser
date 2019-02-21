@@ -1,10 +1,10 @@
 @JS()
 library tooltip;
 
-import 'dart:html';
-import 'package:uuid/uuid.dart';
 import 'package:js/js.dart';
 import 'package:over_react/over_react.dart';
+// ignore: uri_has_not_been_generated
+part 'ReactPopover.over_react.g.dart';
 
 @JS("document.getElementById")
 external dynamic getElementById(String id);
@@ -54,10 +54,10 @@ class TooltipOptions {
 }
 
 @Factory()
-UiFactory<ReactPopoverProps> ReactPopover;
+UiFactory<ReactPopoverProps> ReactPopover = _$ReactPopover;
 
 @Props()
-class ReactPopoverProps extends UiProps
+class _$ReactPopoverProps extends UiProps
 {
   String popover;
   bool html;

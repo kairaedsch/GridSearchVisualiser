@@ -59,7 +59,7 @@ class StoreTransferAble
         equalListenerCalled.add(equalListener);
       });
       var changedIdFinish = new DateTime.now();
-      Util.print("triggerLis: changedId $changedId ${changedIdFinish.difference(changedIdStart).inMilliseconds}ms (${_equalListeners[changedId]?.length})");
+      // Util.print("triggerLis: changedId $changedId ${changedIdFinish.difference(changedIdStart).inMilliseconds}ms (${_equalListeners[changedId]?.length})");
     }
 
     _startsWithListener.forEach((startsWithListener, startsOfIds)
