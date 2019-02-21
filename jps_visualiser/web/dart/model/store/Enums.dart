@@ -27,7 +27,35 @@ class AlgorithmTypes
     return "Not Found";
   }
 
-  static String popover = "Select the algorithm to run on the grid";
+  static String popover = """
+            <div class="title">Select the algorithm to run on the grid</div>
+            <div class="options">
+              <div class='title'>None</div>
+              <div class='content'>
+                No algorithm will run on the grid.
+              </div>
+              <div class='title'>Dijkstra</div>
+              <div class='content'>
+                The Dijksra Pathfinding Algorithm.
+              </div>
+              <div class='title'>A*</div>
+              <div class='content'>
+                The A* Pathfinding Algorithm.
+              </div>
+              <div class='title'>DJPS</div>
+              <div class='content'>
+                The Directed Jump Point Search Algorithm.
+              </div>
+              <div class='title'>DJPS Lookup</div>
+              <div class='content'>
+                The Directed Jump Point Search Lookup Algorithm using pre-calculated lookup data.
+              </div>
+              <div class='title'>DJPS Pre-Calculation</div>
+              <div class='content'>
+                The Directed Jump Point Search Pre-Calculation Algorithm using backwards pre-calculation.
+              </div>
+            </div>
+            """;
 }
 
 enum HeuristicType
@@ -50,7 +78,31 @@ class HeuristicTypes
     return "Not Found";
   }
 
-  static String popover = "Select the heuristic to be used by the algorithm";
+  static String popover = """
+            <div class="title">Select the heuristic to be used by the algorithm</div>
+            <div class="options">
+              <div class='title'>Constant Zero</div>
+              <div class='content'>
+                A heuristic which always returns 0.
+              </div>
+              <div class='title'>Chebyshev</div>
+              <div class='content'>
+                The Chebyshev distance is calculated by the moves a chess king would have to make.
+              </div>
+              <div class='title'>Euclidean</div>
+              <div class='content'>
+                The Euclidean distance is calculated by the length of the air line.
+              </div>
+              <div class='title'>Octile</div>
+              <div class='content'>
+                The octile distance is calculated by the length of the octile path.
+              </div>
+              <div class='title'>Manhattan</div>
+              <div class='content'>
+                The Manhattan distance is calculated by summing the difference of the x and the y coordinates.
+              </div>
+            </div>
+            """;
 }
 
 enum AlgorithmUpdateMode
@@ -71,7 +123,23 @@ class AlgorithmUpdateModes
     return "Not Found";
   }
 
-  static String popover = "Select when the algorithm should run on the grid";
+  static String popover = """
+            <div class="title">Select when the algorithm should run on the grid</div>
+            <div class="options">
+              <div class='title'>During editing</div>
+              <div class='content'>
+                The algorithm runs while you change something in the grid.
+              </div>
+              <div class='title'>After editing</div>
+              <div class='content'>
+                The algorithm runs after you changed something in the grid.
+              </div>
+              <div class='title'>Manually</div>
+              <div class='content'>
+                The algorithm runs when you click on the play button.
+              </div>
+            </div>
+            """;
 }
 
 enum GridMode

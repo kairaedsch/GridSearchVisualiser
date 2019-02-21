@@ -40,6 +40,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
           (ReactPopover()
             ..className = "config"
             ..popover = AlgorithmTypes.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Algorithm:"),
               (ReactDropDown()
@@ -53,6 +54,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
           (ReactPopover()
             ..className = "config"
             ..popover = HeuristicTypes.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Heuristic:"),
               (ReactDropDown()
@@ -66,6 +68,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
           (ReactPopover()
             ..className = "config"
             ..popover = AlgorithmUpdateModes.popover
+            ..html = true
           )(
               (Dom.div()..className = "title")("Run:"),
               (ReactDropDown()
