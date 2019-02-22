@@ -18,6 +18,8 @@ class StoreTransferAble
 
   T getA<T>(String id) => _store[id] as T;
 
+  List<Map> getAListMap(String id) => (_store[id] as Iterable).map((dynamic map) => map as Map).toList();
+
   void set(String id, dynamic newValue, {bool toTransfer = true})
   {
     if (newValue == null)

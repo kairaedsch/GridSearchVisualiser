@@ -14,7 +14,7 @@ class Explanation
 
   Explanation.fromMap(Map map)
       : style = map["style"] as String,
-        _explanation = (map["explanation"] as List<Map>).map((Map map) => new ExplanationPart.fromMap(map)).toList();
+        _explanation = (map["explanation"] as List).map((dynamic map) => new ExplanationPart.fromMap(map as Map)).toList();
 
   Map toMap() => new Map<dynamic, dynamic>()
     ..["style"] = style

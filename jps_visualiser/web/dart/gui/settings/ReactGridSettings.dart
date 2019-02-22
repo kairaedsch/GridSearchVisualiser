@@ -50,7 +50,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.gridMode
                 ..values = GridMode.values
-                ..getTitle = ((e) => GridModes.getTitle(e))
+                ..getTitle = ((dynamic e) => GridModes.getTitle(e as GridMode))
                 ..selectListener = ((dynamic newValue) => props.store.gridMode = newValue as GridMode)
               )()
           ),
@@ -63,7 +63,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.directionMode
                 ..values = DirectionMode.values
-                ..getTitle = ((e) => DirectionModes.getTitle(e))
+                ..getTitle = ((dynamic e) => DirectionModes.getTitle(e as DirectionMode))
                 ..selectListener = ((dynamic newValue) => props.store.directionMode = newValue as DirectionMode)
               )()
           ),
@@ -77,7 +77,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.directionalMode
                 ..values = DirectionalMode.values
-                ..getTitle = ((e) => DirectionalModes.getTitle(e))
+                ..getTitle = ((dynamic e) => DirectionalModes.getTitle(e as DirectionalMode))
                 ..selectListener = ((dynamic newValue) => props.store.directionalMode = newValue as DirectionalMode)
               )()
           ) : null,
@@ -91,7 +91,7 @@ class ReactGridSettingsComponent extends UiComponent<ReactGridSettingsProps>
               (ReactDropDown()
                 ..value = props.store.cornerMode
                 ..values = CornerMode.values
-                ..getTitle = ((e) => CornerModes.getTitle(e))
+                ..getTitle = ((dynamic e) => CornerModes.getTitle(e as CornerMode))
                 ..selectListener = ((dynamic newValue) => props.store.cornerMode = newValue as CornerMode)
               )()
           ) : null,

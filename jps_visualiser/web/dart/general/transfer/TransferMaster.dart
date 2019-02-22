@@ -12,7 +12,7 @@ class TransferMaster extends Transfer
     Worker worker = Worker("dart/$_webworker.js");
     MessageChannel msgChn = MessageChannel();
     worker.postMessage(msgChn.port1, [msgChn.port1]);
-    msgChn.port2.onMessage.listen((MessageEvent message) => receive(message.data));
+    msgChn.port2.onMessage.listen((MessageEvent message) => receive(message.data as String));
 
     store.transferListener = (Iterable<String> ids) => send(ids, (message) => worker.postMessage(message));
   }

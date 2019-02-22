@@ -107,9 +107,9 @@ class Store extends StoreTransferAble
   String get currentStepTitle => getA("currentStepTitle");
   void set currentStepTitle(String newTitle) => set("currentStepTitle", newTitle);
 
-  List<Explanation> get currentStepDescription => (getA<List<Map>>("currentStepDescription")).map((map) => new Explanation.fromMap(map)).toList();
+  List<Explanation> get currentStepDescription => getAListMap("currentStepDescription").map((map) => new Explanation.fromMap(map)).toList();
   void set currentStepDescription(List<Explanation> newExplanations) => set("currentStepDescription", newExplanations.map<Map>((Explanation p) => p.toMap()).toList());
 
-  List<Highlight> getCurrentStepHighlights(Position position, String key) => Highlights.fromListMap(Util.notNull(getA("currentStepHighlights_$position"), orElse: () => []));
+  List<Highlight> getCurrentStepHighlights(Position position, String key) => Highlights.fromListMap(Util.notNull(getAListMap("currentStepHighlights_$position"), orElse: () => []));
   void setCurrentStepHighlights(Position position, List<Highlight> newHighlights) => set("currentStepHighlights_$position", Highlights.toListMap(newHighlights));
 }

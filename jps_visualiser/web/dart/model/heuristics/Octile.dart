@@ -11,7 +11,7 @@ class Octile extends Heuristic
   {
     int dx = (p1.x - p2.x).abs();
     int dy = (p1.y - p2.y).abs();
-    return (max(dx, dy) - min(dx, dy)) + sqrt(2) * min(dx, dy);
+    return ((max(dx, dy) - min(dx, dy)) + sqrt(2) * min(dx, dy)).toDouble();
   }
 
   @override

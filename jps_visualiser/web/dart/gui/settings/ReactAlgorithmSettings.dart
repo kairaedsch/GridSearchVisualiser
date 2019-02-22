@@ -48,7 +48,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.algorithmType
                 ..values = AlgorithmType.values
-                ..getTitle = ((e) => AlgorithmTypes.getTitle(e))
+                ..getTitle = ((dynamic e) => AlgorithmTypes.getTitle(e as AlgorithmType))
                 ..selectListener = ((dynamic newValue) => props.store.algorithmType = newValue as AlgorithmType)
               )()
           ),
@@ -62,7 +62,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.heuristicType
                 ..values = HeuristicType.values
-                ..getTitle = ((e) => HeuristicTypes.getTitle(e))
+                ..getTitle = ((dynamic e) => HeuristicTypes.getTitle(e as HeuristicType))
                 ..selectListener = ((dynamic newValue) => props.store.heuristicType = newValue as HeuristicType)
               )()
           ) : (Dom.div()..className = "config")(),
@@ -76,7 +76,7 @@ class ReactAlgorithmSettingsComponent extends UiComponent<ReactAlgorithmSettings
               (ReactDropDown()
                 ..value = props.store.algorithmUpdateMode
                 ..values = AlgorithmUpdateMode.values
-                ..getTitle = ((e) => AlgorithmUpdateModes.getTitle(e))
+                ..getTitle = ((dynamic e) => AlgorithmUpdateModes.getTitle(e as AlgorithmUpdateMode))
                 ..selectListener = ((dynamic newValue) => props.store.algorithmUpdateMode = newValue as AlgorithmUpdateMode)
               )()
           ) : null,

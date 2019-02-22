@@ -119,8 +119,8 @@ class Save
       {
         var barrierMap = new Map<Direction, bool>.fromIterable(
             Direction.values,
-            key: (d) => d,
-            value: (d) => readBarrier(position, d));
+            key: (dynamic d) => d as Direction,
+            value: (dynamic d) => readBarrier(position, d as Direction));
 
         store.setBarrier(position, new Barrier(barrierMap));
       }

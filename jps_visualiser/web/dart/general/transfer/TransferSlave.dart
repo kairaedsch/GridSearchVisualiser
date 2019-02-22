@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 
 import '../general/Util.dart';
@@ -13,19 +14,28 @@ class TransferSlave extends Transfer
   {
     _slaveReceiver.onMessage.listen((MessageEvent message)
     {
-      Util.print('_slaveReceiver.onMessage: ${message.data}');
       if (_masterSender == null)
       {
-        Util.print('_masterSender null');
+        Util.print('_masterSender is null and gets set');
         _masterSender = message.data as MessagePort;
       }
       else
       {
-        Util.print('_masterSender not null: $_masterSender');
-        receive(message.data);
+        receive(message.data as String);
       }
     });
 
-    store.transferListener = (Iterable<String> ids) => send(ids, (message) => _masterSender.postMessage(message));
+    store.transferListener = (Iterable<String> ids)
+    {
+      if (_masterSender == null)
+      {
+        Util.print('_masterSender is null, transfer waiting to send for ids = $ids');
+        new Timer(new Duration(milliseconds: 25), () => store.transferListener(ids));
+      }
+      else
+      {
+        return send(ids, (String message) => _masterSender.postMessage(message));
+      }
+    };
   }
 }

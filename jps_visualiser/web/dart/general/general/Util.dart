@@ -29,18 +29,18 @@ class Util
     {
       return false;
     }
-    if (itemOne is Map<String, dynamic> && itemTwo is Map<String, dynamic>)
+    if (itemOne is Map && itemTwo is Map)
     {
       return _equalMap(itemOne, itemTwo);
     }
-    if (itemOne is List<dynamic> && itemTwo is List<dynamic>)
+    if (itemOne is List && itemTwo is List)
     {
       return _equalList(itemOne, itemTwo);
     }
     return false;
   }
 
-  static bool _equalList(List<dynamic> listOne, List<dynamic> listTwo)
+  static bool _equalList(List listOne, List listTwo)
   {
     if (listOne.length != listTwo.length)
     {
@@ -56,13 +56,13 @@ class Util
     return true;
   }
 
-  static bool _equalMap(Map<String, dynamic> mapOne, Map<String, dynamic> mapTwo)
+  static bool _equalMap(Map mapOne, Map mapTwo)
   {
     if (mapOne.length != mapTwo.length)
     {
       return false;
     }
-    for (String key in mapOne.keys)
+    for (dynamic key in mapOne.keys)
     {
       dynamic itemOne = mapOne[key];
       dynamic itemTwo = mapTwo[key];

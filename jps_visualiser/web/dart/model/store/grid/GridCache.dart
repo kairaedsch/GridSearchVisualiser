@@ -35,7 +35,7 @@ class GridCache
 
   void rebuild()
   {
-    _grid = new Array2D(_store.size, (p) => new Map.fromIterable(Direction.values, value: (d) => false));
+    _grid = new Array2D(_store.size, (p) => new Map.fromIterable(Direction.values, value: (dynamic d) => false));
     for (Position position in _store.size.positions())
     {
       _updateOne(position);

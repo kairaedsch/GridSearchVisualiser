@@ -113,7 +113,7 @@ class PathHighlight extends Highlight
         super.styled(style);
 
   PathHighlight.fromMap(Map map) :
-        path = (map["path"] as List<Map>).map((Map map) => new Position.fromMap(map)).toList(),
+        path = (map["path"] as List).map((dynamic map) => new Position.fromMap(map as Map)).toList(),
         showEnd = map["showEnd"] as bool,
         showStart = map["showStart"] as bool,
         startIntermediate = map["startIntermediate"] as double,

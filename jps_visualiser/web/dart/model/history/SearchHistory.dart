@@ -20,7 +20,7 @@ class SearchHistory
   Map<Position, Map<String, List<Highlight>>> get stepHighlights => _stepHighlights;
 
   SearchHistory(Size size)
-    : _stepHighlights = new Map.fromIterable(size.positions(), value: (p) => new Map()..["background"] = [] ..["foreground"] = [])..[null] = (new Map()..["background"] = [] ..["foreground"] = []);
+    : _stepHighlights = new Map.fromIterable(size.positions(), value: (dynamic p) => new Map()..["background"] = [] ..["foreground"] = [])..[null] = (new Map()..["background"] = [] ..["foreground"] = []);
 
   void newExplanation(Explanation explanation)
   {

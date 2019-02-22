@@ -31,7 +31,7 @@ class PathfinderWorker
 
   PathfinderWorker.isolate()
   {
-    Util.print('Worker created');
+    Util.print('Web Worker created');
 
     new TransferSlave(_store);
     _setup();
@@ -65,7 +65,7 @@ class PathfinderWorker
 
   void _runInner(int currentStepId)
   {
-    Util.print("run: $currentStepId");
+    Util.print("run algorithm with currentStepId = $currentStepId");
     DateTime start = new DateTime.now();
 
     Position startPosition = _store.startPosition;
@@ -123,8 +123,8 @@ class PathfinderWorker
     }
     DateTime afterStore = new DateTime.now();
 
-    Util.print("setup: ${beforeRun.difference(start).inMilliseconds}ms");
-    Util.print("run  : ${afterRun.difference(beforeRun).inMilliseconds}ms");
-    Util.print("store: ${afterStore.difference(afterRun).inMilliseconds}ms");
+    Util.print("setup took ${beforeRun.difference(start).inMilliseconds}ms");
+    Util.print("run   took: ${afterRun.difference(beforeRun).inMilliseconds}ms");
+    Util.print("store took: ${afterStore.difference(afterRun).inMilliseconds}ms");
   }
 }
