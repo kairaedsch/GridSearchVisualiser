@@ -702,6 +702,10 @@ g.blinking {
   font-weight: 600;
 }
 
+.history .turnOverview .description {
+  height: 0px;
+}
+
 .history .turnOverview .description .explanationPart {
   line-height: 25px;
 }

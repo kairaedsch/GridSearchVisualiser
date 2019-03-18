@@ -34,10 +34,13 @@ class DirectedJumpPointSearch extends AStar
     {
       relevantDirections = new Set.from(Direction.values);
 
-      searchHistory..newExplanation(new Explanation())
-        ..addES_("In the first iteration, the DJPS Algorithm will search in ")
-        ..addEMS("every direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
-        ..addES_(":");
+      if (createHistory())
+      {
+        searchHistory..newExplanation(new Explanation())
+          ..addES_("In the first iteration, the DJPS Algorithm will search in ")
+          ..addEMS("every direction", "green", DirectedJumpPointSearchHighlights.forcedDirections(node, relevantDirections), null)
+          ..addES_(":");
+      }
     }
     else
     {

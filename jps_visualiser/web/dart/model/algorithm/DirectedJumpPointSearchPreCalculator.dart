@@ -32,9 +32,9 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
       searchHistory.stepTitle = "Lookup Data - Next Points of Interest - Interaktive Arrow Visualisation";
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
-        ..addES_("By hovering with the mouse over a node, green arrows will point to the next point of interest of each direction. ")
-        ..addES_("Red arrows are shown, when there is no next point of interest but only a obstacle. ");
+        ..addES_("Here one can view the pre-calculated next jump points of each node. ")
+        ..addES_("By hovering with the mouse over a node, green arrows will point to the next jump point of each direction. ")
+        ..addES_("Red arrows are shown, when there is no next jump point but only a obstacle. ");
 
       Tuple2<Iterable<Highlight>, Iterable<Position>> pathHighlightGenerator(Position origin, Position position, Direction direction)
       {
@@ -90,11 +90,11 @@ class DirectedJumpPointSearchPreCalculator extends Algorithm
       }
 
       searchHistory..newExplanation(new Explanation())
-        ..addES_("Here one can view the pre-calculated next points of interest of each node. ")
+        ..addES_("Here one can view the pre-calculated next jump points of each node. ")
         ..addEM_("Green numbers", "green", getNumberHighlights((dataPointDirection) => !dataPointDirection.isWallAhead))
-        ..addES_(" show the distance of the next point of interest in a direection. ")
+        ..addES_(" show the distance of the next jump point in a direction. ")
         ..addEM_("Red numbers", "red", getNumberHighlights((dataPointDirection) => dataPointDirection.isWallAhead))
-        ..addES_(" are shown, when there is no next point of interest in that direction but only a obstacle. ")
+        ..addES_(" are shown, when there is no next jump point in that direction but only a obstacle. ")
         ..addES_("The direction of a number is relative to its position such that for instance a number in the bottom center of a node points south. ")
         ..addES_("In my thesis and in the implementation, the green and red numbers were not distingished by colors but by making the red numbers negative. ");
 
