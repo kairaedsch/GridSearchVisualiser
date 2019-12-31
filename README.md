@@ -1,4 +1,8 @@
-# JPS Visualiser
+<p align="center"><img width="40%" src="logo.gif" /></p>
+
+The tool [Grid Search Visualiser](https://jps.mysticwind.de/) was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.
+
+It is a online algorithm visualiser for pathfinding algorithms.
 
 ## Create a Grid
 - Creation of a grid with a start-node, end-node and barrier
