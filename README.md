@@ -3,7 +3,7 @@
 # Grid Search Visualiser
 A online algorithm visualiser for pathfinding algorithms.
 
-The tool was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.
+The tool was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau./
 You can try it out [here](https://jps.mysticwind.de/). <---
 
 <p align="center"><img width="100%" src="intro.gif"/></p>
