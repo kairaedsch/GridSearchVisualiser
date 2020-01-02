@@ -1,4 +1,4 @@
-<p align="center"><img width="80%" src="logo.gif"/></p>
+<p align="center"><img width="80%" src="images/logo.gif"/></p>
 
 # Grid Search Visualiser
 A online algorithm visualiser for pathfinding algorithms.
@@ -6,18 +6,18 @@ A online algorithm visualiser for pathfinding algorithms.
 The tool was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.\
 You can try it out [here](https://jps.mysticwind.de/). <---
 
-<p align="center"><img width="100%" src="intro.gif"/></p>
+<p align="center"><img width="100%" src="images/intro.gif"/></p>
 
 ## Supported Grids
 Two grid modes are supported with additional options:
 
 | Grid Mode Blockwise | Grid Mode Edgewise |
 | ------------------- | - |
-| <img src="grid-blockwise.png"/> | <img src="grid-edgewise.png"/> |
+| <img src="images/grid-blockwise.png"/> | <img src="images/grid-edgewise.png"/> |
 | In this mode, each node can be blocked. | In this mode, each edge can be blocked per direction. |
-| <img src="grid-blockwise-cross-corners.png"/> | <img src="grid-edgewise-detail.png"/> |
+| <img src="images/grid-blockwise-cross-corners.png"/> | <img src="images/grid-edgewise-detail.png"/> |
 | **+ option** crossing corners allowed. | Each blue object blocks a direction. |
-| <img src="grid-blockwise-cardinal-only.png"/> | |
+| <img src="images/grid-blockwise-cardinal-only.png"/> | |
 | **+ option** cardinal paths only. | |
 
 ## Supported Algorithms
