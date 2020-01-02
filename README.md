@@ -1,24 +1,37 @@
-<p align="center"><img width="80%" src="logo.gif" /></p>
+<p align="center"><img width="80%" src="logo.gif"/></p>
 
-# A Online Algorithm Visualiser for Pathfinding Algorithms
+# Grid Search Visualiser
+
+# A online algorithm visualiser for pathfinding algorithms.
 
 The tool [Grid Search Visualiser](https://jps.mysticwind.de/) was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.
 
+<p align="center"><img width="100%" src="intro.gif"/></p>
+
 ## Supported Grids
 
-Two grid modes are supported:
- - Blockwise with optional diagonal and cross corner paths/ <img height="50px" src="grid-blockwise.png" />
- - edgewise
+Two grid modes are supported with additional options:
 
-## Supported Algorithms & Heuristics
+| Grid Mode Blockwise | Grid Mode Edgewise |
+| ------------------- | - |
+| <img src="grid-blockwise.png"/> | <img src="grid-edgewise.png"/> |
+| In this mode, each node can be blocked. | In this mode, each edge can be blocked per direction. |
+| <img src="grid-blockwise-cross-corners.png"/> | <img src="grid-edgewise-detail.png"/> |
+| **+ option** crossing corners allowed. | Each blue object blocks a direction. |
+| <img src="grid-blockwise-cardinal-only.png"/> | |
+| **+ option** cardinal paths only. | |
+
+## Supported Algorithms
 
 | Algorithm                | Description |
 | ------------------------ | - |
 | **Dijkstra**             | The Dijkstra Pathﬁnding Algorithm. |
 | **A\***                  | The A* Pathﬁnding Algorithm. |
-| **DJPS The Directed**    | Jump Point Search Algorithm (alternative Version). |
+| **DJPS**                 | The Directed Jump Point Search Algorithm (alternative Version). |
 | **DJPS Lookup**          | The Directed Jump Point Search Lookup Algorithm using pre-calculated lookup data. |
 | **DJPS Pre-Calculation** | The Directed Jump Point Search Pre-Calculation Algorithm using backwards pre-calculation |
+
+## Supported Heuristics
 
 | Heuristics    | Description |
 | ------------- | - |
