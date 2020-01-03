@@ -5,10 +5,10 @@ A online algorithm visualiser for pathfinding algorithms.
 
 The tool was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.
 
-<p align="center"><img width="100%" src="images/intro.gif"/></p>
-
 ## How to use
 The tool can be used at [jps.mysticwind.de](https://jps.mysticwind.de/).
+
+<p align="center"><img width="100%" src="images/intro.gif"/></p>
 
 ## Supported Grids
 Two grid modes are supported with additional options:
@@ -25,10 +25,10 @@ Two grid modes are supported with additional options:
 ## Supported Algorithms
 | Algorithm                | Description |
 | ------------------------ | - |
-| **Dijkstra**             | The Dijkstra Pathﬁnding Algorithm. |
-| **A\***                  | The A* Pathﬁnding Algorithm. |
-| **DJPS**                 | The Directed Jump Point Search Algorithm (alternative Version). |
-| **DJPS Lookup**          | The Directed Jump Point Search Lookup Algorithm using pre-calculated lookup data. |
+| **Dijkstra**             | The Dijkstra Pathﬁnding Algorithm |
+| **A\***                  | The A* Pathﬁnding Algorithm |
+| **DJPS**                 | The Directed Jump Point Search Algorithm (alternative Version) |
+| **DJPS Lookup**          | The Directed Jump Point Search Lookup Algorithm using pre-calculated lookup data |
 | **DJPS Pre-Calculation** | The Directed Jump Point Search Pre-Calculation Algorithm using backwards pre-calculation |
 
 ## Supported Heuristics
