@@ -10,7 +10,9 @@ The tool can be used at [jps.mysticwind.de](https://jps.mysticwind.de/).
 
 <p align="center"><img width="100%" src="images/intro.gif"/></p>
 
-## Supported Grids
+## Features
+
+### 📈 Supported Grids
 Two grid modes are supported with additional options:
 
 | Grid Mode Blockwise | Grid Mode Edgewise |
@@ -22,7 +24,7 @@ Two grid modes are supported with additional options:
 | <img src="images/grid-blockwise-cardinal-only.png"/> | |
 | **+ option** cardinal paths only. | |
 
-## Supported Algorithms
+### 🤖 Supported Algorithms
 | Algorithm                | Description |
 | ------------------------ | - |
 | **Dijkstra**             | The Dijkstra Pathﬁnding Algorithm |
@@ -31,7 +33,7 @@ Two grid modes are supported with additional options:
 | **DJPS Lookup**          | The Directed Jump Point Search Lookup Algorithm using pre-calculated lookup data |
 | **DJPS Pre-Calculation** | The Directed Jump Point Search Pre-Calculation Algorithm using backwards pre-calculation |
 
-## Supported Heuristics
+### 📐 Supported Heuristics
 | Heuristics    | Description |
 | ------------- | - |
 | **Chebyshev** | The Chebyshev distance as heuristic. This distance is calculated by the moves a chess king would have to make. |
