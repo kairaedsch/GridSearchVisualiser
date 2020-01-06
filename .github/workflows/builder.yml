@@ -64,7 +64,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build
+          FOLDER: .
           TARGET_FOLDER: ${{ env[join(github.ref, '_branch')] }}
           CLEAN: true
           CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
