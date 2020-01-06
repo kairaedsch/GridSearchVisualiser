@@ -32,7 +32,7 @@ jobs:
       
     - name: Install dependencies
       working-directory: jps_visualiser
-      run: pub get && pub global activate webdev
+      run: pub get && pub global activate webdev && export PATH="$PATH":"$HOME/.pub-cache/bin"
       
     #- name: Run tests
     #  working-directory: jps_visualiser
