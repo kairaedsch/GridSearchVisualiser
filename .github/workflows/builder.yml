@@ -40,7 +40,7 @@ jobs:
       
     - name: Run build
       working-directory: jps_visualiser
-      run: pub build --mode=release --output=build
+      run: webdev build --output build
 
     - name: Upload
       uses: actions/upload-artifact@v1
