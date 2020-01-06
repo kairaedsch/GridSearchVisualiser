@@ -1,0 +1,71 @@
+name: Test, Build, Deploy and Release
+on: 
+  push
+jobs:
+  test and build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: google/dart:latest
+
+    steps:
+    - uses: actions/checkout@v1
+      
+    - name: Install dependencies
+      run: pub get
+      
+    - name: Run tests
+      run: pub run test
+      
+    - name: Run build
+      run: pub build --mode=release --output=build
+
+    - name: Upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: build
+  
+  deploy:
+    if: github.ref == 'master' || github.ref == 'stable' || github.ref == 'develop'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v1
+        with:
+          name: build
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
+          TARGET_FOLDER: ${{ [github.ref, null][github.ref == 'master'] }}
+          CLEAN: true
+          CLEAN_EXCLUDE: ${{ '[' + ['"master", ', ''][github.ref == 'master'] + ['"stable", ', ''][github.ref == 'stable'] + ['"develop", ', ''][github.ref == 'develop'] + ']'}} 
+  
+  release:
+    if: github.ref == 'master' || github.ref == 'stable'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v1
+        with:
+          name: build
+          
+      - name: Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: true
+          prerelease: ${{ github.ref != 'master' }}
