@@ -27,7 +27,7 @@ jobs:
         path: build
   
   deploy:
-    if: github.ref == 'master' || github.ref == 'stable' || github.ref == 'develop'
+    if: success() && (github.ref == 'master' || github.ref == 'stable' || github.ref == 'develop')
     runs-on: ubuntu-latest
     
     steps:
@@ -44,10 +44,10 @@ jobs:
           FOLDER: build
           TARGET_FOLDER: ${{ [github.ref, null][github.ref == 'master'] }}
           CLEAN: true
-          CLEAN_EXCLUDE: ${{ '[' + ['"master", ', ''][github.ref == 'master'] + ['"stable", ', ''][github.ref == 'stable'] + ['"develop", ', ''][github.ref == 'develop'] + ']'}} 
+          CLEAN_EXCLUDE: ${{ join('[', ['"master", ', ''][github.ref == 'master'], ['"stable", ', ''][github.ref == 'stable'], ['"develop", ', ''][github.ref == 'develop'], ']')}} 
   
   release:
-    if: github.ref == 'master' || github.ref == 'stable'
+    if: success() && (github.ref == 'master' || github.ref == 'stable')
     runs-on: ubuntu-latest
     
     steps:
