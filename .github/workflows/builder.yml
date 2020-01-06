@@ -46,7 +46,7 @@ jobs:
         path: build
   
   deploy:
-    if: success() && env[join(github.ref, '_deploy')]
+    if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop')
     runs-on: ubuntu-latest
     
     steps:
@@ -66,7 +66,7 @@ jobs:
           CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
   
   release:
-    if: success() && env[join(github.ref, '_release')]
+    if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable')
     runs-on: ubuntu-latest
     
     steps:
