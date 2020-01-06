@@ -66,7 +66,7 @@ jobs:
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build
+          FOLDER: build/web
           TARGET_FOLDER: ${{ env[join(github.ref, '_branch')] }}
           CLEAN: true
           CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
@@ -88,7 +88,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release env[join(github.ref, '_branch')]
+          release_name: Release ${{ env[join(github.ref, '_branch')] }}
           body: |
             Changes in this Release
             - First Change
