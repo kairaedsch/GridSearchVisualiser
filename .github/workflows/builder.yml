@@ -1,6 +1,25 @@
 name: Test, Build, Deploy and Release
 on: 
   push
+env:
+  refs/heads/master_branch: master
+  refs/heads/master_release: true
+  refs/heads/master_release-prerelease: false
+  refs/heads/master_deploy: true
+  refs/heads/master_deploy-clean-exclude: '["stable", "development"]'
+  
+  refs/heads/stable_branch: stable
+  refs/heads/stable_release: true
+  refs/heads/stable_release-prerelease: true
+  refs/heads/stable_deploy: true
+  refs/heads/stable_deploy-clean-exclude: '["master", "development"]'
+  
+  refs/heads/development_branch: development
+  refs/heads/development_release: false
+  refs/heads/development_release-prerelease: false
+  refs/heads/development_deploy: true
+  refs/heads/development_deploy-clean-exclude: '["master", "stable"]'
+
 jobs:
   test and build:
     runs-on: ubuntu-latest
@@ -27,7 +46,7 @@ jobs:
         path: build
   
   deploy:
-    if: success() && (github.ref == 'master' || github.ref == 'stable' || github.ref == 'develop')
+    if: success() && env[join(github.ref, '_deploy')]
     runs-on: ubuntu-latest
     
     steps:
@@ -42,12 +61,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: build
-          TARGET_FOLDER: ${{ [github.ref, null][github.ref == 'master'] }}
+          TARGET_FOLDER: ${{ env[join(github.ref, '_branch')] }}
           CLEAN: true
-          CLEAN_EXCLUDE: ${{ join('[', ['"master", ', ''][github.ref == 'master'], ['"stable", ', ''][github.ref == 'stable'], ['"develop", ', ''][github.ref == 'develop'], ']')}} 
+          CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
   
   release:
-    if: success() && (github.ref == 'master' || github.ref == 'stable')
+    if: success() && env[join(github.ref, '_release')]
     runs-on: ubuntu-latest
     
     steps:
@@ -62,10 +81,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release env[join(github.ref, '_branch')]
           body: |
             Changes in this Release
             - First Change
             - Second Change
           draft: true
-          prerelease: ${{ github.ref != 'master' }}
+          prerelease: ${{ env[join(github.ref, '_release-prerelease')] }}
