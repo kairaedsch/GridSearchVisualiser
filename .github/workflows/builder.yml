@@ -32,7 +32,7 @@ jobs:
       
     - name: Install dependencies
       working-directory: jps_visualiser
-      run: pub get && export PATH="$PATH":"~/.pub-cache/bin" && pub global activate webdev
+      run: pub get
       
     #- name: Run tests
     #  working-directory: jps_visualiser
@@ -40,7 +40,7 @@ jobs:
       
     - name: Run build
       working-directory: jps_visualiser
-      run: webdev build --output build
+      run: pub global run webdev:build --output build
 
     - name: Upload
       uses: actions/upload-artifact@v1
@@ -49,6 +49,7 @@ jobs:
         path: jps_visualiser/build
   
   deploy:
+    needs: [test_and_build]
     if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop')
     runs-on: ubuntu-latest
     
@@ -69,6 +70,7 @@ jobs:
           CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
   
   release:
+    needs: [deploy]
     if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable')
     runs-on: ubuntu-latest
     
