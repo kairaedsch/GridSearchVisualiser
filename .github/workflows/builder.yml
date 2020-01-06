@@ -32,7 +32,7 @@ jobs:
       
     - name: Install dependencies
       working-directory: jps_visualiser
-      run: pub get
+      run: pub get && pub global activate webdev
       
     #- name: Run tests
     #  working-directory: jps_visualiser
