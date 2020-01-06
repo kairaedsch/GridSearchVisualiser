@@ -21,7 +21,7 @@ env:
   refs/heads/development_deploy-clean-exclude: '["master", "stable"]'
 
 jobs:
-  test and build:
+  test_and_build:
     runs-on: ubuntu-latest
 
     container:
