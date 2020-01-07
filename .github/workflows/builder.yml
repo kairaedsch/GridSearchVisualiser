@@ -6,19 +6,21 @@ env:
   refs/heads/master_release: true
   refs/heads/master_release-prerelease: false
   refs/heads/master_deploy: true
+  refs/heads/master_deploy-folder: ''
   refs/heads/master_deploy-clean-exclude: '["stable", "development"]'
   
   refs/heads/stable_branch: stable
   refs/heads/stable_release: true
   refs/heads/stable_release-prerelease: true
   refs/heads/stable_deploy: true
+  refs/heads/stable_deploy-folder: stable
   refs/heads/stable_deploy-clean-exclude: '["master", "development"]'
   
-  refs/heads/development_branch: development
-  refs/heads/development_release: false
-  refs/heads/development_release-prerelease: false
-  refs/heads/development_deploy: true
-  refs/heads/development_deploy-clean-exclude: '["master", "stable"]'
+  refs/heads/develop_branch: develop
+  refs/heads/develop_release: false
+  refs/heads/develop_deploy: true
+  refs/heads/develop_deploy-folder: develop
+  refs/heads/develop_deploy-clean-exclude: '["master", "stable"]'
 
 jobs:
   test_and_build:
@@ -60,16 +62,17 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build
+    
+      - run: mv /build/web /deploy/$folder
+        env:
+          folder: ${{ env[join(github.ref, '_deploy-folder')] }}
       
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build/web
-          TARGET_FOLDER: ${{ env[join(github.ref, '_branch')] }}
-          CLEAN: true
-          CLEAN_EXCLUDE: ${{ env[join(github.ref, '_deploy-clean-exclude')] }} 
+          FOLDER: deploy
   
   release:
     needs: [deploy]
