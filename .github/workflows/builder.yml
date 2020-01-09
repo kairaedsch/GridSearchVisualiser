@@ -62,7 +62,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build
-          path: jps_visualiser/build
     
       - run: ls
         
