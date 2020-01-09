@@ -63,9 +63,9 @@ jobs:
         with:
           name: build
         
-      - run: mv build/web/ deploy/$folder/
+      - run: echo $folder && mv build/web/ deploy/$FOLDER/
         env:
-          folder: ${{ env[join(github.ref, '_deploy-folder')] }}
+          FOLDER: ${{ env[join(github.ref, '_deploy-folder')] }}
       
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
