@@ -65,7 +65,7 @@ jobs:
     
       - run: ls && cd build && ls
         
-      - run: mv /build/web /deploy/$folder
+      - run: mv build/web/ deploy/$folder/
         env:
           folder: ${{ env[join(github.ref, '_deploy-folder')] }}
       
