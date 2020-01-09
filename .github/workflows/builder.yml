@@ -62,8 +62,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build
-    
-      - run: ls && cd build && ls
         
       - run: mv build/web/ deploy/$folder/
         env:
