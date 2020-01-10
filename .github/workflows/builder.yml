@@ -47,7 +47,7 @@ jobs:
         run: mkdir -p deploy/develop/ && mv build/web/* deploy/develop/
 
       - if: github.ref == 'refs/heads/master'
-        run: build/web/* deploy/
+        run: mv build/web/* deploy/
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
