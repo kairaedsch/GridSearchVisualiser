@@ -65,7 +65,7 @@ jobs:
         
       - run: echo $folder && echo $TEST && mv build/web/ deploy/$FOLDER/
         env:
-          FOLDER: ${{ env[join(github.ref, '_deploy-folder')] }}
+          FOLDER: ${{ join('test-', env[join(github.ref, '_deploy-folder')]) }}
           TEST: ${{ github.ref }}
       
       - name: Deploy
