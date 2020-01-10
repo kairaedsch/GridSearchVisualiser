@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+        <linearGradient id="grad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="15%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="15%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="30%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="30%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="45%" style="stop-color:#0095ff;stop-opacity:0" />
+            <stop offset="45%" style="stop-color:#0095ff;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <polygon points="0,0 100,0 100,100 0,100" style="fill: url(#grad);" />
+</svg>
