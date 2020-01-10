@@ -1,14 +1,34 @@
-<p align="center"><img width="80%" src="images/logo.gif"/></p>
+<p align="center">
+  <a href="https://kairaedsch.github.io/GridSearchVisualiser/">
+    <img width="80%" src="images/logo.gif"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://kairaedsch.github.io/GridSearchVisualiser/">
+    <img src="https://img.shields.io/github/workflow/status/kairaedsch/GridSearchVisualiser/Test,%20Build,%20Deploy%20and%20Release/master?label=master%20-%20build&style=flat-square"/>
+  </a>
+  <a href="https://kairaedsch.github.io/GridSearchVisualiser/develop">
+    <img src="https://img.shields.io/github/workflow/status/kairaedsch/GridSearchVisualiser/Test,%20Build,%20Deploy%20and%20Release/master?label=develop%20-%20build&style=flat-square"/>
+  </a>
+  <a href="https://github.com/kairaedsch/GridSearchVisualiser/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/kairaedsch/GridSearchVisualiser?style=flat-square"/>
+  </a>
+</p>
 
-# Grid Search Visualiser
+<h1 align="center">Grid Search Visualiser</h1>
+
 A online algorithm visualiser for pathfinding algorithms.
 
 The tool was created for my bachelor thesis "Jump Point Search on Directed Grids" at the University of Passau.
 
 ## How to use
-The tool can be used at [jps.mysticwind.de](https://jps.mysticwind.de/).
+The tool can be used at [kairaedsch.github.io/GridSearchVisualiser](https://kairaedsch.github.io/GridSearchVisualiser/).
 
-<p align="center"><img width="100%" src="images/intro.gif"/></p>
+<p align="center">
+  <a href="https://kairaedsch.github.io/GridSearchVisualiser/">
+    <img width="100%" src="images/intro.gif"/>
+  </a>
+</p>
 
 ## Features
 

@@ -19,7 +19,7 @@ env:
   refs/heads/develop_branch: develop
   refs/heads/develop_release: false
   refs/heads/develop_deploy: true
-  refs/heads/develop_deploy-folder: 'develop'
+  refs/heads/develop_deploy-folder: develop
   refs/heads/develop_deploy-clean-exclude: '["master", "stable"]'
 
 jobs:
@@ -65,7 +65,7 @@ jobs:
         
       - run: echo $FOLDER && echo $TEST && mkdir -p deploy/$FOLDER/ && mv build/web/ deploy/$FOLDER/
         env:
-          FOLDER: ${{ join('test-', env[join(github.ref, '_deploy-folder')]) }}
+          FOLDER: ${{ join(github.ref, '_deploy-folder') }}
           TEST: ${{ github.ref }}
       
       - name: Deploy
