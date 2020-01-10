@@ -1,12 +1,6 @@
 name: Test, Build, Deploy and Release
 on: 
   push
-env:
-  refs/heads/master_branch: master
-  refs/heads/master_deploy-folder:
-  
-  refs/heads/develop_branch: develop
-  refs/heads/develop_deploy-folder: develop
 
 jobs:
   test_and_build:
@@ -49,14 +43,11 @@ jobs:
         with:
           name: build
 
-      - run: |
-          import os
-          folder = os.environ[os.environ['fullbranch'] + '_deploy-folder']
-          os.system('mkdir -p deploy/' + folder + '/')
-          os.system('mv build/web/ deploy/' + folder + '/')
-        shell: python
-        env:
-          fullbranch: ${{ github.ref }}
+      - if: github.ref == 'refs/heads/develop'
+        run: mkdir -p deploy/develop/ && mv build/web/* deploy/develop/
+
+      - if: github.ref == 'refs/heads/master'
+        run: build/web/* deploy/
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
