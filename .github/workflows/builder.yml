@@ -52,8 +52,8 @@ jobs:
       - run: |
           import os
           folder = os.environ[os.environ['fullbranch'] + '_deploy-folder']
-          os.system(f'mkdir -p deploy/{folder}/')
-          os.system(f'mv build/web/ deploy/{folder}/')
+          os.system('mkdir -p deploy/' + folder + '/')
+          os.system('mv build/web/ deploy/' + folder + '/')
         shell: python
         env:
           fullbranch: ${{ github.ref }}
