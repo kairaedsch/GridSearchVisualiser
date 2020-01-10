@@ -3,24 +3,10 @@ on:
   push
 env:
   refs/heads/master_branch: master
-  refs/heads/master_release: true
-  refs/heads/master_release-prerelease: false
-  refs/heads/master_deploy: true
-  refs/heads/master_deploy-folder: 'test'
-  refs/heads/master_deploy-clean-exclude: '["stable", "development"]'
-  
-  refs/heads/stable_branch: stable
-  refs/heads/stable_release: true
-  refs/heads/stable_release-prerelease: true
-  refs/heads/stable_deploy: true
-  refs/heads/stable_deploy-folder: stable
-  refs/heads/stable_deploy-clean-exclude: '["master", "development"]'
+  refs/heads/master_deploy-folder:
   
   refs/heads/develop_branch: develop
-  refs/heads/develop_release: false
-  refs/heads/develop_deploy: true
   refs/heads/develop_deploy-folder: develop
-  refs/heads/develop_deploy-clean-exclude: '["master", "stable"]'
 
 jobs:
   test_and_build:
@@ -52,7 +38,7 @@ jobs:
   
   deploy:
     needs: [test_and_build]
-    if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable' || github.ref == 'refs/heads/develop')
+    if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
     runs-on: ubuntu-latest
     
     steps:
@@ -62,12 +48,16 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build
-        
-      - run: echo $FOLDER && echo $TEST && mkdir -p deploy/$FOLDER/ && mv build/web/ deploy/$FOLDER/
+
+      - run: |
+          import os
+          folder = os.environ[os.environ['fullbranch'] + '_deploy-folder']
+          os.system(f'mkdir -p deploy/{folder}/')
+          os.system(f'mv build/web/ deploy/{folder}/')
+        shell: python
         env:
-          FOLDER: ${{ join(github.ref, '_deploy-folder') }}
-          TEST: ${{ github.ref }}
-      
+          fullbranch: ${{ github.ref }}
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
@@ -77,7 +67,7 @@ jobs:
   
   release:
     needs: [deploy]
-    if: success() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/stable')
+    if: success() && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     
     steps:
@@ -92,10 +82,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ env[join(github.ref, '_branch')] }}
+          release_name: Release
           body: |
             Changes in this Release
             - First Change
             - Second Change
           draft: true
-          prerelease: ${{ env[join(github.ref, '_release-prerelease')] }}
+          prerelease: true
