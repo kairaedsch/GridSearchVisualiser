@@ -67,8 +67,7 @@ jobs:
         with:
           name: web
 
-      - run: |
-        zip -r release.zip web
+      - run: zip -r release.zip web
           
       - name: Create Release
         id: create_release
