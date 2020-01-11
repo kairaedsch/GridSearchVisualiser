@@ -8,7 +8,10 @@
     <img src="https://img.shields.io/github/workflow/status/kairaedsch/GridSearchVisualiser/Test,%20Build,%20Deploy%20and%20Release/master?label=master%20-%20build&style=flat-square"/>
   </a>
   <a href="https://kairaedsch.github.io/GridSearchVisualiser/develop">
-    <img src="https://img.shields.io/github/workflow/status/kairaedsch/GridSearchVisualiser/Test,%20Build,%20Deploy%20and%20Release/master?label=develop%20-%20build&style=flat-square"/>
+    <img src="https://img.shields.io/github/workflow/status/kairaedsch/GridSearchVisualiser/Test,%20Build,%20Deploy%20and%20Release/develop?label=develop%20-%20build&style=flat-square"/>
+  </a>
+  <a href="https://github.com/kairaedsch/GridSearchVisualiser/releases">
+    <img src="https://img.shields.io/github/v/release/kairaedsch/GridSearchVisualiser?include_prereleases&style=flat-square">
   </a>
   <a href="https://github.com/kairaedsch/GridSearchVisualiser/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/kairaedsch/GridSearchVisualiser?style=flat-square"/>
