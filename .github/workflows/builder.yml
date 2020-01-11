@@ -27,8 +27,8 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
-        name: build
-        path: jps_visualiser/build
+        name: web
+        path: jps_visualiser/build/web
   
   deploy:
     needs: [test_and_build]
@@ -41,13 +41,13 @@ jobs:
       - name: Download
         uses: actions/download-artifact@v1
         with:
-          name: build
+          name: web
 
       - if: github.ref == 'refs/heads/develop'
-        run: mkdir -p deploy/develop/ && mv build/web/* deploy/develop/
+        run: mkdir -p deploy/develop/ && mv web/* deploy/develop/
 
       - if: github.ref == 'refs/heads/master'
-        run: mkdir deploy/ && mv build/web/* deploy/
+        run: mkdir deploy/ && mv web/* deploy/
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -65,9 +65,13 @@ jobs:
       - name: Download
         uses: actions/download-artifact@v1
         with:
-          name: build
+          name: web
+
+      - run: |
+        zip -r release.zip web
           
-      - name: Release
+      - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,3 +84,13 @@ jobs:
             - Second Change
           draft: true
           prerelease: true
+
+      - name: Add Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release.zip
+          asset_name: release.zip
+          asset_content_type: application/zip
