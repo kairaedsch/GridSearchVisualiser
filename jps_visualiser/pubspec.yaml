@@ -1,6 +1,6 @@
 name: GridSearchVisualiser
-version: 1.0.0
-description: Visualise and explain pathfinding on grids.
+version: 0.9.0-beta
+description: Online Algorithm Visualiser for Pathfinding Algorithms
 
 environment:
   sdk: '>=2.0.0 <3.0.0'
